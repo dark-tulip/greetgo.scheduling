@@ -35,6 +35,8 @@ subprojects {
   }
 
   dependencies {
+    ext.greetgoUtilVersion = '0.0.15'
+    
     compile 'com.google.code.findbugs:annotations:2.0.1'
 
     testCompile 'org.testng:testng:6.5.1'
