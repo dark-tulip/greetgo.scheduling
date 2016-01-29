@@ -71,7 +71,7 @@ public class ExecutionPool {
 
   public void deactivate() {
     for (Executor executor : executorList) {
-      executor.deactivate();
+      executor.stopThread();
     }
   }
 }

@@ -11,7 +11,6 @@ public class Executor {
   }
 
   private volatile boolean working = false;
-  private volatile boolean active = true;
 
   private class LocalThread extends Thread {
 
@@ -21,7 +20,7 @@ public class Executor {
 
     @Override
     public void run() {
-      while (Thread.currentThread() == workingThread && active) {
+      while (Thread.currentThread() == workingThread) {
 
         working = true;
         currentTask.run();
@@ -82,10 +81,4 @@ public class Executor {
     }
   }
 
-  public void deactivate() {
-    active = false;
-    synchronized (sync) {
-      sync.notifyAll();
-    }
-  }
 }
