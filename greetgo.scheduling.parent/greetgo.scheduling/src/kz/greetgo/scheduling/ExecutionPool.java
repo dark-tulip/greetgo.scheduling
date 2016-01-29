@@ -10,6 +10,8 @@ public class ExecutionPool {
 
   public int maxThreadWaitingDelayInMillis = 60 * 1000;
 
+  public String threadNamePrefix = "SCHEDULING-";
+
   private final List<Executor> executorList = new ArrayList<>();
 
   private final LinkedList<Task> queue = new LinkedList<>();
@@ -18,13 +20,12 @@ public class ExecutionPool {
 
     final boolean mayParallel = task.mayParallel();
 
-    if (!mayParallel) {
-      for (Executor executor : executorList) {
-        if (executor.working() && task.equals(executor.currentTask())) return;
-      }
-      for (Task queueTask : queue) {
-        if (queueTask.equals(task)) return;
-      }
+    if (!mayParallel) for (Executor executor : executorList) {
+      if (executor.working() && task.equals(executor.currentTask())) return;
+    }
+
+    for (Task queueTask : queue) {
+      if (queueTask.equals(task)) return;
     }
 
     queue.addLast(task);
@@ -59,6 +60,12 @@ public class ExecutionPool {
   }
 
   private Executor newExecutor() {
-    return new Executor("SCHEDULING-" + (executorList.size() + 1));
+    int len = ("" + maxPoolSize).length();
+
+    String nomer = "" + (executorList.size() + 1);
+
+    while (nomer.length() < len) nomer = '0' + nomer;
+
+    return new Executor(threadNamePrefix + nomer);
   }
 }

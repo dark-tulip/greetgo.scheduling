@@ -4,5 +4,13 @@ public interface Trigger {
 
   boolean isItTimeToRun();
 
-  void start();
+  void schedulerIsStartedJustNow();
+
+  void jobIsGoingToStart();
+
+  void jobHasFinishedJustNow();
+
+  boolean disabled();
+
+  boolean mayParallel();
 }

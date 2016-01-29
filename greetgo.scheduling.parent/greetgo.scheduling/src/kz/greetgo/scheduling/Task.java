@@ -3,29 +3,29 @@ package kz.greetgo.scheduling;
 public class Task {
 
   private final String poolName;
-  private final boolean mayParallel;
   private final Job job;
   private final Trigger trigger;
   private final ThrowableCatcher throwableCatcher;
 
-  public Task(String poolName, boolean mayParallel, Job job, Trigger trigger, ThrowableCatcher throwableCatcher) {
+  public Task(String poolName, Job job, Trigger trigger, ThrowableCatcher throwableCatcher) {
     this.poolName = poolName;
-    this.mayParallel = mayParallel;
     this.job = job;
     this.trigger = trigger;
     this.throwableCatcher = throwableCatcher;
   }
 
   public void run() {
+    trigger.jobIsGoingToStart();
     try {
       job.doWork();
     } catch (Throwable e) {
       throwableCatcher.catchThrowable(e);
     }
+    trigger.jobHasFinishedJustNow();
   }
 
   public boolean mayParallel() {
-    return mayParallel;
+    return trigger.mayParallel();
   }
 
   public String getPoolName() {
@@ -46,6 +46,10 @@ public class Task {
   }
 
   public void start() {
-    trigger.start();
+    trigger.schedulerIsStartedJustNow();
+  }
+
+  public boolean disabled() {
+    return trigger.disabled();
   }
 }

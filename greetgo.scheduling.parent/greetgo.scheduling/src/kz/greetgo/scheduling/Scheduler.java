@@ -26,6 +26,7 @@ public class Scheduler {
   private void makeScheduleStep() {
 
     for (Task task : tasks) {
+      if (task.disabled()) continue;
       if (task.isItTimeToRun()) {
         final String poolName = task.getPoolName();
         pools.get(poolName).runTask(task);
