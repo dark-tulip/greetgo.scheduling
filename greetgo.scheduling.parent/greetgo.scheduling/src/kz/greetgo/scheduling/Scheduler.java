@@ -103,7 +103,7 @@ public class Scheduler {
   }
 
   public void start() {
-    start(null);
+    start("MAIN_SCHEDULER");
   }
 
   private final Object sync = new Object();

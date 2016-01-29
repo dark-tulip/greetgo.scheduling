@@ -71,7 +71,7 @@ public class SchedulerProbe {
   }
 
   private static String pre() {
-    return System.currentTimeMillis() + " " + Thread.currentThread().getName() + "; ";
+    return System.currentTimeMillis() + " " + Thread.currentThread().getName() + " ";
   }
 
   private static class CountTo implements Job {
@@ -100,6 +100,8 @@ public class SchedulerProbe {
   }
 
   public static void main(String[] args) throws Exception {
+    final boolean inMainThread = "a".equals("a1");
+
     final MyThrowableCatcher tc = new MyThrowableCatcher();
 
     String defaultPoolName = "default";
@@ -122,6 +124,10 @@ public class SchedulerProbe {
 
     final Scheduler scheduler = new Scheduler(tasks, pools);
 
+    if (inMainThread) {
+      scheduler.startInMyThread();
+      return;
+    }
     scheduler.start();
 
     System.out.println(pre() + "SCHEDULER STARTED");
