@@ -114,6 +114,10 @@ public class Scheduler {
     synchronized (sync) {
       sync.notifyAll();
     }
+
+    for (ExecutionPool pool : pools.values()) {
+      pool.deactivate();
+    }
   }
 
   public void startInMyThread() {

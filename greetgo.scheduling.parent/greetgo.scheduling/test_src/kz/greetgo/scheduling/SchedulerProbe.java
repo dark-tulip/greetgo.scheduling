@@ -99,7 +99,7 @@ public class SchedulerProbe {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     final MyThrowableCatcher tc = new MyThrowableCatcher();
 
     String defaultPoolName = "default";
@@ -125,5 +125,22 @@ public class SchedulerProbe {
     scheduler.start();
 
     System.out.println(pre() + "SCHEDULER STARTED");
+
+    Thread.sleep(20 * 1000);
+
+    System.out.println(pre() + "____________HI____________");
+
+    Thread.sleep(20 * 1000);
+
+    System.out.println(pre() + "____________SHUTDOWN___________________");
+
+    scheduler.shutdown();
+
+    System.out.println(pre() + "____________SHUTDOWN_CALLED____________");
+
+    Thread.sleep(5 * 1000);
+
+    System.out.println(pre() + "____________COMPLETE___________________");
+
   }
 }

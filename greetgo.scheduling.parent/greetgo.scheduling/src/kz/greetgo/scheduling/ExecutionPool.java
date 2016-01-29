@@ -10,7 +10,7 @@ public class ExecutionPool {
 
   public int maxThreadWaitingDelayInMillis = 60 * 1000;
 
-  public String threadNamePrefix = "SCHEDULING-";
+  public String threadNamePrefix = "Scheduling-";
 
   private final List<Executor> executorList = new ArrayList<>();
 
@@ -67,5 +67,11 @@ public class ExecutionPool {
     while (nomer.length() < len) nomer = '0' + nomer;
 
     return new Executor(threadNamePrefix + nomer);
+  }
+
+  public void deactivate() {
+    for (Executor executor : executorList) {
+      executor.deactivate();
+    }
   }
 }

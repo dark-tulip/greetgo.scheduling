@@ -1,6 +1,14 @@
 package kz.greetgo.scheduling;
 
+/**
+ * Интерфейс задачи
+ */
 public interface Job {
+  /**
+   * Выполняет работу
+   *
+   * @throws Throwable выбрасывается, если задача завершилась с ошибкой
+   */
   void doWork() throws Throwable;
 
   /**
