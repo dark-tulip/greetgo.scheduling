@@ -193,6 +193,14 @@ public class SchedulerMatcher {
     if ("ПТ".equals(dayOfWeek)) return 6;
     if ("СБ".equals(dayOfWeek)) return 7;
 
+    if ("SU".equals(dayOfWeek)) return 1;
+    if ("MO".equals(dayOfWeek)) return 2;
+    if ("TU".equals(dayOfWeek)) return 3;
+    if ("WE".equals(dayOfWeek)) return 4;
+    if ("TH".equals(dayOfWeek)) return 5;
+    if ("FR".equals(dayOfWeek)) return 6;
+    if ("SA".equals(dayOfWeek)) return 7;
+
     if (dayOfWeek.length() >= 3) {
 
       if (dayOfWeek.startsWith("ВОС")) return 1;
@@ -291,7 +299,71 @@ public class SchedulerMatcher {
 
   // 12/3:0/3
   private void parsePartHourAndMinute(String part) {
+    final int idx = part.indexOf(':');
+    if (idx < 0) throw error("No colon on part of hours and minutes");
+    String minutesPart = part.substring(idx + 1);
 
+    if (minutesPart.length() > 0 && !"*".equals(minutesPart)) {
+      minutes = new boolean[60];
+      Arrays.fill(minutes, false);
+      parseSamplePart(minutesPart, minutes);
+    }
+
+    String hoursPart = part.substring(0, idx);
+    if (hoursPart.length() > 0 && !"*".equals(hoursPart)) {
+      hours = new boolean[24];
+      Arrays.fill(hours, false);
+      parseSamplePart(hoursPart, hours);
+    }
+
+  }
+
+  // 11,12/3,0/7,5-8
+  private void parseSamplePart(String part, boolean[] array) {
+    for (String subPart : part.split(",")) {
+
+      int slashIdx = subPart.indexOf('/');
+      int minusIdx = subPart.indexOf('-');
+
+      if (slashIdx < 0 && minusIdx < 0) {
+        final int value = toInt(subPart, 0, array.length - 1);
+        array[value] = true;
+        continue;
+      }
+
+      if (slashIdx >= 0 && minusIdx >= 0) {
+        throw error("Cannot understand '" + subPart + "' in '" + part + "'");
+      }
+
+      if (slashIdx >= 0) {
+
+        final int len = array.length;
+
+        int value = toInt(subPart.substring(0, slashIdx), 0, len - 1);
+        final int increment = toInt(subPart.substring(slashIdx + 1), 0, len - 1);
+
+        while (value < len) {
+          array[value] = true;
+          value += increment;
+        }
+
+        continue;
+      }
+
+      if (minusIdx >= 0) {
+        final int len = array.length;
+
+        final int from = toInt(subPart.substring(0, minusIdx), 0, len - 1);
+        final int to = toInt(subPart.substring(minusIdx + 1), 0, len - 1);
+        for (int i = from; i <= to; i++) {
+          array[i] = true;
+        }
+
+        //noinspection UnnecessaryContinue
+        continue;
+      }
+
+    }
   }
 
 }
