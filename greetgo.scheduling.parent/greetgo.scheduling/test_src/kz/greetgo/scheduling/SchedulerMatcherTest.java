@@ -205,6 +205,8 @@ public class SchedulerMatcherTest {
     final SchedulerMatcher matcher = new SchedulerMatcher(pattern, "in test");
     //
     //
+    assertThat(matcher.parallel).isFalse();
+
 
     final long prevMatch = sdf.parse(prevMatchStr).getTime();
     final long now = sdf.parse(nowStr).getTime();
@@ -348,5 +350,81 @@ public class SchedulerMatcherTest {
     //
 
     assertThat(actual).isEqualTo(expectedValue);
+  }
+
+  @Test
+  public void match_off() throws Exception {
+    String prevMatchStr = "2014-01-01 11:10:00";
+    String nowStr = "2015-01-01 11:30:00";
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    //
+    //
+    final SchedulerMatcher matcher = new SchedulerMatcher("off 11:30", "in test");
+    //
+    //
+
+    assertThat(matcher.parallel).isFalse();
+
+    final long prevMatch = sdf.parse(prevMatchStr).getTime();
+    final long now = sdf.parse(nowStr).getTime();
+
+    //
+    //
+    final boolean actualResult = matcher.match(prevMatch, now);
+    //
+    //
+
+    assertThat(actualResult).isFalse();
+  }
+
+  @DataProvider
+  public Object[][] match_parallel_variants() {
+    return new Object[][]{
+      new Object[]{"Parallel"},
+      new Object[]{"Para"},
+      new Object[]{"PARALLEL"},
+      new Object[]{"PARA"},
+      new Object[]{"parallel"},
+      new Object[]{"para"},
+
+      new Object[]{"Паралель"},
+      new Object[]{"Пара"},
+      new Object[]{"паралель"},
+      new Object[]{"пара"},
+      new Object[]{"ПАРАЛЕЛЬ"},
+      new Object[]{"ПАРА"},
+    };
+  }
+
+  @Test(dataProvider = "match_parallel_variants")
+  public void match_parallel_1(String parallelVariant) throws Exception {
+    //
+    //
+    final SchedulerMatcher matcher = new SchedulerMatcher(parallelVariant + " off 11:30", "in test");
+    //
+    //
+    assertThat(matcher.parallel).isTrue();
+  }
+
+  @Test(dataProvider = "match_parallel_variants")
+  public void match_parallel_2(String parallelVariant) throws Exception {
+    //
+    //
+    final SchedulerMatcher matcher = new SchedulerMatcher("off " + parallelVariant + " 11:30", "in test");
+    //
+    //
+    assertThat(matcher.parallel).isTrue();
+  }
+
+  @Test(dataProvider = "match_parallel_variants")
+  public void match_parallel_3(String parallelVariant) throws Exception {
+    //
+    //
+    final SchedulerMatcher matcher = new SchedulerMatcher(parallelVariant + " 11:30", "in test");
+    //
+    //
+    assertThat(matcher.parallel).isTrue();
   }
 }

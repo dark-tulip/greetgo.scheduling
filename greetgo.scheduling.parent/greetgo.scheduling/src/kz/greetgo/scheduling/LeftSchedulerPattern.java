@@ -1,6 +1,6 @@
 package kz.greetgo.scheduling;
 
-public class LeftSchedulerPattern extends RuntimeException {
+public class LeftSchedulerPattern extends SchedulerException {
   public final String message;
   public final String pattern;
   public final String place;

@@ -16,6 +16,10 @@ public class SchedulerMatcher {
   private boolean hours[] = null;
   private boolean minutes[] = null;
 
+  private boolean disabled = false;
+
+  public boolean parallel = false;
+
   public SchedulerMatcher(String pattern, String place) {
     if (pattern == null) throw new LeftSchedulerPattern("null pattern", null, place);
 
@@ -31,12 +35,15 @@ public class SchedulerMatcher {
     if (absent) throw new LeftSchedulerPattern("Absent parts", pattern, place);
   }
 
-
   public boolean match(long prevMatch, long now) {
     {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-      if (sdf.format(new Date(prevMatch)).equals(sdf.format(new Date(now)))) return false;
+      final String prevMatchStr = sdf.format(new Date(prevMatch));
+      final String nowStr = sdf.format(new Date(now));
+      if (prevMatchStr.equals(nowStr)) return false;
     }
+
+    if (disabled) return false;
 
     GregorianCalendar c = new GregorianCalendar();
     c.setTimeInMillis(now);
@@ -69,8 +76,18 @@ public class SchedulerMatcher {
     return true;
   }
 
-  // 12/3:0/3 (03-07,11,14-18,21) [понедельник,вт,ср] [март-июнь]
+  // 12/3:0/3 (03-07,11,14-18,21) {понедельник,вт,ср} [март-июнь]
   private void parsePatternPart(String part) {
+
+    if ("OFF".equals(part.toUpperCase())) {
+      disabled = true;
+      return;
+    }
+
+    if (isParallelPart(part)) {
+      parallel = true;
+      return;
+    }
 
     if (part.startsWith("(")) {
       parsePartDaysOfMonth(part);
@@ -91,6 +108,13 @@ public class SchedulerMatcher {
 
   }
 
+  private boolean isParallelPart(String part) {
+    part = part.toUpperCase();
+    if (part.startsWith("PARA")) return true;
+    //noinspection RedundantIfStatement
+    if (part.startsWith("ПАРА")) return true;
+    return false;
+  }
 
   // (03-07,11,14-18,21)
   private void parsePartDaysOfMonth(String part) {
