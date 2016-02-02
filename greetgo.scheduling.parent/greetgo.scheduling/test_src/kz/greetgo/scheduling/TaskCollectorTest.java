@@ -13,7 +13,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class TaskCollectorTest {
 
   @SuppressWarnings("unused")
-  public static class C1 {
+  public static class C1 implements HasScheduled {
     @Scheduled("13:00")
     public void hello() {
     }
