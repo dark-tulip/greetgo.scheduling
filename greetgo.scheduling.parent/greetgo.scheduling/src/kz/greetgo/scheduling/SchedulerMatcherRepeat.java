@@ -73,8 +73,8 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
     // повторять каждые 13 мин, начиная с паузы 17 мин
     ""
       + "\\s*((paral\\w*|парал\\w*)\\s+)?"
-      + "повт\\w*\\s+кажд\\w*\\s+(\\d+)\\s+(\\w+)\\s*"
-      + "(,\\s*начин\\w*\\s+с\\s+пауз\\w*\\s+(\\w+)\\s+(\\w+))?\\s*"
+      + "повт\\w*\\s+кажд\\w*\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
+      + "(,\\s*начин\\w*\\s+с\\s+пауз\\w*\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
     ,
     Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
@@ -87,8 +87,8 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
     // repeat every  13 minutes, after pause in 17 s
     ""
       + "\\s*((paral\\w*|парал\\w*)\\s+)?"
-      + "repeat\\s+every\\s+(\\d+)\\s+(\\w+)\\s*"
-      + "(after\\s+pause\\s+in\\s+(\\w+)\\s+(\\w+))?\\s*"
+      + "repeat\\s+every\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
+      + "(after\\s+pause\\s+in\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
     ,
     Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
@@ -114,7 +114,7 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
 
   private static long readMillis(String value, String unit) {
     if (value == null) return 0;
-    return Long.parseLong(value) * millis(unit);
+    return Math.round(Double.parseDouble(value)*millis(unit));
   }
 
   private static long millis(String unit) {

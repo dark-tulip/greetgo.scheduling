@@ -181,4 +181,32 @@ public class SchedulerMatcherRepeatTest {
     //
     //
   }
+
+  @Test
+  public void parseRus_more() throws Exception {
+    //
+    //
+    final ParseResult pr = parseRus(" повторять каждые 13.6 мин, начиная с паузы 2.3 минуты ");
+    //
+    //
+
+    assertThat(pr).isNotNull();
+    assertThat(pr.parallel).isFalse();
+    assertThat(pr.repeatingBy).isEqualTo(13600L * 60L);
+    assertThat(pr.waitingFor).isEqualTo(2300L * 60L);
+  }
+
+  @Test
+  public void parseEng_more() throws Exception {
+    //
+    //
+    final ParseResult pr = parseEng(" repeat every 13.6 minutes after pause in 2.3 minutes ");
+    //
+    //
+
+    assertThat(pr).isNotNull();
+    assertThat(pr.parallel).isFalse();
+    assertThat(pr.repeatingBy).isEqualTo(13600L * 60L);
+    assertThat(pr.waitingFor).isEqualTo(2300L * 60L);
+  }
 }
