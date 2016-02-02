@@ -6,6 +6,7 @@ import kz.greetgo.util.RND;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -47,6 +48,8 @@ public class TaskCollectorTest {
 
     assertThat(taskCollector.getTasks()).hasSize(2);
 
+    startScheduler(taskCollector.getTasks());
+
     taskCollector.getTasks().get(0).isItTimeToRun();
     taskCollector.getTasks().get(1).isItTimeToRun();
 
@@ -57,9 +60,17 @@ public class TaskCollectorTest {
 
     assertThat(taskCollector.getTasks()).hasSize(4);
 
+    startScheduler(taskCollector.getTasks());
+
     taskCollector.getTasks().get(2).isItTimeToRun();
     taskCollector.getTasks().get(3).isItTimeToRun();
 
     assertThat(new File(dir)).exists();
+  }
+
+  private void startScheduler(List<Task> tasks) {
+    for (Task task : tasks) {
+      task.schdulerStarted();
+    }
   }
 }

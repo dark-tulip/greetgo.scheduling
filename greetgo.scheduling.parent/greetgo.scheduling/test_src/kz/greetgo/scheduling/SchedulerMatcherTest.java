@@ -282,15 +282,7 @@ public class SchedulerMatcherTest {
     assertThat(matcher.isParallel()).isTrue();
   }
 
-  @Test(dataProvider = "match_parallel_variants")
-  public void match_parallel_2(String parallelVariant) throws Exception {
-    //
-    //
-    final SchedulerMatcher matcher = new SchedulerMatcher("off " + parallelVariant + " 11:30", 0L, "in test");
-    //
-    //
-    assertThat(matcher.isParallel()).isTrue();
-  }
+
 
   @Test(dataProvider = "match_parallel_variants")
   public void match_parallel_3(String parallelVariant) throws Exception {
@@ -311,19 +303,19 @@ public class SchedulerMatcherTest {
   public Object[][] match_repeat_13_17_minutes_DataSource() {
     return new Object[][]{
 
-      new Object[]{true, " повторять каждые 13 мин, начиная с паузы 17 мин"},
-      new Object[]{false, "повторять каждые 13 мин, начиная с паузы 17 мин"},
-      new Object[]{true, " repeat every 13 min, after pause in 17 minutes"},
-      new Object[]{false, "repeat every 13 minutes, after pause in 17 min"},
+      new Object[]{1, true, " повторять каждые 13 мин, начиная с паузы 17 мин"},
+      new Object[]{2, false, "повторять каждые 13 мин, начиная с паузы 17 мин"},
+      new Object[]{3, true, " repeat every 13 min after pause in 17 minutes"},
+      new Object[]{4, false, "repeat every 13 minutes after pause in 17 min"},
 
-      new Object[]{true, " repeat every 780 sec, after pause in 17 minutes"},
-      new Object[]{false, "repeat every 780 seconds, after pause in 17 min"},
+      new Object[]{5, true, " repeat every 780 sec after pause in 17 minutes"},
+      new Object[]{6, false, "repeat every 780 seconds after pause in 17 min"},
 
     };
   }
 
   @Test(dataProvider = "match_repeat_13_17_minutes_DataSource")
-  public void match_repeat_13_17_minutes(boolean parallel, String pattern) throws Exception {
+  public void match_repeat_13_17_minutes(int id, boolean parallel, String pattern) throws Exception {
     String p = parallel ? "параллельно " : "";
 
     long schedulerStartedAt = at("2014-01-01 11:10:00");
@@ -332,78 +324,78 @@ public class SchedulerMatcherTest {
 
     assertThat(matcher.isParallel()).isEqualTo(parallel);
 
-    assertOk_delay13minutesFrom1127(matcher, "2014-01-01 ");
+    assertOk_delay13minutesFrom1127(id, matcher, "2014-01-01 ");
 
     matcher.taskStartedAt(at("2014-02-02 11:00:00"));
     matcher.taskFinishedAt(at("2014-02-02 11:10:00"));
 
     if (parallel) {
-      assertOk_delay13minutesFrom1127(matcher, "2014-01-01 ");
+      assertOk_delay13minutesFrom1127(id, matcher, "2014-01-01 ");
     } else {
-      assertOk_delay13minutesFrom1127(matcher, "2014-01-02 ");
+      assertOk_delay13minutesFrom1127(id, matcher, "2014-02-02 ");
     }
 
     matcher.taskStartedAt(at("2014-02-03 11:00:00"));
 
     if (parallel) {
-      assertOk_delay13minutesFrom1127(matcher, "2014-01-01 ");
+      assertOk_delay13minutesFrom1127(id, matcher, "2014-01-01 ");
     } else {
-      assertFalse_delay13minutesFrom1127(matcher, "2014-01-03 ");
+      assertFalse_delay13minutesFrom1127(id, matcher, "2014-02-03 ");
     }
   }
 
-  private void assertOk_delay13minutesFrom1127(SchedulerMatcher matcher, String dat) throws ParseException {
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:26:55"))).isFalse();
+  private void assertOk_delay13minutesFrom1127(int id, SchedulerMatcher matcher, String dat) throws ParseException {
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:26:55"))).describedAs("id = " + id).isFalse();
 
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:27:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:40:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:53:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "12:06:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "12:19:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "12:32:01"))).isTrue();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:27:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:40:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:53:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "12:06:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "12:19:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "12:32:01"))).describedAs("id = " + id).isTrue();
 
-    assertThat(matcher.match(at(dat + "11:26:59"), at(dat + "11:27:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "11:39:59"), at(dat + "11:40:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "11:52:59"), at(dat + "11:53:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "12:05:59"), at(dat + "12:06:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "12:18:59"), at(dat + "12:19:01"))).isTrue();
-    assertThat(matcher.match(at(dat + "12:31:59"), at(dat + "12:32:01"))).isTrue();
+    assertThat(matcher.match(at(dat + "11:26:59"), at(dat + "11:27:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "11:39:59"), at(dat + "11:40:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "11:52:59"), at(dat + "11:53:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "12:05:59"), at(dat + "12:06:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "12:18:59"), at(dat + "12:19:01"))).describedAs("id = " + id).isTrue();
+    assertThat(matcher.match(at(dat + "12:31:59"), at(dat + "12:32:01"))).describedAs("id = " + id).isTrue();
 
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:26:59"))).isFalse();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:26:59"))).describedAs("id = " + id).isFalse();
 
-    assertThat(matcher.match(at(dat + "11:27:01"), at(dat + "11:39:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:40:01"), at(dat + "11:52:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:53:01"), at(dat + "12:05:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:06:01"), at(dat + "12:18:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:19:01"), at(dat + "12:31:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:32:01"), at(dat + "12:44:59"))).isFalse();
+    assertThat(matcher.match(at(dat + "11:27:01"), at(dat + "11:39:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:40:01"), at(dat + "11:52:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:53:01"), at(dat + "12:05:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:06:01"), at(dat + "12:18:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:19:01"), at(dat + "12:31:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:32:01"), at(dat + "12:44:59"))).describedAs("id = " + id).isFalse();
   }
 
-  private void assertFalse_delay13minutesFrom1127(SchedulerMatcher matcher, String dat) throws ParseException {
-    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:26:55"))).isFalse();
+  private void assertFalse_delay13minutesFrom1127(int id, SchedulerMatcher matcher, String dat) throws ParseException {
+    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:26:55"))).describedAs("id = " + id).isFalse();
 
-    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:27:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:40:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:53:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:50:00"), at(dat + "12:06:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:50:00"), at(dat + "12:19:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:50:00"), at(dat + "12:32:01"))).isFalse();
+    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:27:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:40:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:05:00"), at(dat + "11:53:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:50:00"), at(dat + "12:06:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:50:00"), at(dat + "12:19:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:50:00"), at(dat + "12:32:01"))).describedAs("id = " + id).isFalse();
 
-    assertThat(matcher.match(at(dat + "11:26:59"), at(dat + "11:27:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:39:59"), at(dat + "11:40:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:52:59"), at(dat + "11:53:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:05:59"), at(dat + "12:06:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:18:59"), at(dat + "12:19:01"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:31:59"), at(dat + "12:32:01"))).isFalse();
+    assertThat(matcher.match(at(dat + "11:26:59"), at(dat + "11:27:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:39:59"), at(dat + "11:40:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:52:59"), at(dat + "11:53:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:05:59"), at(dat + "12:06:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:18:59"), at(dat + "12:19:01"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:31:59"), at(dat + "12:32:01"))).describedAs("id = " + id).isFalse();
 
-    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:26:59"))).isFalse();
+    assertThat(matcher.match(at(dat + "10:00:00"), at(dat + "11:26:59"))).describedAs("id = " + id).isFalse();
 
-    assertThat(matcher.match(at(dat + "11:27:01"), at(dat + "11:39:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:40:01"), at(dat + "11:52:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "11:53:01"), at(dat + "12:05:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:06:01"), at(dat + "12:18:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:19:01"), at(dat + "12:31:59"))).isFalse();
-    assertThat(matcher.match(at(dat + "12:32:01"), at(dat + "12:44:59"))).isFalse();
+    assertThat(matcher.match(at(dat + "11:27:01"), at(dat + "11:39:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:40:01"), at(dat + "11:52:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "11:53:01"), at(dat + "12:05:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:06:01"), at(dat + "12:18:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:19:01"), at(dat + "12:31:59"))).describedAs("id = " + id).isFalse();
+    assertThat(matcher.match(at(dat + "12:32:01"), at(dat + "12:44:59"))).describedAs("id = " + id).isFalse();
   }
 
 
@@ -411,21 +403,21 @@ public class SchedulerMatcherTest {
   public Object[][] match_repeat_13_minutes_DataSource() {
     return new Object[][]{
 
-      new Object[]{true, " повторять каждые 13 мин"},
-      new Object[]{false, "повторять каждые 13 минут"},
-      new Object[]{true, " repeat every 13 min"},
-      new Object[]{false, "repeat every 13 minutes"},
+      new Object[]{1, true, " повторять каждые 13 мин"},
+      new Object[]{2, false, "повторять каждые 13 минут"},
+      new Object[]{3, true, " repeat every 13 min"},
+      new Object[]{4, false, "repeat every 13 minutes"},
 
-      new Object[]{true, " повторять каждые 780 сек"},
-      new Object[]{false, "повторять каждые 780 секунд"},
-      new Object[]{true, " repeat every 780 sec"},
-      new Object[]{false, "repeat every 780 seconds"},
+      new Object[]{5, true, " повторять каждые 780 сек"},
+      new Object[]{6, false, "повторять каждые 780 секунд"},
+      new Object[]{7, true, " repeat every 780 sec"},
+      new Object[]{8, false, "repeat every 780 seconds"},
 
     };
   }
 
   @Test(dataProvider = "match_repeat_13_minutes_DataSource")
-  public void match_repeat_13_minutes(boolean parallel, String pattern) throws Exception {
+  public void match_repeat_13_minutes(int id, boolean parallel, String pattern) throws Exception {
     String p = parallel ? "параллельно " : "";
 
     long schedulerStartedAt = at("2014-01-01 11:27:00");
@@ -434,23 +426,23 @@ public class SchedulerMatcherTest {
 
     assertThat(matcher.isParallel()).isEqualTo(parallel);
 
-    assertOk_delay13minutesFrom1127(matcher, "2014-01-01 ");
+    assertOk_delay13minutesFrom1127(id, matcher, "2014-01-01 ");
 
     matcher.taskStartedAt(at("2014-02-02 11:00:00"));
     matcher.taskFinishedAt(at("2014-02-02 11:27:00"));
 
     if (parallel) {
-      assertOk_delay13minutesFrom1127(matcher, "2014-01-01 ");
+      assertOk_delay13minutesFrom1127(id, matcher, "2014-01-01 ");
     } else {
-      assertOk_delay13minutesFrom1127(matcher, "2014-01-02 ");
+      assertOk_delay13minutesFrom1127(id, matcher, "2014-02-02 ");
     }
 
     matcher.taskStartedAt(at("2014-02-03 11:00:00"));
 
     if (parallel) {
-      assertOk_delay13minutesFrom1127(matcher, "2014-01-01 ");
+      assertOk_delay13minutesFrom1127(id, matcher, "2014-01-01 ");
     } else {
-      assertFalse_delay13minutesFrom1127(matcher, "2014-01-03 ");
+      assertFalse_delay13minutesFrom1127(id, matcher, "2014-02-03 ");
     }
   }
 

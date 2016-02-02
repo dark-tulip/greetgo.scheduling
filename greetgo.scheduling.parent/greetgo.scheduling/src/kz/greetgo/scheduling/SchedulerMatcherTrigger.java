@@ -104,7 +104,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   private String pattern, place;
 
-  private Long schedulerStartedAt = null;
+  private long schedulerStartedAt = 0;
 
   private void createMatcher() throws Exception {
     readPatternAndPlace();

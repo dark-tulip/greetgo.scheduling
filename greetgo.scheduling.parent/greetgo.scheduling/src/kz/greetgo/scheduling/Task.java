@@ -8,6 +8,10 @@ public class Task {
   private final ThrowableCatcher throwableCatcher;
 
   public Task(String poolName, Job job, Trigger trigger, ThrowableCatcher throwableCatcher) {
+    if (job == null) throw new IllegalArgumentException("job == null");
+    if (trigger == null) throw new IllegalArgumentException("trigger == null");
+    if (poolName == null) throw new IllegalArgumentException("poolName == null");
+    if (throwableCatcher == null) throw new IllegalArgumentException("throwableCatcher == null");
     this.poolName = poolName;
     this.job = job;
     this.trigger = trigger;
@@ -45,7 +49,7 @@ public class Task {
     return trigger.isItTimeToRun();
   }
 
-  public void start() {
+  public void schdulerStarted() {
     trigger.schedulerIsStartedJustNow();
   }
 
