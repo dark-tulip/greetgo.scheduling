@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 public class SchedulerMatcher {
   private final String pattern;
   private final String place;
+  private final long schedulerStartedAt;
 
   private boolean months[] = null;
   private boolean daysOfMonth[] = null;
@@ -20,12 +21,23 @@ public class SchedulerMatcher {
 
   public boolean parallel = false;
 
-  public SchedulerMatcher(String pattern, String place) {
+  public SchedulerMatcher(String pattern, long schedulerStartedAt, String place) {
+    this.schedulerStartedAt = schedulerStartedAt;
     if (pattern == null) throw new LeftSchedulerPattern("null pattern", null, place);
 
     this.pattern = pattern;
     this.place = place;
 
+    parsePattern();
+  }
+
+  private void parsePattern() {
+    if (parseRepeatPatternForm()) return;
+    parseCalendarPatternForm();
+  }
+
+
+  private void parseCalendarPatternForm() {
     boolean absent = true;
     for (String part : pattern.trim().split("\\s+")) {
       parsePatternPart(part);
@@ -390,4 +402,15 @@ public class SchedulerMatcher {
     }
   }
 
+  public void taskStartedAt(long taskStartedAt) {
+
+  }
+
+  public void taskFinishedAt(long taskFinishedAt) {
+
+  }
+
+  private boolean parseRepeatPatternForm() {
+    return false;
+  }
 }

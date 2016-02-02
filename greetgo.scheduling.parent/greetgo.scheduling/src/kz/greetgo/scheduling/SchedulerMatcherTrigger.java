@@ -24,7 +24,6 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   public final Job job;
 
-  @SuppressWarnings("unused")
   public static SchedulerMatcherTrigger create(final Method method, final Object controller, File configFile) {
 
     if (method.getAnnotation(Scheduled.class) == null) return null;
@@ -105,12 +104,28 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   private String pattern, place;
 
+  private Long schedulerStartedAt = null;
+
   private void createMatcher() throws Exception {
     readPatternAndPlace();
 
-    matcher = new SchedulerMatcher(pattern, place);
+    matcher = new SchedulerMatcher(pattern, schedulerStartedAt, place);
   }
 
+  @Override
+  public void schedulerIsStartedJustNow() {
+    schedulerStartedAt = now();
+  }
+
+  @Override
+  public void jobIsGoingToStart() {
+    if (matcher != null) matcher.taskStartedAt(now());
+  }
+
+  @Override
+  public void jobHasFinishedJustNow() {
+    if (matcher != null) matcher.taskFinishedAt(now());
+  }
 
   private void readPatternAndPlace() throws Exception {
     if (fromConfigDescription == null) {
@@ -146,17 +161,14 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     if (!configFile.exists()) dummyCheck(configFile.getParentFile().mkdirs());
 
     try (final PrintStream out = new PrintStream(new FileOutputStream(configFile, true), false, "UTF-8")) {
-
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
       out.println();
-      out.println("# Added at " + sdf.format(new Date()));
+      out.println("# (added at " + sdf.format(new Date()) + ")");
       for (String line : fromConfigDescription.split("\n")) {
         out.println("# " + line);
       }
-
       out.println(configKeyName + "=" + pattern);
     }
-
 
   }
 }
