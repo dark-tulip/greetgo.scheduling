@@ -114,7 +114,7 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
 
   private static long readMillis(String value, String unit) {
     if (value == null) return 0;
-    return Math.round(Double.parseDouble(value)*millis(unit));
+    return Math.round(Double.parseDouble(value) * millis(unit));
   }
 
   private static long millis(String unit) {

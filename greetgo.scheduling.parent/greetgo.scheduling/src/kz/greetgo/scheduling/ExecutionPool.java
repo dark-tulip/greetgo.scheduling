@@ -1,8 +1,6 @@
 package kz.greetgo.scheduling;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ExecutionPool {
 
@@ -72,6 +70,21 @@ public class ExecutionPool {
   public void deactivate() {
     for (Executor executor : executorList) {
       executor.stopThread();
+    }
+  }
+
+  public static Map<String, ExecutionPool> poolsForTasks(List<Task> tasks) {
+    Set<String> poolNames = new HashSet<>();
+    for (Task task : tasks) {
+      poolNames.add(task.getPoolName());
+    }
+
+    {
+      Map<String, ExecutionPool> ret = new HashMap<>();
+      for (String poolName : poolNames) {
+        ret.put(poolName, new ExecutionPool());
+      }
+      return ret;
     }
   }
 }

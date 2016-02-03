@@ -1,10 +1,7 @@
 package kz.greetgo.scheduling;
 
 import kz.greetgo.conf.ConfData;
-import kz.greetgo.scheduling.annotations.FromConfig;
-import kz.greetgo.scheduling.annotations.Scheduled;
 import kz.greetgo.util.RND;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package kz.greetgo.scheduling.annotations;
+package kz.greetgo.scheduling;
 
 import java.lang.annotation.*;
 

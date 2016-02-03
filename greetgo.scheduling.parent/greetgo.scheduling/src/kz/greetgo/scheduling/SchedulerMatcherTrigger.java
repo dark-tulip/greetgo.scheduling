@@ -1,8 +1,6 @@
 package kz.greetgo.scheduling;
 
 import kz.greetgo.conf.ConfData;
-import kz.greetgo.scheduling.annotations.FromConfig;
-import kz.greetgo.scheduling.annotations.Scheduled;
 
 import java.io.File;
 import java.io.FileOutputStream;

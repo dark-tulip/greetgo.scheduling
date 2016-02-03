@@ -4,6 +4,8 @@ import java.util.*;
 
 public class Scheduler {
 
+  public long idleSleepTime = 200;
+
   private final Map<String, ExecutionPool> pools = new HashMap<>();
   private final Set<Task> tasks = new HashSet<>();
 
@@ -73,7 +75,7 @@ public class Scheduler {
 
         synchronized (sync) {
           try {
-            sync.wait(200);
+            sync.wait(idleSleepTime);
           } catch (InterruptedException e) {
             return;
           }

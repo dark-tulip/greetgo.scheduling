@@ -1,7 +1,5 @@
 package kz.greetgo.scheduling;
 
-import kz.greetgo.scheduling.annotations.UsePool;
-
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
