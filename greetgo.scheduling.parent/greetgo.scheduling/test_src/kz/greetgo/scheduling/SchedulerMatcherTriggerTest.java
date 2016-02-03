@@ -29,6 +29,13 @@ public class SchedulerMatcherTriggerTest {
     protected long now() {
       return now;
     }
+
+    long returnValueInGetLastModifiedOf = 0;
+
+    @Override
+    protected long getLastModifiedOf(File file) {
+      return returnValueInGetLastModifiedOf;
+    }
   }
 
   static class TestControllerNoConfig {
@@ -182,10 +189,12 @@ public class SchedulerMatcherTriggerTest {
 
   }
 
-  private static void setLineToFile(File configFile, String line) throws Exception {
+  private static void setLineToFile(MySchedulerMatcherTrigger t, File configFile, String line) throws Exception {
     try (final PrintStream out = new PrintStream(configFile, "UTF-8")) {
       out.println(line);
     }
+
+    t.returnValueInGetLastModifiedOf++;
   }
 
   private static class TestExceptionCatcher implements ExceptionCatcher {
@@ -218,8 +227,6 @@ public class SchedulerMatcherTriggerTest {
 
     File errorFile = new File(configFile.getPath() + ".error");
 
-    setLineToFile(configFile, "forTest=абра кадабра всякая");
-
     TestExceptionCatcher tec = new TestExceptionCatcher();
 
     ForTestProcessingOfPatternFormatErrorsFromFile controller = new ForTestProcessingOfPatternFormatErrorsFromFile();
@@ -227,6 +234,8 @@ public class SchedulerMatcherTriggerTest {
     final MySchedulerMatcherTrigger t = new MySchedulerMatcherTrigger(method, controller, configFile);
     t.exceptionCatcher = tec;
     t.now = at("2015-02-01 11:00:00");
+
+    setLineToFile(t, configFile, "forTest=абра кадабра всякая");
 
     t.reset();
     t.isItTimeToRun();
@@ -246,16 +255,16 @@ public class SchedulerMatcherTriggerTest {
     assertThat(tec.caughtExceptions).as("Система должна понять, что файл не менялся," +
       " и поэтому второй раз exception кидаться не должен").isEmpty();
 
-    setLineToFile(configFile, "forTest=абра кадабра всякая, но уже другая");
+    setLineToFile(t, configFile, "forTest=абра кадабра всякая, но уже другая");
 
     t.isItTimeToRun();
 
-    assertThat(errorFile).as("Так как файл конфига поменялся, то ошибка должна вылететь").exists();
+    assertThat(errorFile).as("Так как файл конфига поменялся, то ошибка вылететь обязана").exists();
 
     assertThat(tec.caughtExceptions).hasSize(1);
     tec.clean();
 
-    setLineToFile(configFile, "forTest=13:00");
+    setLineToFile(t, configFile, "forTest=13:00");
 
     t.isItTimeToRun();
 
@@ -263,7 +272,7 @@ public class SchedulerMatcherTriggerTest {
 
     assertThat(tec.caughtExceptions).isEmpty();
 
-    setLineToFile(configFile, "forTest=14:00");
+    setLineToFile(t, configFile, "forTest=14:00");
 
     t.isItTimeToRun();
 

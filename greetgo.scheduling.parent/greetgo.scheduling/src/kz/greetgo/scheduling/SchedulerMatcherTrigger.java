@@ -2,9 +2,7 @@ package kz.greetgo.scheduling;
 
 import kz.greetgo.conf.ConfData;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -14,7 +12,7 @@ import static kz.greetgo.util.ServerUtil.dummyCheck;
 
 public class SchedulerMatcherTrigger extends AbstractTrigger {
 
-  private final File configFile;
+  private final File configFile, errorFile;
   private String initialSchedulerPattern, initialSchedulerPlace;
   private String fromConfigDescription = null;
 
@@ -37,6 +35,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   protected SchedulerMatcherTrigger(final Method method, final Object controller, File configFile) {
     this.configFile = configFile;
+    errorFile = new File(configFile.getPath() + ".error");
     configKeyName = method.getName();
 
     job = new Job() {
@@ -82,15 +81,21 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   public void reset() {
     matcher = null;
-    lastCheckTime = 0;
+    checkErrorFileToDelete = true;
   }
 
   protected long now() {
     return System.currentTimeMillis();
   }
 
+  private boolean alwaysReturnFalse = false;
+
+  private boolean checkErrorFileToDelete = false;
+
   @Override
   public boolean isItTimeToRun() {
+    if (alwaysReturnFalse) return false;
+
     if (matcher == null) try {
       createMatcher();
     } catch (Exception e) {
@@ -98,6 +103,11 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     }
 
     if (matcher == null) return false;
+
+    if (checkErrorFileToDelete && !noConfigFile()) {
+      dummyCheck(errorFile.delete());
+      checkErrorFileToDelete = false;
+    }
 
     final long now = now();
 
@@ -112,10 +122,51 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   private long schedulerStartedAt = 0;
 
+  private long configFileLastModified = 0;
+
+  protected long getLastModifiedOf(File file) {
+    return file.lastModified();
+  }
+
   private void createMatcher() throws Exception {
     readPatternAndPlace();
 
-    matcher = new SchedulerMatcher(pattern, schedulerStartedAt, place);
+    try {
+      matcher = new SchedulerMatcher(pattern, schedulerStartedAt, place);
+    } catch (LeftSchedulerPattern e) {
+
+      if (noConfigFile()) {
+        alwaysReturnFalse = true;
+        catchException(e);
+        return;
+      }
+      final long lastModified = getLastModifiedOf(configFile);
+      if (lastModified > 0 && lastModified != configFileLastModified) {
+        configFileLastModified = lastModified;
+        writeToErrorFile(e);
+        catchException(e);
+      }
+    }
+  }
+
+  private void catchException(LeftSchedulerPattern e) {
+    if (exceptionCatcher != null) {
+      exceptionCatcher.catchException(e);
+    } else {
+      e.printStackTrace();
+    }
+  }
+
+  private void writeToErrorFile(LeftSchedulerPattern e) {
+    try (final PrintStream out = new PrintStream(errorFile, "UTF-8")) {
+      out.println("error message: " + e.message);
+      out.println("pattern: " + e.pattern);
+      out.println("place: " + e.place);
+      out.println();
+      e.printStackTrace(out);
+    } catch (FileNotFoundException | UnsupportedEncodingException err) {
+      throw new RuntimeException(err);
+    }
   }
 
   @Override
@@ -133,12 +184,12 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     if (matcher != null) matcher.taskFinishedAt(now());
   }
 
-  private boolean useConfigFile() {
+  private boolean noConfigFile() {
     return fromConfigDescription == null;
   }
 
   private void readPatternAndPlace() throws Exception {
-    if (useConfigFile()) {
+    if (noConfigFile()) {
       pattern = initialSchedulerPattern;
       place = initialSchedulerPlace;
       return;
