@@ -9,6 +9,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import static kz.greetgo.util.ServerUtil.dummyCheck;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -179,5 +181,146 @@ public class SchedulerMatcherTriggerTest {
     //
 
   }
+
+  private static void setLineToFile(File configFile, String line) throws Exception {
+    try (final PrintStream out = new PrintStream(configFile, "UTF-8")) {
+      out.println(line);
+    }
+  }
+
+  private static class TestExceptionCatcher implements ExceptionCatcher {
+
+    final List<Exception> caughtExceptions = new ArrayList<>();
+
+    @Override
+    public void catchException(Exception e) {
+      caughtExceptions.add(e);
+    }
+
+    void clean() {
+      caughtExceptions.clear();
+    }
+  }
+
+  static class ForTestProcessingOfPatternFormatErrorsFromFile {
+    @Scheduled("13:00")
+    @FromConfig("описание")
+    @SuppressWarnings("unused")
+    public void forTest() {
+    }
+  }
+
+  @Test
+  public void testProcessingOfPatternFormatErrorsFromFile() throws Exception {
+    File configFile = new File(WORK_DIR + "testProcessingOfPatternFormatErrorsFromFile"
+      + "_" + RND.intStr(5) + ".config.txt");
+    dummyCheck(configFile.getParentFile().mkdirs());
+
+    File errorFile = new File(configFile.getPath() + ".error");
+
+    setLineToFile(configFile, "forTest=абра кадабра всякая");
+
+    TestExceptionCatcher tec = new TestExceptionCatcher();
+
+    ForTestProcessingOfPatternFormatErrorsFromFile controller = new ForTestProcessingOfPatternFormatErrorsFromFile();
+    final Method method = controller.getClass().getMethod("forTest");
+    final MySchedulerMatcherTrigger t = new MySchedulerMatcherTrigger(method, controller, configFile);
+    t.exceptionCatcher = tec;
+    t.now = at("2015-02-01 11:00:00");
+
+    t.reset();
+    t.isItTimeToRun();
+
+    assertThat(errorFile).exists();
+
+    dummyCheck(errorFile.delete());
+
+    assertThat(tec.caughtExceptions).hasSize(1);
+    tec.clean();
+
+    t.isItTimeToRun();
+
+    assertThat(errorFile).as("Система должна понять, что файл не менялся," +
+      " и поэтому второй раз файл ошибки создаваться не должен").doesNotExist();
+
+    assertThat(tec.caughtExceptions).as("Система должна понять, что файл не менялся," +
+      " и поэтому второй раз exception кидаться не должен").isEmpty();
+
+    setLineToFile(configFile, "forTest=абра кадабра всякая, но уже другая");
+
+    t.isItTimeToRun();
+
+    assertThat(errorFile).as("Так как файл конфига поменялся, то ошибка должна вылететь").exists();
+
+    assertThat(tec.caughtExceptions).hasSize(1);
+    tec.clean();
+
+    setLineToFile(configFile, "forTest=13:00");
+
+    t.isItTimeToRun();
+
+    assertThat(errorFile).as("Конфиг стал без ошибки и файл с ошибкой должен быть удалён").doesNotExist();
+
+    assertThat(tec.caughtExceptions).isEmpty();
+
+    setLineToFile(configFile, "forTest=14:00");
+
+    t.isItTimeToRun();
+
+    assertThat(errorFile).as("Ну так! на всякий случай").doesNotExist();
+
+    assertThat(tec.caughtExceptions).isEmpty();
+
+    dummyCheck(configFile.delete());//подчистим за собой
+  }
+
+  static class ForTestProcessingOfPatternFormatErrorsNoFile {
+    @Scheduled("абра кадабра всякая")
+    @SuppressWarnings("unused")
+    public void forTest() {
+    }
+  }
+
+  @Test
+  public void testProcessingOfPatternFormatErrorsNoFile() throws Exception {
+    File configFile = new File(WORK_DIR + "testProcessingOfPatternFormatErrorsNoFile"
+      + "_" + RND.intStr(5) + ".config.txt");
+
+    File errorFile = new File(configFile.getPath() + ".error");
+
+    TestExceptionCatcher tec = new TestExceptionCatcher();
+
+    ForTestProcessingOfPatternFormatErrorsNoFile controller = new ForTestProcessingOfPatternFormatErrorsNoFile();
+    final Method method = controller.getClass().getMethod("forTest");
+    final MySchedulerMatcherTrigger t = new MySchedulerMatcherTrigger(method, controller, configFile);
+    t.exceptionCatcher = tec;
+    t.now = at("2015-02-01 11:00:00");
+
+    t.reset();
+    t.isItTimeToRun();
+
+    assertFilesDoNotExist(configFile, errorFile);
+
+    assertThat(tec.caughtExceptions).hasSize(1);
+    tec.clean();
+
+    t.isItTimeToRun();
+
+    assertFilesDoNotExist(configFile, errorFile);
+
+    assertThat(tec.caughtExceptions).as("Нужно выкидывать ошибку только один раз").isEmpty();
+
+  }
+
+  private void assertFilesDoNotExist(File configFile, File errorFile) {
+    assertThat(errorFile)
+      .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
+      .doesNotExist();
+
+    assertThat(configFile)
+      .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
+      .doesNotExist();
+  }
+
 
 }

@@ -23,7 +23,7 @@ public class SchedulerMatcher {
       if (smd != null) return smd;
     }
 
-    return new SchedulerMatcherCalendar(pattern, schedulerStartedAt, place);
+    return new SchedulerMatcherCalendar(pattern, place);
   }
 
   public boolean match(long lastCheckTime, long now) {

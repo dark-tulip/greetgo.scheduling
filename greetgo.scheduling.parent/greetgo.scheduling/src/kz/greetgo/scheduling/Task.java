@@ -49,7 +49,7 @@ public class Task {
     return trigger.isItTimeToRun();
   }
 
-  public void schdulerStarted() {
+  public void schedulerStarted() {
     trigger.schedulerIsStartedJustNow();
   }
 

@@ -66,7 +66,7 @@ public class Scheduler {
     public void run() {
 
       for (Task task : tasks) {
-        task.schdulerStarted();
+        task.schedulerStarted();
       }
 
       while (active) {

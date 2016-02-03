@@ -21,6 +21,12 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   private final String configKeyName;
 
   public final Job job;
+  public ExceptionCatcher exceptionCatcher = new ExceptionCatcher() {
+    @Override
+    public void catchException(Exception e) {
+      e.printStackTrace();
+    }
+  };
 
   public static SchedulerMatcherTrigger create(final Method method, final Object controller, File configFile) {
 
@@ -91,6 +97,8 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
       throw new RuntimeException(e);
     }
 
+    if (matcher == null) return false;
+
     final long now = now();
 
     {
@@ -125,8 +133,12 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     if (matcher != null) matcher.taskFinishedAt(now());
   }
 
+  private boolean useConfigFile() {
+    return fromConfigDescription == null;
+  }
+
   private void readPatternAndPlace() throws Exception {
-    if (fromConfigDescription == null) {
+    if (useConfigFile()) {
       pattern = initialSchedulerPattern;
       place = initialSchedulerPlace;
       return;

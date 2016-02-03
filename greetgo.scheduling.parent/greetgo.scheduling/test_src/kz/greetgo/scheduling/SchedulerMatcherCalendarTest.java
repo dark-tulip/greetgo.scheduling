@@ -4,7 +4,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.testng.Assert.*;
 
 public class SchedulerMatcherCalendarTest {
 

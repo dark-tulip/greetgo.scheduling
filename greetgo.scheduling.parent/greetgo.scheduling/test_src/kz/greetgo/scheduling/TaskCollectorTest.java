@@ -88,7 +88,7 @@ public class TaskCollectorTest {
 
   private void startScheduler(List<Task> tasks) {
     for (Task task : tasks) {
-      task.schdulerStarted();
+      task.schedulerStarted();
     }
   }
 

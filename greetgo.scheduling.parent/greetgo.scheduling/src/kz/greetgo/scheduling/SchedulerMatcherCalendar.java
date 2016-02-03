@@ -20,7 +20,7 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
 
   private boolean parallel = false;
 
-  public SchedulerMatcherCalendar(String pattern, long schedulerStartedAt, String place) {
+  public SchedulerMatcherCalendar(String pattern, String place) {
     if (pattern == null) throw new LeftSchedulerPattern("null pattern", null, place);
 
     this.pattern = pattern;
