@@ -87,7 +87,7 @@ public class Scheduler {
 
   private boolean started = false;
 
-  public void start(String schedulerMainThreadName) {
+  public void startup(String schedulerMainThreadName) {
     markAsStarted();
 
     final Thread thread = new Thread(runner);
@@ -104,8 +104,8 @@ public class Scheduler {
     started = true;
   }
 
-  public void start() {
-    start("MAIN_SCHEDULER");
+  public void startup() {
+    startup("MAIN_SCHEDULER");
   }
 
   private final Object sync = new Object();
@@ -122,7 +122,7 @@ public class Scheduler {
     }
   }
 
-  public void startInMyThread() {
+  public void startupInMyThread() {
     markAsStarted();
     runner.run();
   }

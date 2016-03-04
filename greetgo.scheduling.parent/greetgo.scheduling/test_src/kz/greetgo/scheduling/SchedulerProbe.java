@@ -125,10 +125,10 @@ public class SchedulerProbe {
     final Scheduler scheduler = new Scheduler(tasks, pools);
 
     if (inMainThread) {
-      scheduler.startInMyThread();
+      scheduler.startupInMyThread();
       return;
     }
-    scheduler.start();
+    scheduler.startup();
 
     System.out.println(pre() + "SCHEDULER STARTED");
 

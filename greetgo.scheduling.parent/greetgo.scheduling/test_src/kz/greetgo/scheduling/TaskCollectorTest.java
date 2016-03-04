@@ -65,7 +65,7 @@ public class TaskCollectorTest {
     Scheduler scheduler = new Scheduler(taskCollector.getTasks(), poolsForTasks(taskCollector.getTasks()));
     scheduler.idleSleepTime = 2;
 
-    scheduler.start("TASK_COLLECTOR_TEST");
+    scheduler.startup("TASK_COLLECTOR_TEST");
 
     //Thread.sleep(16 * 1000 + 500);
     for (int i = 1; i <= 12; i++) {
