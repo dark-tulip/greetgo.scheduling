@@ -7,9 +7,10 @@ public class FullSchedulerProbe {
 
   public static class SomeScheduler {
 
-    @Scheduled("09:38")
+    @Scheduled("09:47")
     public void asd() {
       System.out.println("Hello from asd");
+      throw new RuntimeException("asd");
     }
 
   }
@@ -19,6 +20,12 @@ public class FullSchedulerProbe {
     SomeScheduler ss = new SomeScheduler();
 
     TaskCollector taskCollector = new TaskCollector("build/scheduler");
+    taskCollector.throwableCatcher = new ThrowableCatcher() {
+      @Override
+      public void catchThrowable(Throwable throwable) {
+        System.out.println("Wow " + throwable);
+      }
+    };
     taskCollector.collect(ss);
 
     List<Task> tasks = taskCollector.getTasks();
