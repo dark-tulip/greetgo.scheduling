@@ -56,14 +56,14 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
       if (annotation instanceof Scheduled) {
         initialSchedulerPattern = ((Scheduled) annotation).value();
         initialSchedulerPlace = "@" + Scheduled.class.getSimpleName() + " "
-          + controller.getClass().getSimpleName() + "." + method.getName();
+            + controller.getClass().getSimpleName() + "." + method.getName();
         continue;
       }
       if (annotation instanceof FromConfig) {
         fromConfigDescription = ((FromConfig) annotation).value().trim();
         if (fromConfigDescription.length() == 0) {
           throw new SchedulerException("No description: Description must be in " + FromConfig.class.getSimpleName()
-            + ".value() of " + controller.getClass().getSimpleName() + "." + method.getName());
+              + ".value() of " + controller.getClass().getSimpleName() + "." + method.getName());
         }
         //noinspection UnnecessaryContinue
         continue;
@@ -72,12 +72,12 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
     if (initialSchedulerPattern == null) {
       throw new IllegalArgumentException("No annotation " + Scheduled.class.getSimpleName()
-        + " in method " + method.toGenericString());
+          + " in method " + method.toGenericString());
     }
   }
 
-  private SchedulerMatcher matcher = null;
-  private long lastCheckTime = 0;
+  private volatile SchedulerMatcher matcher = null;
+  private volatile long lastCheckTime = 0;
 
   public void reset() {
     matcher = null;
@@ -182,6 +182,11 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   @Override
   public void jobHasFinishedJustNow() {
     if (matcher != null) matcher.taskFinishedAt(now());
+  }
+
+  @Override
+  public void markThatInExecutionQueue() {
+    if (matcher != null) matcher.taskFellInExecutionQueueAt(now());
   }
 
   private boolean noConfigFile() {

@@ -13,4 +13,6 @@ public interface Trigger {
   boolean disabled();
 
   boolean mayParallel();
+
+  void markThatInExecutionQueue();
 }

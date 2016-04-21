@@ -56,4 +56,13 @@ public class Task {
   public boolean disabled() {
     return trigger.disabled();
   }
+
+  @Override
+  public String toString() {
+    return infoForError() + " " + trigger;
+  }
+
+  public void markThatInExecutionQueue() {
+    trigger.markThatInExecutionQueue();
+  }
 }

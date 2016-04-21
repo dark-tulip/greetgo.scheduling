@@ -10,8 +10,8 @@ public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
   }
 
   private static final Pattern DIS = Pattern.compile(
-    "\\s*(выкл\\w+|откл\\w*|off)\\s+.*",
-    Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
+      "\\s*(выкл\\w+|откл\\w*|off)\\s+.*",
+      Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
 
   static boolean isDisabled(String pattern) {
@@ -34,5 +34,9 @@ public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
 
   @Override
   public void taskFinishedAt(long taskFinishedAt) {
+  }
+
+  @Override
+  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
   }
 }

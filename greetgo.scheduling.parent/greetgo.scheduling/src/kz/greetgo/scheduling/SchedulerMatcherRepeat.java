@@ -31,24 +31,39 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
     return null;
   }
 
+  @Override
+  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
+    taskStartedAt = taskFellInExecutionQueueAt;
+  }
+
+  private boolean working() {
+    return taskStartedAt != null && taskFinishedAt == null;
+  }
+
+  private long lastNowOnReturnTrue = 0;
 
   @Override
   public boolean match(long lastCheckTime, long now) {
-    if (!parseResult.parallel && taskStartedAt != null && taskFinishedAt == null) return false;
+    if (!parseResult.parallel && working()) return false;
 
-    long from = getBegin() + parseResult.waitingFor;
+    long pause = parseResult.repeatingBy;
+    if (lastNowOnReturnTrue == 0) pause = parseResult.waitingFor;
 
-    if (now < from) return false;
+    long timeToStart = getBegin() + pause;
 
-    final long left = from + ((now - from) / parseResult.repeatingBy) * parseResult.repeatingBy;
+    if (now <= timeToStart) return false;
 
-    return lastCheckTime < left;
+    lastNowOnReturnTrue = now;
+
+    return true;
   }
 
   private long getBegin() {
-    if (parseResult.parallel) return schedulerStartedAt;
-    if (taskFinishedAt != null) return taskFinishedAt;
-    return schedulerStartedAt;
+    long begins = schedulerStartedAt;
+    if (begins < lastNowOnReturnTrue) begins = lastNowOnReturnTrue;
+    if (parseResult.parallel) return begins;
+    if (taskFinishedAt != null) return begins > taskFinishedAt ? begins : taskFinishedAt;
+    return begins;
   }
 
   @Override
@@ -70,13 +85,13 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   }
 
   private static final Pattern RUS = Pattern.compile(
-    // повторять каждые 13 мин, начиная с паузы 17 мин
-    ""
-      + "\\s*((paral\\w*|парал\\w*)\\s+)?"
-      + "повт\\w*\\s+кажд\\w*\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
-      + "(,\\s*начин\\w*\\s+с\\s+пауз\\w*\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
-    ,
-    Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
+      // повторять каждые 13 мин, начиная с паузы 17 мин
+      ""
+          + "\\s*((paral\\w*|парал\\w*)\\s+)?"
+          + "повт\\w*\\s+кажд\\w*\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
+          + "(,\\s*начин\\w*\\s+с\\s+пауз\\w*\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
+      ,
+      Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
 
   static ParseResult parseRus(String pattern) {
@@ -84,13 +99,13 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   }
 
   private static final Pattern ENG = Pattern.compile(
-    // repeat every  13 minutes, after pause in 17 s
-    ""
-      + "\\s*((paral\\w*|парал\\w*)\\s+)?"
-      + "repeat\\s+every\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
-      + "(after\\s+pause\\s+in\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
-    ,
-    Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
+      // repeat every  13 minutes, after pause in 17 s
+      ""
+          + "\\s*((paral\\w*|парал\\w*)\\s+)?"
+          + "repeat\\s+every\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
+          + "(after\\s+pause\\s+in\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
+      ,
+      Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
 
   static ParseResult parseEng(String pattern) {

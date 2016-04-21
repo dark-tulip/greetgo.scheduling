@@ -8,4 +8,6 @@ public interface SchedulerMatcherDelegate {
   void taskStartedAt(long taskStartedAt);
 
   void taskFinishedAt(long taskFinishedAt);
+
+  void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt);
 }

@@ -41,4 +41,8 @@ public class SchedulerMatcher {
   public void taskFinishedAt(long taskFinishedAt) {
     delegate.taskFinishedAt(taskFinishedAt);
   }
+
+  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
+    delegate.taskFellInExecutionQueueAt(taskFellInExecutionQueueAt);
+  }
 }

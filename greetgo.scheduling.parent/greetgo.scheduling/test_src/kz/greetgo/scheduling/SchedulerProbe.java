@@ -32,12 +32,10 @@ public class SchedulerProbe {
 
     @Override
     public void jobIsGoingToStart() {
-
     }
 
     @Override
     public void jobHasFinishedJustNow() {
-
     }
 
     @Override
@@ -48,6 +46,10 @@ public class SchedulerProbe {
     @Override
     public boolean mayParallel() {
       return false;
+    }
+
+    @Override
+    public void markThatInExecutionQueue() {
     }
   }
 

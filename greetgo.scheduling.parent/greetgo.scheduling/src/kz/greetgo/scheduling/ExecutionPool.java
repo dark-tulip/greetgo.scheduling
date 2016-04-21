@@ -27,6 +27,7 @@ public class ExecutionPool {
     }
 
     queue.addLast(task);
+    task.markThatInExecutionQueue();
   }
 
   public void tryExecuteFromQueue() {

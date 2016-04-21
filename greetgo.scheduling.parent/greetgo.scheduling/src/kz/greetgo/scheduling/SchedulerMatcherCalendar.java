@@ -51,6 +51,11 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
   }
 
   @Override
+  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
+    //nothing to do
+  }
+
+  @Override
   public boolean match(long prevMatch, long now) {
     {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
