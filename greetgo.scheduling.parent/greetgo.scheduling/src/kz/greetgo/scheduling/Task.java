@@ -73,4 +73,8 @@ public class Task {
   public boolean isTriggerResettable() {
     return trigger.isResettable();
   }
+  
+  public void ping() {
+    trigger.isItTimeToRun();
+  }
 }
