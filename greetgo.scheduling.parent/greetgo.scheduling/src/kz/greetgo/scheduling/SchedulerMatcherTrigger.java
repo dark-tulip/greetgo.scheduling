@@ -99,7 +99,9 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
       throw new RuntimeException(e);
     }
 
-    if (matcher == null) return false;
+    SchedulerMatcher localMatcher = this.matcher;
+
+    if (localMatcher == null) return false;
 
     if (checkErrorFileToDelete && isResettable()) {
       schedulerContext.configError().delete();
@@ -109,7 +111,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     final long now = now();
 
     {
-      final boolean ret = matcher.match(lastCheckTime, now);
+      final boolean ret = localMatcher.match(lastCheckTime, now);
       lastCheckTime = now;
       return ret;
     }
