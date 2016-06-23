@@ -1,20 +1,20 @@
 package kz.greetgo.scheduling;
 
 /**
- * Интерфейс задачи
+ * Job of task
  */
 public interface Job {
   /**
-   * Выполняет работу
+   * Making job
    *
-   * @throws Throwable выбрасывается, если задача завершилась с ошибкой
+   * @throws Throwable throws if task completes with error
    */
   void doWork() throws Throwable;
 
   /**
-   * Должен возвращать информацию о таске, чтобы понятно было где она создана. Используется в сообщениях об ошибках
+   * Returns task information to understand what this task is and where it placed is. It is used in error messages.
    *
-   * @return информация о таске
+   * @return Task information
    */
   String infoForError();
 }

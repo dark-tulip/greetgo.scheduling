@@ -101,7 +101,7 @@ import java.lang.annotation.*;
  * ожидание времени NN1 и запуск. И так далее до остановки щедулера.
  * </p>
  * <p>
- * Примеры:
+ * Примеры: (Ниже переводить не нужно)
  * <br><b>repeat every 13 min after pause in 17 sec</b>
  * <br>
  * <br><b>parallel repeat every 13 sec after pause in 17 min</b>

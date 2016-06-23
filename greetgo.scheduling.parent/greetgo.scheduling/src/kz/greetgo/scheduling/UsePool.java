@@ -3,14 +3,14 @@ package kz.greetgo.scheduling;
 import java.lang.annotation.*;
 
 /**
- * Указывает какой пул нужно использовать для запуска задач у этого класса
+ * Specifies pool name to use for running of tasks
  */
 @Documented
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UsePool {
   /**
-   * Название используемого пула
+   * Using pool name
    */
   String value();
 }

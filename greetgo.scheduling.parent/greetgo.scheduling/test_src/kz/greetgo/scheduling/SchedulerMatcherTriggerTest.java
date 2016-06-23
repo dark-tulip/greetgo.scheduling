@@ -39,7 +39,6 @@ public class SchedulerMatcherTriggerTest {
   }
 
   static class TestControllerNoConfig {
-
     boolean forTestWasCalled = false;
 
     @Scheduled("13:00")
@@ -47,7 +46,6 @@ public class SchedulerMatcherTriggerTest {
     public void forTest() {
       forTestWasCalled = true;
     }
-
   }
 
   @Test
@@ -57,7 +55,7 @@ public class SchedulerMatcherTriggerTest {
     final Method method = controller.getClass().getMethod("forTest");
 
     final MySchedulerMatcherTrigger t
-      = new MySchedulerMatcherTrigger(method, controller, new File(WORK_DIR + "leftFile"));
+        = new MySchedulerMatcherTrigger(method, controller, new File(WORK_DIR + "leftFile"));
 
     t.now = at("2015-02-01 11:00:00");
 
@@ -119,7 +117,7 @@ public class SchedulerMatcherTriggerTest {
   public void reset_isItTimeToRun_withConfig_checkFileCreating() throws Exception {
 
     File configFile = new File(WORK_DIR + "reset_isItTimeToRun_withConfig_checkFileCreating"
-      + "_" + RND.intStr(5) + ".config.txt");
+        + "_" + RND.intStr(5) + ".config.txt");
 
     final TestControllerWithConfig controller = new TestControllerWithConfig();
     final Method method = controller.getClass().getMethod("forTest");
@@ -148,7 +146,7 @@ public class SchedulerMatcherTriggerTest {
   public void reset_isItTimeToRun_withConfig_checkFileReading() throws Exception {
 
     File configFile = new File(WORK_DIR + "reset_isItTimeToRun_withConfig_checkFileReading"
-      + "_" + RND.intStr(5) + ".config.txt");
+        + "_" + RND.intStr(5) + ".config.txt");
 
     {
       dummyCheck(configFile.getParentFile().mkdirs());
@@ -222,7 +220,7 @@ public class SchedulerMatcherTriggerTest {
   @Test
   public void testProcessingOfPatternFormatErrorsFromFile() throws Exception {
     File configFile = new File(WORK_DIR + "testProcessingOfPatternFormatErrorsFromFile"
-      + "_" + RND.intStr(5) + ".config.txt");
+        + "_" + RND.intStr(5) + ".config.txt");
     dummyCheck(configFile.getParentFile().mkdirs());
 
     File errorFile = new File(configFile.getPath() + ".error");
@@ -250,10 +248,10 @@ public class SchedulerMatcherTriggerTest {
     t.isItTimeToRun();
 
     assertThat(errorFile).as("Система должна понять, что файл не менялся," +
-      " и поэтому второй раз файл ошибки создаваться не должен").doesNotExist();
+        " и поэтому второй раз файл ошибки создаваться не должен").doesNotExist();
 
     assertThat(tec.caughtExceptions).as("Система должна понять, что файл не менялся," +
-      " и поэтому второй раз exception кидаться не должен").isEmpty();
+        " и поэтому второй раз exception кидаться не должен").isEmpty();
 
     setLineToFile(t, configFile, "forTest=абра кадабра всякая, но уже другая");
 
@@ -293,7 +291,7 @@ public class SchedulerMatcherTriggerTest {
   @Test
   public void testProcessingOfPatternFormatErrorsNoFile() throws Exception {
     File configFile = new File(WORK_DIR + "testProcessingOfPatternFormatErrorsNoFile"
-      + "_" + RND.intStr(5) + ".config.txt");
+        + "_" + RND.intStr(5) + ".config.txt");
 
     File errorFile = new File(configFile.getPath() + ".error");
 
@@ -323,12 +321,12 @@ public class SchedulerMatcherTriggerTest {
 
   private void assertFilesDoNotExist(File configFile, File errorFile) {
     assertThat(errorFile)
-      .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
-      .doesNotExist();
+        .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
+        .doesNotExist();
 
     assertThat(configFile)
-      .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
-      .doesNotExist();
+        .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
+        .doesNotExist();
   }
 
 

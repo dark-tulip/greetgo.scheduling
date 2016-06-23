@@ -4,12 +4,11 @@ import java.lang.annotation.*;
 
 /**
  * <p>
- * Указывает, что расписание запуска данного метода нужно читать из конфига. Имя конфига соответствует имени класса,
- * а имя параметра конфига равно имени запускаемого метода.
+ * Indicates that timing string has been taking from config place
  * </p>
  * <p>
- * Данную аннотацию необходимо обязательно использовать параллельно с аннотацией {@link Scheduled}. Аннотация
- * {@link Scheduled} нужна для того, чтобы указать начальное значение при создании конфига
+ * This annotation is using only with annotation {@link Scheduled}. In this case annotation {@link Scheduled} inform
+ * about started value of timing? placed in config place.
  * </p>
  */
 @Documented
@@ -17,7 +16,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FromConfig {
   /**
-   * Описание задачи - оно копируется в конфиг
+   * Task description - it is copied in to config place
    */
   String value();
 }

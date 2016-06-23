@@ -65,7 +65,6 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
           throw new SchedulerException("No description: Description must be in " + FromConfig.class.getSimpleName()
               + ".value() of " + controller.getClass().getSimpleName() + "." + method.getName());
         }
-        //noinspection UnnecessaryContinue
         continue;
       }
     }
@@ -202,7 +201,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
     pattern = place = null;
 
-    readPatternAndPlaceFromFile();
+    readPatternAndPlaceFromConfig();
 
     if (pattern != null) return;
 
@@ -212,7 +211,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     writePatternToFile();
   }
 
-  private void readPatternAndPlaceFromFile() throws Exception {
+  private void readPatternAndPlaceFromConfig() throws Exception {
     if (!configFile.exists()) return;
 
     ConfData confData = new ConfData();
