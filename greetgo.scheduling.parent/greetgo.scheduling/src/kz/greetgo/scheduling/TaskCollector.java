@@ -18,6 +18,12 @@ public class TaskCollector {
       throwable.printStackTrace();
     }
   };
+  public ExceptionCatcher exceptionCatcher = new ExceptionCatcher() {
+    @Override
+    public void catchException(Exception e) {
+      e.printStackTrace();
+    }
+  };
 
   private final String configDir;
   private final List<Task> tasks = new ArrayList<>();
@@ -40,9 +46,10 @@ public class TaskCollector {
     if (classUsePool != null) topPoolName = classUsePool.value().trim();
 
     for (Method method : controllerClass.getMethods()) {
-      final SchedulerMatcherTrigger smt = SchedulerMatcherTrigger.create(
-          method, controller, new SchedulerContextOnFile(configFile)
-      );
+      SchedulerContextOnFile schedulerContext = new SchedulerContextOnFile(configFile);
+      schedulerContext.exceptionCatcher = exceptionCatcher;
+      schedulerContext.throwableCatcher = throwableCatcher;
+      final SchedulerMatcherTrigger smt = SchedulerMatcherTrigger.create(method, controller, schedulerContext);
       if (smt == null) continue;
 
       String poolName = topPoolName;

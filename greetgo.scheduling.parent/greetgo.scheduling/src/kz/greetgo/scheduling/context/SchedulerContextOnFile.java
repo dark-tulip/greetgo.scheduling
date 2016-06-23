@@ -1,6 +1,7 @@
 package kz.greetgo.scheduling.context;
 
 import kz.greetgo.scheduling.ExceptionCatcher;
+import kz.greetgo.scheduling.ThrowableCatcher;
 
 import java.io.File;
 
@@ -25,8 +26,20 @@ public class SchedulerContextOnFile implements SchedulerContext {
 
   public ExceptionCatcher exceptionCatcher = null;
 
+  public ThrowableCatcher throwableCatcher = new ThrowableCatcher() {
+    @Override
+    public void catchThrowable(Throwable throwable) {
+      throwable.printStackTrace();
+    }
+  };
+
   @Override
   public ExceptionCatcher exceptionCatcher() {
     return exceptionCatcher;
+  }
+
+  @Override
+  public ThrowableCatcher throwableCatcher() {
+    return throwableCatcher;
   }
 }
