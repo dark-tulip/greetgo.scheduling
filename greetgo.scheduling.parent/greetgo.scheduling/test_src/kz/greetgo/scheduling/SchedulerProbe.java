@@ -55,6 +55,11 @@ public class SchedulerProbe {
     @Override
     public void reset() {
     }
+
+    @Override
+    public boolean isResettable() {
+      return false;
+    }
   }
 
   private static class MyThrowableCatcher implements ThrowableCatcher {

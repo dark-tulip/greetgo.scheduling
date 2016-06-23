@@ -76,7 +76,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   @Override
   public void reset() {
-    if (noUseConfig()) return;
+    if (!isResettable()) return;
     matcher = null;
     checkErrorFileToDelete = true;
   }
@@ -101,7 +101,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
     if (matcher == null) return false;
 
-    if (checkErrorFileToDelete && !noUseConfig()) {
+    if (checkErrorFileToDelete && isResettable()) {
       schedulerContext.configError().delete();
       checkErrorFileToDelete = false;
     }
@@ -132,7 +132,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
       matcher = new SchedulerMatcher(pattern, schedulerStartedAt, place);
     } catch (LeftSchedulerPattern e) {
 
-      if (noUseConfig()) {
+      if (!isResettable()) {
         alwaysReturnFalse = true;
         catchException(e);
         return;
@@ -190,12 +190,13 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     if (matcher != null) matcher.taskFellInExecutionQueueAt(now());
   }
 
-  private boolean noUseConfig() {
-    return fromConfigDescription == null;
+  @Override
+  public boolean isResettable() {
+    return fromConfigDescription != null;
   }
 
   private void readPatternAndPlace() throws Exception {
-    if (noUseConfig()) {
+    if (!isResettable()) {
       pattern = initialSchedulerPattern;
       place = initialSchedulerPlace;
       return;

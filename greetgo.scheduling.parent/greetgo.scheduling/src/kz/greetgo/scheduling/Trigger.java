@@ -17,4 +17,6 @@ public interface Trigger {
   void markThatInExecutionQueue();
 
   void reset();
+
+  boolean isResettable();
 }

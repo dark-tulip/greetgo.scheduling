@@ -69,4 +69,8 @@ public class Task {
   public void resetTrigger() {
     trigger.reset();
   }
+  
+  public boolean isTriggerResettable() {
+    return trigger.isResettable();
+  }
 }
