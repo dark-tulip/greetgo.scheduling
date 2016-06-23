@@ -65,4 +65,8 @@ public class Task {
   public void markThatInExecutionQueue() {
     trigger.markThatInExecutionQueue();
   }
+
+  public void resetTrigger() {
+    trigger.reset();
+  }
 }

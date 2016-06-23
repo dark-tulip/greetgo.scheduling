@@ -23,7 +23,9 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   public final Job job;
 
-  public static SchedulerMatcherTrigger create(final Method method, final Object controller, SchedulerContext schedulerContext) {
+  public static SchedulerMatcherTrigger create(final Method method,
+                                               final Object controller,
+                                               final SchedulerContext schedulerContext) {
 
     if (method.getAnnotation(Scheduled.class) == null) return null;
 
@@ -56,24 +58,23 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
         continue;
       }
       if (annotation instanceof FromConfig) {
-        fromConfigDescription = ((FromConfig) annotation).value().trim();
-        if (fromConfigDescription.length() == 0) {
-          throw new SchedulerException("No description: Description must be in " + FromConfig.class.getSimpleName()
-              + ".value() of " + controller.getClass().getSimpleName() + "." + method.getName());
-        }
+        String s = ((FromConfig) annotation).value().trim();
+        if (s.length() == 0) throw new SchedulerException("No description: Description must be in "
+            + FromConfig.class.getSimpleName() + ".value() of " + controller.getClass().getSimpleName()
+            + "." + method.getName());
+        fromConfigDescription = s;
         continue;
       }
     }
 
-    if (initialSchedulerPattern == null) {
-      throw new IllegalArgumentException("No annotation " + Scheduled.class.getSimpleName()
-          + " in method " + method.toGenericString());
-    }
+    if (initialSchedulerPattern == null) throw new IllegalArgumentException("No annotation "
+        + Scheduled.class.getSimpleName() + " in method " + method.toGenericString());
   }
 
   private volatile SchedulerMatcher matcher = null;
   private volatile long lastCheckTime = 0;
 
+  @Override
   public void reset() {
     if (noUseConfig()) return;
     matcher = null;

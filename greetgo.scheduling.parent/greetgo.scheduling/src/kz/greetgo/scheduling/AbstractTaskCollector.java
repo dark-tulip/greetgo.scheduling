@@ -1,7 +1,6 @@
 package kz.greetgo.scheduling;
 
 import kz.greetgo.scheduling.context.SchedulerContext;
-import kz.greetgo.scheduling.context.SchedulerContextSource;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

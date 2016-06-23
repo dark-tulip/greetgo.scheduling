@@ -42,4 +42,13 @@ public class SchedulerContextOnFile implements SchedulerContext {
   public ThrowableCatcher throwableCatcher() {
     return throwableCatcher;
   }
+
+  public void makeExceptionCatcherThroughThrowableCatcher() {
+    exceptionCatcher = new ExceptionCatcher() {
+      @Override
+      public void catchException(Exception e) {
+        throwableCatcher.catchThrowable(e);
+      }
+    };
+  }
 }

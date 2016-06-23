@@ -15,4 +15,6 @@ public interface Trigger {
   boolean mayParallel();
 
   void markThatInExecutionQueue();
+
+  void reset();
 }

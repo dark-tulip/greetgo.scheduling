@@ -51,6 +51,10 @@ public class SchedulerProbe {
     @Override
     public void markThatInExecutionQueue() {
     }
+
+    @Override
+    public void reset() {
+    }
   }
 
   private static class MyThrowableCatcher implements ThrowableCatcher {
