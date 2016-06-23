@@ -1,5 +1,7 @@
 package kz.greetgo.scheduling;
 
+import kz.greetgo.scheduling.context.SchedulerContextOnFile;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -38,7 +40,9 @@ public class TaskCollector {
     if (classUsePool != null) topPoolName = classUsePool.value().trim();
 
     for (Method method : controllerClass.getMethods()) {
-      final SchedulerMatcherTrigger smt = SchedulerMatcherTrigger.create(method, controller, configFile);
+      final SchedulerMatcherTrigger smt = SchedulerMatcherTrigger.create(
+          method, controller, new SchedulerContextOnFile(configFile)
+      );
       if (smt == null) continue;
 
       String poolName = topPoolName;

@@ -1,6 +1,8 @@
 package kz.greetgo.scheduling;
 
 import kz.greetgo.conf.ConfData;
+import kz.greetgo.scheduling.context.ContentStore;
+import kz.greetgo.scheduling.context.SchedulerContextOnFile;
 import kz.greetgo.util.RND;
 import org.testng.annotations.Test;
 
@@ -20,7 +22,7 @@ public class SchedulerMatcherTriggerTest {
 
   static class MySchedulerMatcherTrigger extends SchedulerMatcherTrigger {
     public MySchedulerMatcherTrigger(Method method, Object controller, File configFile) {
-      super(method, controller, configFile);
+      super(method, controller, new SchedulerContextOnFile(configFile));
     }
 
     long now;
@@ -33,8 +35,12 @@ public class SchedulerMatcherTriggerTest {
     long returnValueInGetLastModifiedOf = 0;
 
     @Override
-    protected long getLastModifiedOf(File file) {
+    protected long getLastModifiedOf(ContentStore contentStore) {
       return returnValueInGetLastModifiedOf;
+    }
+
+    public void setExceptionCatcher(TestExceptionCatcher tec) {
+      ((SchedulerContextOnFile) schedulerContext).exceptionCatcher = tec;
     }
   }
 
@@ -230,7 +236,7 @@ public class SchedulerMatcherTriggerTest {
     ForTestProcessingOfPatternFormatErrorsFromFile controller = new ForTestProcessingOfPatternFormatErrorsFromFile();
     final Method method = controller.getClass().getMethod("forTest");
     final MySchedulerMatcherTrigger t = new MySchedulerMatcherTrigger(method, controller, configFile);
-    t.exceptionCatcher = tec;
+    t.setExceptionCatcher(tec);
     t.now = at("2015-02-01 11:00:00");
 
     setLineToFile(t, configFile, "forTest=абра кадабра всякая");
@@ -300,7 +306,7 @@ public class SchedulerMatcherTriggerTest {
     ForTestProcessingOfPatternFormatErrorsNoFile controller = new ForTestProcessingOfPatternFormatErrorsNoFile();
     final Method method = controller.getClass().getMethod("forTest");
     final MySchedulerMatcherTrigger t = new MySchedulerMatcherTrigger(method, controller, configFile);
-    t.exceptionCatcher = tec;
+    t.setExceptionCatcher(tec);
     t.now = at("2015-02-01 11:00:00");
 
     t.reset();

@@ -1,41 +1,37 @@
 package kz.greetgo.scheduling;
 
 import kz.greetgo.conf.ConfData;
+import kz.greetgo.scheduling.context.ContentStore;
+import kz.greetgo.scheduling.context.SchedulerContext;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static kz.greetgo.util.ServerUtil.dummyCheck;
-
 public class SchedulerMatcherTrigger extends AbstractTrigger {
 
-  private final File configFile, errorFile;
+  protected final SchedulerContext schedulerContext;
   private String initialSchedulerPattern, initialSchedulerPlace;
   private String fromConfigDescription = null;
 
   private final String configKeyName;
 
   public final Job job;
-  public ExceptionCatcher exceptionCatcher = new ExceptionCatcher() {
-    @Override
-    public void catchException(Exception e) {
-      e.printStackTrace();
-    }
-  };
 
-  public static SchedulerMatcherTrigger create(final Method method, final Object controller, File configFile) {
+  public static SchedulerMatcherTrigger create(final Method method, final Object controller, SchedulerContext schedulerContext) {
 
     if (method.getAnnotation(Scheduled.class) == null) return null;
 
-    return new SchedulerMatcherTrigger(method, controller, configFile);
+    return new SchedulerMatcherTrigger(method, controller, schedulerContext);
   }
 
-  protected SchedulerMatcherTrigger(final Method method, final Object controller, File configFile) {
-    this.configFile = configFile;
-    errorFile = new File(configFile.getPath() + ".error");
+  protected SchedulerMatcherTrigger(final Method method, final Object controller, SchedulerContext schedulerContext) {
+    this.schedulerContext = schedulerContext;
     configKeyName = method.getName();
 
     job = new Job() {
@@ -104,7 +100,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     if (matcher == null) return false;
 
     if (checkErrorFileToDelete && !noConfigFile()) {
-      dummyCheck(errorFile.delete());
+      schedulerContext.configError().delete();
       checkErrorFileToDelete = false;
     }
 
@@ -123,8 +119,8 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   private long configFileLastModified = 0;
 
-  protected long getLastModifiedOf(File file) {
-    return file.lastModified();
+  protected long getLastModifiedOf(ContentStore contentStore) {
+    return contentStore.lastModifiedMillis();
   }
 
   private void createMatcher() throws Exception {
@@ -139,7 +135,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
         catchException(e);
         return;
       }
-      final long lastModified = getLastModifiedOf(configFile);
+      final long lastModified = getLastModifiedOf(schedulerContext.configContent());
       if (lastModified > 0 && lastModified != configFileLastModified) {
         configFileLastModified = lastModified;
         writeToErrorFile(e);
@@ -149,21 +145,25 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   }
 
   private void catchException(LeftSchedulerPattern e) {
-    if (exceptionCatcher != null) {
-      exceptionCatcher.catchException(e);
+    if (schedulerContext.exceptionCatcher() != null) {
+      schedulerContext.exceptionCatcher().catchException(e);
     } else {
       e.printStackTrace();
     }
   }
 
   private void writeToErrorFile(LeftSchedulerPattern e) {
-    try (final PrintStream out = new PrintStream(errorFile, "UTF-8")) {
+    try {
+      ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+      PrintStream out = new PrintStream(bOut, false, "UTF-8");
       out.println("error message: " + e.message);
       out.println("pattern: " + e.pattern);
       out.println("place: " + e.place);
       out.println();
       e.printStackTrace(out);
-    } catch (FileNotFoundException | UnsupportedEncodingException err) {
+      out.flush();
+      schedulerContext.configError().setContent(bOut.toByteArray());
+    } catch (UnsupportedEncodingException err) {
       throw new RuntimeException(err);
     }
   }
@@ -212,20 +212,19 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   }
 
   private void readPatternAndPlaceFromConfig() throws Exception {
-    if (!configFile.exists()) return;
+    if (!schedulerContext.configContent().exists()) return;
 
     ConfData confData = new ConfData();
-    confData.readFromFile(configFile);
+    confData.readFromStream(new ByteArrayInputStream(schedulerContext.configContent().getContent()));
 
     pattern = confData.str(configKeyName);
-    place = "File " + configFile.getName() + ", key: " + configKeyName;
+    place = schedulerContext.configContent().placeInfo() + ", key: " + configKeyName;
   }
 
   private void writePatternToFile() throws Exception {
-
-    if (!configFile.exists()) dummyCheck(configFile.getParentFile().mkdirs());
-
-    try (final PrintStream out = new PrintStream(new FileOutputStream(configFile, true), false, "UTF-8")) {
+    ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+    {
+      PrintStream out = new PrintStream(bOut, false, "UTF-8");
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
       out.println();
       out.println("# (added at " + sdf.format(new Date()) + ")");
@@ -233,7 +232,26 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
         out.println("# " + line);
       }
       out.println(configKeyName + "=" + pattern);
+      out.flush();
+    }
+    appendTo(schedulerContext.configContent(), bOut.toByteArray());
+  }
+
+  private static void appendTo(ContentStore contentStore, byte[] content) {
+    if (content == null) return;
+    if (content.length == 0) return;
+
+    byte[] topContent = contentStore.getContent();
+    if (topContent == null) {
+      contentStore.setContent(content);
+      return;
     }
 
+    {
+      byte[] fullContent = new byte[topContent.length + content.length];
+      System.arraycopy(topContent, 0, fullContent, 0, topContent.length);
+      System.arraycopy(content, 0, fullContent, topContent.length, content.length);
+      contentStore.setContent(fullContent);
+    }
   }
 }

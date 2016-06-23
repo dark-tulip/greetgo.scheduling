@@ -3,105 +3,105 @@ package kz.greetgo.scheduling;
 import java.lang.annotation.*;
 
 /**
- * <p>Помечает метод, который будет запускаться по расписанию, также определяет само это расписание.
- * <b>Метод должен быть public.</b>
+ * <p>Marks a method that will be executed on the schedule, and also defines this schedule.
+ * <b>The method should be public.</b>
  * </p>
  * <p>
- * Имеется два формата расписания: календарный и периодический
+ * There are two schedule format: calendar and periodic
  * </p>
- * <h2>Календарный формат расписания</h2>
+ * <h2>CALENDAR FORMAT OF THE SCHEDULE</h2>
  * <p>
- * Формат расписания: &lt;часы&gt;<b>:</b>&lt;минуты&gt;&nbsp;&nbsp;&nbsp;<b>(</b>&lt;дни месяца&gt;<b>)</b>
- * &nbsp;&nbsp;&nbsp;<b>{</b>&lt;дни недели&gt<b>}</b>&nbsp;&nbsp;&nbsp;<b>[</b>&lt;Месяцы&gt;<b>]</b>
+ * Schedule format: &lt;hours&gt;<b>:</b>&lt;minutes&gt;&nbsp;&nbsp;&nbsp;<b>(</b>&lt;days of the month&gt;<b>)</b>
+ * &nbsp;&nbsp;&nbsp;<b>{</b>&lt;days of the week&gt<b>}</b>&nbsp;&nbsp;&nbsp;<b>[</b>&lt;Months&gt;<b>]</b>
  * </p>
  * <p>
- * Несколько примеров:
+ * Some examples:
  * </p>
  * <table>
  * <thead>
  * <tr>
- * <th>Пример</th>
- * <th>Когда будет запускаться задача</th>
+ * <th>Example</th>
+ * <th>When a task will be initiated</th>
  * </tr>
  * </thead>
  * <tbody>
  * <tr>
- * <td><b>12:30&nbsp;&nbsp;{понедельник,среда}&nbsp;&nbsp;[март-июнь,декабрь]</b></td>
- * <td>в 12:30 с понедельника по среду с марта по июнь и, ещё, в декабре тоже с понедельника по среду</td>
+ * <td><b>12:30&nbsp;&nbsp;{monday,wednesday}&nbsp;&nbsp;[March-June,December]</b></td>
+ * <td>at 12:30 from Monday to Wednesday from March to June and on December from Monday to Wednesday as well</td>
  * </tr>
  * <tr>
- * <td><b>08-18:00/15&nbsp;&nbsp;&nbsp;{пн-пт}</b></td>
- * <td>каждые 15 минут с 8-ми утра до 6-ти вечера в рабочие дни</td>
+ * <td><b>08-18:00/15&nbsp;&nbsp;&nbsp;{mon-fri}</b></td>
+ * <td>every 15 minutes from 8 a.m. till 6 p.m. on weekdays</td>
  * </tr>
  * <tr>
- * <td><b>*:0&nbsp;&nbsp;&nbsp;{пн}</b></td>
- * <td>каждый час в 0 минут круглые сутки, но только каждый понедельник</td>
+ * <td><b>*:0&nbsp;&nbsp;&nbsp;{mon}</b></td>
+ * <td>every one hour in 00 minutes all day and night, but only on Mondays</td>
  * </tr>
  * <tr>
  * <td><b>00:10&nbsp;&nbsp;&nbsp;(3,7,10)</b></td>
- * <td>в 10 минут второго часа ночи, третьего, седьмого и десятого числа каждого месяца</td>
+ * <td>at 01:10 at night, on the third, seventh and tenth day of each month</td>
  * </tr>
  * </tbody>
  * </table>
  * <p>
- * Подробное описание формата расписания:
+ * A detailed description of the schedule format:
  * </p>
  * <p>
- * Месяцы задаются названиями на двух языках: русском и английском. Также можно использовать первые три буквы месяца.
- * Регистр можно использовать любой.
+ * Months are in two languages: Russian and English. First three letters of the month can also be used.
+ * Any register can be used.
  * </p>
  * <p>
- * Дни недели задаются названиями на двух языках: русском и английском. Также можно использовать первые три буквы
- * названия. Регистр можно использовать любой. Также можно использовать две буквы: пн, вт, ср, чт, пт, сб, вс.
+ * Days of the week are in two languages: Russian and English. First three letters can be used as well.
+ * Any register can be used. First two letters can also be used: MO, TU, WE, TH, FR, SA, SU.
  * </p>
  * <table>
  * <thead>
  * <tr>
- * <th>Элемент расписания</th>
- * <th>Возможные формы</th>
- * <th>Описание и примеры</th>
+ * <th>Schedule element</th>
+ * <th>Possible forms</th>
+ * <th>Description and examples</th>
  * </tr>
  * </thead>
  * <tbody>
  * <tr>
- * <td rowspan="3">&lt;минуты&gt; или &lt;часы&gt; или &lt;месяцы&gt; </td>
- * <td>ЧИСЛО</td>
- * <td>Задаёт конкретную минуту или час, когда наступает время запуска задачи</td>
+ * <td rowspan="3">&lt;minutes&gt; or &lt;hours&gt; or &lt;months&gt; </td>
+ * <td>DATE</td>
+ * <td>Sets a specific minute or an hour, when it is time to start the task</td>
  * </tr>
  * <tr>
- * <td>ЧИСЛО1-ЧИСЛО1</td>
- * <td>Определяет несколько значений в диапазоне: <br>ЧИСЛО1 &lt;= x &lt;= ЧИСЛО2</td>
+ * <td>DATE1-DATE1</td>
+ * <td>Defines several values in the range: <br>DATE1 &lt;= x &lt;= DATE2</td>
  * </tr>
  * <tr>
- * <td>ЧИСЛО1/ЧИСЛО2</td>
- * <td>Определяет несколько значений начиная с ЧИСЛО1 с периодом ЧИСЛО2:<br>
- * x = ЧИСЛО1<br>x = ЧИСЛО1 + ЧИСЛО2<br> x = ЧИСЛО1 + 2*ЧИСЛО2<br> x = ЧИСЛО1 + 3*ЧИСЛО2<br>......
+ * <td>DATE1/DATE2</td>
+ * <td>defines several values starting with DATE1 with a period DATE2:<br>
+ * x = DATE1<br>x = DATE1 + DATE2<br> x = DATE1 + 2*DATE2<br> x = DATE1 + 3*DATE2<br>......
  * </td>
  * </tr>
  * </tbody>
  * </table>
- * <h2>Периодический формат расписания</h2>
+ * <h2>PERIODIC FORMAT OF THE SCHEDULE</h2>
  * <p>
- * Формат расписания на русском: [параллельно] повторять каждые NN1 сек|мин [, начиная с паузы NN2 сек|мин]
+ * Schedule format in Russian: [параллельно] повторять каждые NN1 сек|мин [, начиная с паузы NN2 сек|мин]
  * </p>
  * <p>
- * Формат расписания на английском: [parallel] repeat every NN1 sec|min [, after pause in NN2 sec|min]
+ * Schedule format in English: [parallel] repeat every NN1 sec|min [, after pause in NN2 sec|min]
  * </p>
  * <p>
- * где [ ] - указывают необязательность, | - показывает возможность "один из"
- * <br>Если параметр NN2 не указан, то применяется значение NN2 = 0
- * <br>После старта шедулера система ожидает время NN2 и запускает задачу. Далее в зависимости от наличия слова
- * "параллель|parallel", которое определяет параллельный ражим запуска (слово присутствует) или последовательный
- * режим запуска (слово отсутствует):
- * <br><b>В параллельном режиме</b> система, недожидаясь завершения задачи, ожидает время NN1 и запускает задачу снова,
- * и далее также не дожидаясь завершения задачи ожидая время NN1 запускает задачу ещё, и так далее остановки шедулера
- * задача будет запускаться через равные промежутки времени NN1.
- * <br><b>В последовательном режиме</b> система дожидается завершения задачи, после чего начинает отчёт времени.
- * По завершению времени NN1 задача запускается сного. Потом обратно ожидание завершение задачи, по завершению -
- * ожидание времени NN1 и запуск. И так далее до остановки щедулера.
+ * where [ ] - means optionality, | - means possibility "one of"
+ * <br>If the parameter NN2 is not specified, the value NN2 = 0 is applied
+ * <br>After the start of the scheduler, the system waits for time NN2 and initiates the task. And then, depending on the presence of the word
+ * "параллель|parallel", which defines the parallel mode of startup (the word is present) or sequential mode
+ * of startup (the word is not present):
+ * <br><b>In parallel mode</b> the system without waiting for completion of the task, awaiting time NN1  and initiates the task again,
+ * and then also without waiting for completion of the task, awaiting time NN1 initiates the task again, and then till the stop of the scheduler 
+ * the task will be initiated at regular intervals of NN1.
+ * <br><b>In sequential mode</b> the system waits for task completion, and then starts timing.
+ * When the time NN1 is over, the task is initiated again. Then waiting for task completion again, after completion -
+ * waiting for time NN1 and startup. And then till the stop of the scheduler.
  * </p>
  * <p>
- * Примеры: (Ниже переводить не нужно)
+ * Examples: 
  * <br><b>repeat every 13 min after pause in 17 sec</b>
  * <br>
  * <br><b>parallel repeat every 13 sec after pause in 17 min</b>
