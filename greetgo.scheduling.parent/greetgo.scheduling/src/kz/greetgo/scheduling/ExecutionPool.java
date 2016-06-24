@@ -1,6 +1,7 @@
 package kz.greetgo.scheduling;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ExecutionPool {
 
@@ -12,21 +13,11 @@ public class ExecutionPool {
 
   private final List<Executor> executorList = new ArrayList<>();
 
-  private final LinkedList<Task> queue = new LinkedList<>();
+  private final ConcurrentLinkedQueue<Task> queue = new ConcurrentLinkedQueue<>();
 
   public void runTask(Task task) {
-
-    final boolean mayParallel = task.mayParallel();
-
-    if (!mayParallel) for (Executor executor : executorList) {
-      if (executor.working() && task.equals(executor.currentTask())) return;
-    }
-
-    for (Task queueTask : queue) {
-      if (queueTask.equals(task)) return;
-    }
-
-    queue.addLast(task);
+    queue.add(task);
+    task.taskRunStatus.markStarted();
     task.markThatInExecutionQueue();
   }
 
@@ -34,14 +25,16 @@ public class ExecutionPool {
     for (int i = 0, n = executorList.size(); i < n && queue.size() > 0; i++) {
       Executor executor = executorList.get(i);
       if (!executor.working()) {
-        executor.startExecution(queue.pollFirst());
+        executor.startExecution(queue.poll());
       }
     }
 
-    while (queue.size() > 0 && executorList.size() < maxPoolSize) {
+    while (executorList.size() < maxPoolSize) {
+      Task task = queue.poll();
+      if (task == null) break;
       Executor executor = newExecutor();
       executorList.add(executor);
-      executor.startExecution(queue.pollFirst());
+      executor.startExecution(task);
     }
   }
 
@@ -61,11 +54,11 @@ public class ExecutionPool {
   private Executor newExecutor() {
     int len = ("" + maxPoolSize).length();
 
-    String nomer = "" + (executorList.size() + 1);
+    String number = "" + (executorList.size() + 1);
 
-    while (nomer.length() < len) nomer = '0' + nomer;
+    while (number.length() < len) number = '0' + number;
 
-    return new Executor(threadNamePrefix + nomer);
+    return new Executor(threadNamePrefix + number);
   }
 
   public void deactivate() {

@@ -6,6 +6,7 @@ public class Task {
   private final Job job;
   private final Trigger trigger;
   private final ThrowableCatcher throwableCatcher;
+  final TaskRunStatus taskRunStatus;
 
   public Task(String poolName, Job job, Trigger trigger, ThrowableCatcher throwableCatcher) {
     if (job == null) throw new IllegalArgumentException("job == null");
@@ -16,6 +17,7 @@ public class Task {
     this.job = job;
     this.trigger = trigger;
     this.throwableCatcher = throwableCatcher;
+    taskRunStatus = trigger.getTaskRunStatus();
   }
 
   public void run() {
@@ -24,12 +26,10 @@ public class Task {
       job.doWork();
     } catch (Throwable e) {
       throwableCatcher.catchThrowable(e);
+    } finally {
+      taskRunStatus.markFinished();
+      trigger.jobHasFinishedJustNow();
     }
-    trigger.jobHasFinishedJustNow();
-  }
-
-  public boolean mayParallel() {
-    return trigger.mayParallel();
   }
 
   public String getPoolName() {
@@ -37,9 +37,9 @@ public class Task {
   }
 
   /**
-   * Должен возвращать информацию о таске, чтобы понятно было где она создана. Используется в сообщениях об ошибках
+   * Returns task information about where is it created. It is used in error messages.
    *
-   * @return информация о таске
+   * @return task information
    */
   public String infoForError() {
     return job.infoForError();
@@ -69,11 +69,11 @@ public class Task {
   public void resetTrigger() {
     trigger.reset();
   }
-  
+
   public boolean isTriggerResettable() {
     return trigger.isResettable();
   }
-  
+
   public void ping() {
     trigger.isItTimeToRun();
   }

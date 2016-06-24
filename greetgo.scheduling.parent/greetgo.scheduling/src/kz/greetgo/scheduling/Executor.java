@@ -1,5 +1,10 @@
 package kz.greetgo.scheduling;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
 public class Executor {
 
   private final Object sync = new Object();
@@ -10,7 +15,7 @@ public class Executor {
     this.threadName = threadName;
   }
 
-  private volatile boolean working = false;
+  private final AtomicBoolean working = new AtomicBoolean(false);
 
   private class LocalThread extends Thread {
 
@@ -20,19 +25,25 @@ public class Executor {
 
     @Override
     public void run() {
-      while (Thread.currentThread() == workingThread) {
+      while (Thread.currentThread() == workingThread.get() || !tasksToRun.isEmpty()) {
 
-        working = true;
-        currentTask.run();
-        working = false;
+        if (!tasksToRun.isEmpty()) {
+          working.set(true);
+          while (true) {
+            Task task = tasksToRun.poll();
+            if (task == null) break;
+            task.run();
+          }
+          working.set(false);
+        }
 
-        lastFinishMoment = System.currentTimeMillis();
+        lastFinishMoment.set(System.currentTimeMillis());
 
         synchronized (sync) {
           try {
             sync.wait();
           } catch (InterruptedException e) {
-            return;
+            workingThread.set(null);
           }
         }
 
@@ -40,19 +51,19 @@ public class Executor {
     }
   }
 
-  private volatile LocalThread workingThread = null;
+  private final AtomicReference<LocalThread> workingThread = new AtomicReference<>(null);
 
   public boolean working() {
-    return working;
+    return working.get();
   }
 
-  private volatile Task currentTask;
+  private final ConcurrentLinkedQueue<Task> tasksToRun = new ConcurrentLinkedQueue<>();
 
   public void startExecution(Task task) {
-    currentTask = task;
-    if (workingThread == null) {
-      workingThread = new LocalThread();
-      workingThread.start();
+    tasksToRun.add(task);
+    if (workingThread.get() == null) {
+      workingThread.set(new LocalThread());
+      workingThread.get().start();
     } else {
       synchronized (sync) {
         sync.notifyAll();
@@ -60,25 +71,23 @@ public class Executor {
     }
   }
 
-  public Task currentTask() {
-    return currentTask;
-  }
-
   public boolean hasWorkingThread() {
-    return workingThread != null;
+    return workingThread.get() != null;
   }
 
-  private volatile long lastFinishMoment;
+  private final AtomicLong lastFinishMoment = new AtomicLong(0);
 
+  /**
+   * This method need for Execution pool to stop long running threads
+   */
   public long getLastFinishMoment() {
-    return lastFinishMoment;
+    return lastFinishMoment.get();
   }
 
   public void stopThread() {
-    workingThread = null;
+    workingThread.set(null);
     synchronized (sync) {
       sync.notifyAll();
     }
   }
-
 }

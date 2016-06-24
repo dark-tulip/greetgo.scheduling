@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
 
-  public static SchedulerMatcherDisabled parse(String pattern) {
+  public static SchedulerMatcherDisabled parse(String pattern, TaskRunStatus taskRunStatus) {
     if (isDisabled(pattern)) return new SchedulerMatcherDisabled();
     return null;
   }
@@ -38,5 +38,10 @@ public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
 
   @Override
   public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
+  }
+
+  @Override
+  public String toString() {
+    return "DISABLED";
   }
 }

@@ -4,22 +4,22 @@ public class SchedulerMatcher {
 
   private final SchedulerMatcherDelegate delegate;
 
-  public SchedulerMatcher(String pattern, long schedulerStartedAt, String place) {
+  public SchedulerMatcher(String pattern, String place, TaskRunStatus taskRunStatus) {
     try {
-      delegate = create(pattern, schedulerStartedAt, place);
+      delegate = create(pattern, taskRunStatus, place);
     } catch (DelegateException e) {
       throw new LeftSchedulerPattern(e.getMessage(), pattern, place);
     }
   }
 
-  private SchedulerMatcherDelegate create(String pattern, long schedulerStartedAt, String place) {
+  private SchedulerMatcherDelegate create(String pattern, TaskRunStatus taskRunStatus, String place) {
     {
-      final SchedulerMatcherDisabled smd = SchedulerMatcherDisabled.parse(pattern);
+      final SchedulerMatcherDisabled smd = SchedulerMatcherDisabled.parse(pattern, taskRunStatus);
       if (smd != null) return smd;
     }
 
     {
-      final SchedulerMatcherDelegate smd = SchedulerMatcherRepeat.parse(pattern, schedulerStartedAt);
+      final SchedulerMatcherDelegate smd = SchedulerMatcherRepeat.parse(pattern, taskRunStatus);
       if (smd != null) return smd;
     }
 
@@ -44,5 +44,10 @@ public class SchedulerMatcher {
 
   public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
     delegate.taskFellInExecutionQueueAt(taskFellInExecutionQueueAt);
+  }
+
+  @Override
+  public String toString() {
+    return delegate.toString();
   }
 }

@@ -57,14 +57,14 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
 
   @Override
   public boolean match(long prevMatch, long now) {
+    if (disabled) return false;
+
     {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
       final String prevMatchStr = sdf.format(new Date(prevMatch));
       final String nowStr = sdf.format(new Date(now));
       if (prevMatchStr.equals(nowStr)) return false;
     }
-
-    if (disabled) return false;
 
     GregorianCalendar c = new GregorianCalendar();
     c.setTimeInMillis(now);

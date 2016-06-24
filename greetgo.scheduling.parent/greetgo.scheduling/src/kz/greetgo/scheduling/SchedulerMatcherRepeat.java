@@ -6,11 +6,16 @@ import java.util.regex.Pattern;
 public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
 
   private final ParseResult parseResult;
-  private final long schedulerStartedAt;
+  private final TaskRunStatus taskRunStatus;
 
-  private SchedulerMatcherRepeat(ParseResult parseResult, long schedulerStartedAt) {
+  @Override
+  public String toString() {
+    return "" + parseResult;
+  }
+
+  private SchedulerMatcherRepeat(ParseResult parseResult, TaskRunStatus taskRunStatus) {
     this.parseResult = parseResult;
-    this.schedulerStartedAt = schedulerStartedAt;
+    this.taskRunStatus = taskRunStatus;
   }
 
   static class ParseResult {
@@ -22,29 +27,31 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
       this.repeatingBy = repeatingBy;
       this.waitingFor = waitingFor;
     }
+
+    @Override
+    public String toString() {
+      return "SchedulerMatcherRepeat: parallel " + parallel + ", repeatingBy " + repeatingBy
+          + ", waitingFor " + waitingFor;
+    }
   }
 
-  public static SchedulerMatcherDelegate parse(String pattern, long schedulerStartedAt) {
+  public static SchedulerMatcherDelegate parse(String pattern, TaskRunStatus taskRunStatus) {
     ParseResult parseResult = parseRus(pattern);
     if (parseResult == null) parseResult = parseEng(pattern);
-    if (parseResult != null) return new SchedulerMatcherRepeat(parseResult, schedulerStartedAt);
+    if (parseResult != null) return new SchedulerMatcherRepeat(parseResult, taskRunStatus);
     return null;
   }
 
   @Override
   public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
-    taskStartedAt = taskFellInExecutionQueueAt;
   }
-
-  private boolean working() {
-    return taskStartedAt != null && taskFinishedAt == null;
-  }
-
+  
   private long lastNowOnReturnTrue = 0;
 
   @Override
   public boolean match(long lastCheckTime, long now) {
-    if (!parseResult.parallel && working()) return false;
+//    System.out.println("taskStartedAt = " + taskStartedAt + ", taskFinishedAt = " + taskFinishedAt);
+    if (!parseResult.parallel && taskRunStatus.inRuntimeCount.get() > 0) return false;
 
     long pause = parseResult.repeatingBy;
     if (lastNowOnReturnTrue == 0) pause = parseResult.waitingFor;
@@ -59,10 +66,13 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   }
 
   private long getBegin() {
-    long begins = schedulerStartedAt;
+    long begins = taskRunStatus.schedulerStartedAt.get();
     if (begins < lastNowOnReturnTrue) begins = lastNowOnReturnTrue;
     if (parseResult.parallel) return begins;
-    if (taskFinishedAt != null) return begins > taskFinishedAt ? begins : taskFinishedAt;
+    {
+      long lastFinishedAt = taskRunStatus.lastFinishedAt.get();
+      if (lastFinishedAt > 0) return begins > lastFinishedAt ? begins : lastFinishedAt;
+    }
     return begins;
   }
 
@@ -71,17 +81,12 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
     return parseResult.parallel;
   }
 
-  private Long taskStartedAt = null, taskFinishedAt = null;
-
   @Override
   public void taskStartedAt(long taskStartedAt) {
-    this.taskStartedAt = taskStartedAt;
-    taskFinishedAt = null;
   }
 
   @Override
   public void taskFinishedAt(long taskFinishedAt) {
-    this.taskFinishedAt = taskFinishedAt;
   }
 
   private static final Pattern RUS = Pattern.compile(

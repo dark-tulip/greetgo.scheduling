@@ -41,7 +41,7 @@ public class Scheduler {
       pool.tryExecuteFromQueue();
       if (pool.maxThreadWaitingDelayInMillis > 0) {
         if (minimalMaxThreadWaitingDelayInMillis == 0
-          || minimalMaxThreadWaitingDelayInMillis < pool.maxThreadWaitingDelayInMillis) {
+            || minimalMaxThreadWaitingDelayInMillis < pool.maxThreadWaitingDelayInMillis) {
           minimalMaxThreadWaitingDelayInMillis = pool.maxThreadWaitingDelayInMillis;
         }
       }
@@ -77,7 +77,6 @@ public class Scheduler {
           try {
             sync.wait(idleSleepTime);
           } catch (InterruptedException e) {
-            return;
           }
         }
 

@@ -44,11 +44,6 @@ public class SchedulerProbe {
     }
 
     @Override
-    public boolean mayParallel() {
-      return false;
-    }
-
-    @Override
     public void markThatInExecutionQueue() {
     }
 
@@ -59,6 +54,13 @@ public class SchedulerProbe {
     @Override
     public boolean isResettable() {
       return false;
+    }
+
+    private final TaskRunStatus taskRunStatus = new TaskRunStatus();
+
+    @Override
+    public TaskRunStatus getTaskRunStatus() {
+      return taskRunStatus;
     }
   }
 

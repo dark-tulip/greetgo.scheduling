@@ -75,6 +75,11 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   private volatile long lastCheckTime = 0;
 
   @Override
+  public String toString() {
+    return "TRIGGER [" + pattern + "] " + matcher;
+  }
+
+  @Override
   public void reset() {
     if (!isResettable()) return;
     matcher = null;
@@ -91,6 +96,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   @Override
   public boolean isItTimeToRun() {
+
     if (alwaysReturnFalse) return false;
 
     if (matcher == null) try {
@@ -119,8 +125,6 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   private String pattern, place;
 
-  private long schedulerStartedAt = 0;
-
   private long configFileLastModified = 0;
 
   protected long getLastModifiedOf(ContentStore contentStore) {
@@ -131,7 +135,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     readPatternAndPlace();
 
     try {
-      matcher = new SchedulerMatcher(pattern, schedulerStartedAt, place);
+      matcher = new SchedulerMatcher(pattern, place, taskRunStatus);
     } catch (LeftSchedulerPattern e) {
 
       if (!isResettable()) {
@@ -174,12 +178,19 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   @Override
   public void schedulerIsStartedJustNow() {
-    schedulerStartedAt = now();
+    taskRunStatus.schedulerStartedAt.set(now());
   }
 
   @Override
   public void jobIsGoingToStart() {
     if (matcher != null) matcher.taskStartedAt(now());
+  }
+
+  private final TaskRunStatus taskRunStatus = new TaskRunStatus();
+
+  @Override
+  public TaskRunStatus getTaskRunStatus() {
+    return taskRunStatus;
   }
 
   @Override

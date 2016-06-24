@@ -175,9 +175,12 @@ public class SchedulerMatcherRepeatTest {
 
   @Test
   public void parse_1() throws Exception {
+
+    TaskRunStatus taskRunStatus = new TaskRunStatus();
+
     //
     //
-    assertThat(SchedulerMatcherRepeat.parse("repeat every 13 minutes after pause in 17 min", 0L)).isNotNull();
+    assertThat(SchedulerMatcherRepeat.parse("repeat every 13 minutes after pause in 17 min", taskRunStatus)).isNotNull();
     //
     //
   }

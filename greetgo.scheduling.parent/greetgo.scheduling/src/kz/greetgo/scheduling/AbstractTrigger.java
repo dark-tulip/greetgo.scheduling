@@ -17,9 +17,4 @@ public abstract class AbstractTrigger implements Trigger {
   public boolean disabled() {
     return false;
   }
-
-  @Override
-  public boolean mayParallel() {
-    return false;
-  }
 }

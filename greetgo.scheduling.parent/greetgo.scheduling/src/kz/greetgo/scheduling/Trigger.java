@@ -12,11 +12,11 @@ public interface Trigger {
 
   boolean disabled();
 
-  boolean mayParallel();
-
   void markThatInExecutionQueue();
 
   void reset();
 
   boolean isResettable();
+
+  TaskRunStatus getTaskRunStatus();
 }
