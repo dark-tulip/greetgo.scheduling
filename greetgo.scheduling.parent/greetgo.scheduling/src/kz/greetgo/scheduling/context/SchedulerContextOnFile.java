@@ -26,7 +26,12 @@ public class SchedulerContextOnFile implements SchedulerContext {
 
   public ExceptionCatcher exceptionCatcher = null;
 
-  public ThrowableCatcher throwableCatcher = Throwable::printStackTrace;
+  public ThrowableCatcher throwableCatcher = new ThrowableCatcher() {
+    @Override
+    public void catchThrowable(Throwable throwable) {
+      throwable.printStackTrace();
+    }
+  };
 
   @Override
   public ExceptionCatcher exceptionCatcher() {
@@ -44,6 +49,11 @@ public class SchedulerContextOnFile implements SchedulerContext {
   }
 
   public void makeExceptionCatcherThroughThrowableCatcher() {
-    exceptionCatcher = e -> throwableCatcher.catchThrowable(e);
+    exceptionCatcher = new ExceptionCatcher() {
+      @Override
+      public void catchException(Exception e) {
+        throwableCatcher.catchThrowable(e);
+      }
+    };
   }
 }
