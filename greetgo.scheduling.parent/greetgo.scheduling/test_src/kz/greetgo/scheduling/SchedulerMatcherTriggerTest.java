@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kz.greetgo.scheduling.SchedulerMatcherTrigger.ensureExistsKeyValue;
 import static kz.greetgo.util.ServerUtil.dummyCheck;
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -335,5 +336,65 @@ public class SchedulerMatcherTriggerTest {
         .doesNotExist();
   }
 
+  @Test
+  public void ensureExistsKeyValue_1() throws Exception {
 
+    String content = "asd_key1=wow\n" +
+        "#asd_key1.m1=wow1\n";
+
+    //
+    //
+    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes("UTF-8"), "asd_key1", "asd_key1.m1");
+    //
+    //
+
+    String newContent = new String(newContentBytes, "UTF-8");
+
+    assertThat(newContent).isEqualTo(content);
+
+  }
+
+  @Test
+  public void ensureExistsKeyValue_2() throws Exception {
+
+    String content = "asd_key1=wow\n"
+        + "#asd_key1.m1=wow1\n"
+        + "\n"
+        + "moon\n\n    \t  \n \n";
+    String expectedContent = "asd_key1=wow\n"
+        + "#asd_key1.m1=wow1\n"
+        + "#asd_key1.m2=wow\n"
+        + "\n"
+        + "moon\n";
+
+    //
+    //
+    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes("UTF-8"), "asd_key1", "asd_key1.m2");
+    //
+    //
+
+    String newContent = new String(newContentBytes, "UTF-8");
+
+    assertThat(newContent).isEqualTo(expectedContent);
+
+  }
+
+  @Test
+  public void ensureExistsKeyValue_3() throws Exception {
+
+    String content = "asd_key1=wow\n"
+        + "#asd_key1.m1=wow1\n"
+        + "\n"
+        + "moon\n";
+
+    //
+    //
+    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes("UTF-8"), "dsa_key2", "dsa_key2.m2");
+    //
+    //
+
+    String newContent = new String(newContentBytes, "UTF-8");
+
+    assertThat(newContent).isEqualTo(content);
+  }
 }
