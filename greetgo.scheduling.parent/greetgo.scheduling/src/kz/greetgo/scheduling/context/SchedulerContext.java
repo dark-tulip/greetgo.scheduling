@@ -12,4 +12,6 @@ public interface SchedulerContext {
   ExceptionCatcher exceptionCatcher();
 
   ThrowableCatcher throwableCatcher();
+  
+  String machineId();
 }

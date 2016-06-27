@@ -44,4 +44,10 @@ public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
   public String toString() {
     return "DISABLED";
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) return false;
+    return getClass() == obj.getClass();
+  }
 }

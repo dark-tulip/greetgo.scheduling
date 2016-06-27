@@ -33,6 +33,28 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
       return "SchedulerMatcherRepeat: parallel " + parallel + ", repeatingBy " + repeatingBy
           + ", waitingFor " + waitingFor;
     }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      ParseResult that = (ParseResult) o;
+
+      if (parallel != that.parallel) return false;
+      if (repeatingBy != that.repeatingBy) return false;
+      if (waitingFor != that.waitingFor) return false;
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int result = (parallel ? 1 : 0);
+      result = 31 * result + (int) (repeatingBy ^ (repeatingBy >>> 32));
+      result = 31 * result + (int) (waitingFor ^ (waitingFor >>> 32));
+      return result;
+    }
   }
 
   public static SchedulerMatcherDelegate parse(String pattern, TaskRunStatus taskRunStatus) {
@@ -45,7 +67,7 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   @Override
   public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
   }
-  
+
   private long lastNowOnReturnTrue = 0;
 
   @Override
@@ -152,4 +174,18 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
     throw new DelegateException("Unknown time unit: " + unit);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    SchedulerMatcherRepeat that = (SchedulerMatcherRepeat) o;
+
+    return parseResult.equals(that.parseResult);
+  }
+
+  @Override
+  public int hashCode() {
+    return parseResult.hashCode();
+  }
 }

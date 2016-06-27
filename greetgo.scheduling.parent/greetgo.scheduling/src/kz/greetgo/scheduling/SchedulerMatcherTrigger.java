@@ -1,17 +1,22 @@
 package kz.greetgo.scheduling;
 
 import kz.greetgo.conf.ConfData;
+import kz.greetgo.conf.NoValue;
 import kz.greetgo.scheduling.context.ContentStore;
 import kz.greetgo.scheduling.context.SchedulerContext;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SchedulerMatcherTrigger extends AbstractTrigger {
 
@@ -71,7 +76,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
         + Scheduled.class.getSimpleName() + " in method " + method.toGenericString());
   }
 
-  private volatile SchedulerMatcher matcher = null;
+
   private volatile long lastCheckTime = 0;
 
   @Override
@@ -131,11 +136,20 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     return contentStore.lastModifiedMillis();
   }
 
+  private volatile SchedulerMatcher matcher = null, prevMatcher = null;
+
   private void createMatcher() throws Exception {
     readPatternAndPlace();
+    ensureMachineIdKey();
 
     try {
-      matcher = new SchedulerMatcher(pattern, place, taskRunStatus);
+
+      SchedulerMatcher m = new SchedulerMatcher(pattern, place, taskRunStatus);
+
+      matcher = m.equals(prevMatcher) ? prevMatcher : m;
+
+      prevMatcher = matcher;
+
     } catch (LeftSchedulerPattern e) {
 
       if (!isResettable()) {
@@ -208,6 +222,82 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     return fromConfigDescription != null;
   }
 
+  private void ensureMachineIdKey() throws Exception {
+    String machineId = schedulerContext.machineId();
+    if (machineId == null) return;
+    if (!isResettable()) return;
+
+    byte[] content = schedulerContext.configContent().getContent();
+    if (content == null) return;
+
+    byte[] newContent = ensureExistsKeyValue(content,
+        configKeyName,
+        keyWithMachine(configKeyName, machineId)
+    );
+
+    if (Arrays.equals(content, newContent)) return;
+
+    schedulerContext.configContent().setContent(newContent);
+  }
+
+  private static String keyWithMachine(String configKeyName, String machineId) {
+    return configKeyName + '.' + machineId;
+  }
+
+  private static final Pattern KEY_VALUE = Pattern.compile("\\s*#*\\s*([\\w\\.]+)\\s*=(.*)");
+
+  static byte[] ensureExistsKeyValue(byte[] content, String topKey, String key) throws Exception {
+    ArrayList<String> list = new ArrayList<>();
+    {
+      Collections.addAll(list, new String(content, "UTF-8").replaceAll("\r", "").split("\n"));
+    }
+    {
+      int topKeyIndex = -1, lastKeyIndex = -1;
+      String value = null;
+      for (int i = 0, n = list.size(); i < n; i++) {
+        Matcher matcher = KEY_VALUE.matcher(list.get(i));
+        if (!matcher.matches()) continue;
+        String currentKey = matcher.group(1);
+
+        if (currentKey.equals(key)) return content;
+
+        if (topKeyIndex < 0) {
+          if (currentKey.equals(topKey)) {
+            topKeyIndex = i;
+            value = matcher.group(2);
+          }
+          continue;
+        }
+
+        if (currentKey.startsWith(topKey + '.')) {
+          lastKeyIndex = i;
+        }
+      }
+
+      if (topKeyIndex < 0) return content;
+
+      {
+        int index = lastKeyIndex;
+        if (index < 0) index = topKeyIndex;
+        list.add(index + 1, "#" + key + "=" + value);
+      }
+    }
+    {
+      while (list.size() > 0) {
+        String lastLine = list.get(list.size() - 1);
+        if (lastLine != null && lastLine.trim().length() > 0) break;
+        list.remove(list.size() - 1);
+      }
+    }
+    {
+      StringBuilder sb = new StringBuilder();
+      for (String line : list) {
+        sb.append(line).append('\n');
+      }
+      return sb.toString().getBytes("UTF-8");
+    }
+  }
+
   private void readPatternAndPlace() throws Exception {
     if (!isResettable()) {
       pattern = initialSchedulerPattern;
@@ -231,25 +321,38 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     if (!schedulerContext.configContent().exists()) return;
 
     ConfData confData = new ConfData();
-    confData.readFromStream(new ByteArrayInputStream(schedulerContext.configContent().getContent()));
+    confData.readFromByteArray(schedulerContext.configContent().getContent());
 
-    pattern = confData.str(configKeyName);
-    place = schedulerContext.configContent().placeInfo() + ", key: " + configKeyName;
+    String key = configKeyName;
+    if (schedulerContext.machineId() == null) {
+      pattern = confData.str(key);
+    } else try {
+      key = keyWithMachine(configKeyName, schedulerContext.machineId());
+      pattern = confData.strEx(key);
+      if (pattern == null) throw new NoValue(key);
+    } catch (NoValue ignore) {
+      key = configKeyName;
+      pattern = confData.str(key);
+    }
+
+    place = schedulerContext.configContent().placeInfo() + ", key: " + key;
   }
 
   private void writePatternToFile() throws Exception {
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+
     {
       PrintStream out = new PrintStream(bOut, false, "UTF-8");
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
       out.println();
-      out.println("# (added at " + sdf.format(new Date()) + ")");
+      out.println("# (Added at " + sdf.format(new Date()) + ")");
       for (String line : fromConfigDescription.split("\n")) {
         out.println("# " + line);
       }
       out.println(configKeyName + "=" + pattern);
       out.flush();
     }
+
     appendTo(schedulerContext.configContent(), bOut.toByteArray());
   }
 

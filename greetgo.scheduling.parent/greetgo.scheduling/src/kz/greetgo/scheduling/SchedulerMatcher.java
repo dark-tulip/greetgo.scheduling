@@ -12,7 +12,7 @@ public class SchedulerMatcher {
     }
   }
 
-  private SchedulerMatcherDelegate create(String pattern, TaskRunStatus taskRunStatus, String place) {
+  private static SchedulerMatcherDelegate create(String pattern, TaskRunStatus taskRunStatus, String place) {
     {
       final SchedulerMatcherDisabled smd = SchedulerMatcherDisabled.parse(pattern, taskRunStatus);
       if (smd != null) return smd;
@@ -44,6 +44,21 @@ public class SchedulerMatcher {
 
   public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
     delegate.taskFellInExecutionQueueAt(taskFellInExecutionQueueAt);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    SchedulerMatcher that = (SchedulerMatcher) o;
+
+    return delegate.equals(that.delegate);
+  }
+
+  @Override
+  public int hashCode() {
+    return delegate.hashCode();
   }
 
   @Override

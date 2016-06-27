@@ -56,6 +56,36 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    SchedulerMatcherCalendar that = (SchedulerMatcherCalendar) o;
+
+    if (disabled != that.disabled) return false;
+    if (parallel != that.parallel) return false;
+    if (!Arrays.equals(months, that.months)) return false;
+    if (!Arrays.equals(daysOfMonth, that.daysOfMonth)) return false;
+    if (!Arrays.equals(daysOfWeek, that.daysOfWeek)) return false;
+    if (!Arrays.equals(hours, that.hours)) return false;
+    if (!Arrays.equals(minutes, that.minutes)) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Arrays.hashCode(months);
+    result = 31 * result + Arrays.hashCode(daysOfMonth);
+    result = 31 * result + Arrays.hashCode(daysOfWeek);
+    result = 31 * result + Arrays.hashCode(hours);
+    result = 31 * result + Arrays.hashCode(minutes);
+    result = 31 * result + (disabled ? 1 : 0);
+    result = 31 * result + (parallel ? 1 : 0);
+    return result;
+  }
+
+  @Override
   public boolean match(long prevMatch, long now) {
     if (disabled) return false;
 
