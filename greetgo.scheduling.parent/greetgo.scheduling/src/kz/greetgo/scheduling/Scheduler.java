@@ -60,6 +60,7 @@ public class Scheduler {
     }
   }
 
+  public static ThrowableCatcher mainThreadCatch = null;
 
   private final Runnable runner = new Runnable() {
     @Override
@@ -71,12 +72,20 @@ public class Scheduler {
 
       while (active) {
 
-        makeScheduleStep();
+        try {
+          makeScheduleStep();
+        } catch (Throwable e) {
+          if (mainThreadCatch == null) {
+            e.printStackTrace();
+          } else {
+            mainThreadCatch.catchThrowable(e);
+          }
+        }
 
         synchronized (sync) {
           try {
             sync.wait(idleSleepTime);
-          } catch (InterruptedException e) {
+          } catch (InterruptedException ignore) {
           }
         }
 
