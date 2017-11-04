@@ -16,12 +16,13 @@ allprojects {
   apply plugin: 'idea'
   apply plugin: 'eclipse'
   apply plugin: 'maven'
+  apply plugin: 'signing'
 
-  version = '0.0.11'
+  version = '2.0.0'
 
   sourceCompatibility = 1.7
 
-  group = "kz.greetgo.scheduling"
+  group = "kz.greetgo"
 
   eclipse.project.natures 'org.springsource.ide.eclipse.gradle.core.nature'
 }
@@ -49,35 +50,5 @@ subprojects {
   compileTestJava {
     options.encoding = "UTF-8"
   }
-
-  project.eclipse.classpath.file.whenMerged { cp ->
-    if (project.hasProperty("sourceCompatibility")) {
-      cp.entries.findAll { it.path.contains('JRE_CONTAINER') }.each {
-
-        it.path += "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/" +
-            "JavaSE-$project.sourceCompatibility"
-      }
-    }
-  }
-
-  jar {
-    manifest {
-      attributes 'Implementation-Title': project.name,
-          'Implementation-Version': version, 'Implementation-Vendor': vendorName,
-          'Built-By': System.getProperty("user.name"), 'Built-At': nowFormattedDate
-    }
-  }
-
-  sourceSets {
-    main {
-      java.srcDirs = ["src", "src_resources"]
-      resources.srcDirs = ["src", "src_resources"]
-    }
-    test {
-      java.srcDirs = ["test_src", "test_src_resources"]
-      resources.srcDirs = ["test_src", "test_src_resources"]
-    }
-  }
-
   test { useTestNG() }
 }
