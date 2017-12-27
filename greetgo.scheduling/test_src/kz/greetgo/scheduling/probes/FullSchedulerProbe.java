@@ -1,4 +1,11 @@
-package kz.greetgo.scheduling;
+package kz.greetgo.scheduling.probes;
+
+import kz.greetgo.scheduling.ExecutionPool;
+import kz.greetgo.scheduling.Scheduled;
+import kz.greetgo.scheduling.Scheduler;
+import kz.greetgo.scheduling.Task;
+import kz.greetgo.scheduling.TaskCollector;
+import kz.greetgo.scheduling.ThrowableCatcher;
 
 import java.util.List;
 import java.util.Map;
