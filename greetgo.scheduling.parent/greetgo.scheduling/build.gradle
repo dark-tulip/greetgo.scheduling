@@ -1,5 +1,3 @@
-def nowDate = new Date()
-def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
 
 eclipse {
   jdt {
@@ -57,17 +55,6 @@ uploadArchives {
   }
 }
 
-
-sourceSets {
-  main {
-    java.srcDirs = ["src", "src_resources"]
-    resources.srcDirs = ["src", "src_resources"]
-  }
-  test {
-    java.srcDirs = ["test_src", "test_src_resources"]
-    resources.srcDirs = ["test_src", "test_src_resources"]
-  }
-}
 
 
 if (System.getenv('LIB_SIGN_GPG_KEY_ID') != null && System.getenv('LIB_SIGN_GPG_KEY_ID').length() > 0) {

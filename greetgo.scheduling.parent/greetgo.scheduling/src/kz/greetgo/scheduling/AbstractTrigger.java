@@ -2,16 +2,13 @@ package kz.greetgo.scheduling;
 
 public abstract class AbstractTrigger implements Trigger {
   @Override
-  public void schedulerIsStartedJustNow() {
-  }
+  public void schedulerIsStartedJustNow() {}
 
   @Override
-  public void jobIsGoingToStart() {
-  }
+  public void jobIsGoingToStart() {}
 
   @Override
-  public void jobHasFinishedJustNow() {
-  }
+  public void jobHasFinishedJustNow() {}
 
   @Override
   public boolean disabled() {

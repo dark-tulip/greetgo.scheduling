@@ -1,6 +1,11 @@
 package kz.greetgo.scheduling;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ExecutionPool {
@@ -54,9 +59,10 @@ public class ExecutionPool {
   private Executor newExecutor() {
     int len = ("" + maxPoolSize).length();
 
-    String number = "" + (executorList.size() + 1);
+    StringBuilder number = new StringBuilder(len);
+    number.append(executorList.size() + 1);
 
-    while (number.length() < len) number = '0' + number;
+    while (number.length() < len) number.insert(0, '0');
 
     return new Executor(threadNamePrefix + number);
   }
