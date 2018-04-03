@@ -70,30 +70,28 @@ public class RunScheduler {
       }
     };
     
-    //теперь собираем таски
-    
     SomeScheduledClass x = new SomeScheduledClass();
+    SomeScheduledClass2 y = new SomeScheduledClass2();
     
-    taskCollector.collect(x);
-
-    //  ...так же передаём и другие объекты с аннотациями @Scheduled в taskCollector.collect
+    //теперь собираем таски
+    taskCollector.collect(x); 
+    taskCollector.collect(y);
+    
+    //Получаем собранные таски
+    List<Task> tasks = taskCollector.getTasks();
     
     // Теперь собираем пулы, которые нужны таскам
-    
     Map<String, ExecutionPool> executionPoolMap = ExecutionPool.poolsForTasks(tasks);
     
     // Создаём объект-исполнитель расписаний, который и будет запускать наши таски по расписанию
-    // и следить за изменениями в конфигурационных файлах, за изменением расписаний
-    
+    // и следить за изменениями расписаний в конфигурационных файлах
     Scheduler scheduler = new Scheduler(tasks, executionPoolMap);
     
-    
-    // Ну а теперь запускаем сам процесс запуска тасков по расписанию
+    // Ну а теперь стартуем сам процесс запуска тасков по расписанию
     scheduler.startup();
-    
     //с этого момента начинат запускаться таски по расписанию...
     
-    //Если запускание тасков больше не нужно - останавливаем процесс так:
+    //Если запускание тасков по расписанию больше не нужно - останавливаем процесс так:
     scheduler.shutdown();
     
   }
