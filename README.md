@@ -6,7 +6,7 @@
 
 Подключаем библиотеку:
 
-    compile "kz.greetgo:greetgo.scheduling:2.0.0"
+    compile "kz.greetgo:greetgo.scheduling:2.0.2"
 
 Нужны такие импорты:
 
