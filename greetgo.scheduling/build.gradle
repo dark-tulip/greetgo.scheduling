@@ -13,8 +13,8 @@ eclipse {
 configurations { repoUpload }
 
 dependencies {
-  compile "kz.greetgo:greetgo.conf:0.0.24"
-  compile "kz.greetgo:greetgo.util:0.0.26"
+  compile "kz.greetgo.conf:greetgo.conf:1.0.1"
+  compile "kz.greetgo.util:greetgo.util:0.1.0"
 }
 
 test { useTestNG() }
