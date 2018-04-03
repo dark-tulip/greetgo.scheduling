@@ -1,4 +1,3 @@
-
 eclipse {
   jdt {
     //
@@ -45,7 +44,7 @@ uploadArchives {
   repositories.mavenDeployer {
     configuration = configurations.archives
     repository(
-        url: System.getenv('GG_REPO')
+      url: System.getenv('GG_REPO')
     )
 
     pom.project {
@@ -80,6 +79,7 @@ tasks.withType(Javadoc) {
 
 
 project.tasks.create('uploadToMavenCentral', Upload.class) {
+  group 'upload'
   configuration = configurations.archives
   repositories {
     mavenDeployer {
