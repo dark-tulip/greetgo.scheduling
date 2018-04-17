@@ -9,8 +9,6 @@ buildscript {
   }
 }
 
-import kz.greetgo.gradle.plugins.ShortJavaPathPlugin
-
 def nowDate = new Date()
 def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
 def vendorName = "greetgo!"
@@ -33,7 +31,8 @@ allprojects {
 }
 
 subprojects {
-  apply plugin: ShortJavaPathPlugin
+  //noinspection UnnecessaryQualifiedReference
+  apply plugin: kz.greetgo.gradle.plugins.ShortJavaPathPlugin
 
   repositories {
     mavenLocal()
