@@ -1,6 +1,5 @@
-import kz.greetgo.gradle.plugins.MavenUploadPlugin
-
-apply plugin: MavenUploadPlugin
+//noinspection UnnecessaryQualifiedReference
+apply plugin: kz.greetgo.gradle.plugins.MavenUploadPlugin
 
 eclipse {
   jdt {
