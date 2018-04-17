@@ -1,3 +1,16 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    if (System.getenv('GG_REPO')?.trim()) maven { url System.getenv('GG_REPO') }
+    mavenCentral()
+  }
+  dependencies {
+    classpath "kz.greetgo.plugins:greetgo.gradle.plugins:0.0.2"
+  }
+}
+
+import kz.greetgo.gradle.plugins.ShortJavaPathPlugin
+
 def nowDate = new Date()
 def nowFormattedDate = nowDate.format("yyyy-MM-dd/HH:mm:ss")
 def vendorName = "greetgo!"
@@ -20,6 +33,8 @@ allprojects {
 }
 
 subprojects {
+  apply plugin: ShortJavaPathPlugin
+
   repositories {
     mavenLocal()
     if (System.getenv('GG_REPO')?.trim()) maven { url System.getenv('GG_REPO') }
@@ -43,23 +58,6 @@ subprojects {
       attributes 'Implementation-Vendor': vendorName
       attributes 'Created-By': System.getProperty("user.name")
       attributes 'Created-At': nowFormattedDate
-    }
-  }
-
-  compileJava {
-    options.encoding = "UTF-8"
-  }
-  compileTestJava {
-    options.encoding = "UTF-8"
-  }
-  sourceSets {
-    main {
-      java.srcDirs = ["src", "src_resources"]
-      resources.srcDirs = ["src", "src_resources"]
-    }
-    test {
-      java.srcDirs = ["test_src", "test_src_resources"]
-      resources.srcDirs = ["test_src", "test_src_resources"]
     }
   }
 
