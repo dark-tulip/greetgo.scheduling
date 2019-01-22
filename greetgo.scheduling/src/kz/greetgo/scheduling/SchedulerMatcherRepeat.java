@@ -31,7 +31,7 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
     @Override
     public String toString() {
       return "SchedulerMatcherRepeat: parallel " + parallel + ", repeatingBy " + repeatingBy
-          + ", waitingFor " + waitingFor;
+        + ", waitingFor " + waitingFor;
     }
 
     @Override
@@ -112,13 +112,13 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   }
 
   private static final Pattern RUS = Pattern.compile(
-      // повторять каждые 13 мин, начиная с паузы 17 мин
-      ""
-          + "\\s*((paral\\w*|парал\\w*)\\s+)?"
-          + "повт\\w*\\s+кажд\\w*\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
-          + "(,\\s*начин\\w*\\s+с\\s+пауз\\w*\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
-      ,
-      Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
+    // повторять каждые 13 мин, начиная с паузы 17 мин
+    ""
+      + "\\s*((paral\\w*|парал\\w*)\\s+)?"
+      + "повт\\w*\\s+кажд\\w*\\s+([\\d.]+)\\s+(\\w+)\\s*"
+      + "(,\\s*начин\\w*\\s+с\\s+пауз\\w*\\s+([\\d.]+)\\s+(\\w+))?\\s*"
+    ,
+    Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
 
   static ParseResult parseRus(String pattern) {
@@ -126,19 +126,20 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   }
 
   private static final Pattern ENG = Pattern.compile(
-      // repeat every  13 minutes, after pause in 17 s
-      ""
-          + "\\s*((paral\\w*|парал\\w*)\\s+)?"
-          + "repeat\\s+every\\s+([\\d\\.]+)\\s+(\\w+)\\s*"
-          + "(after\\s+pause\\s+in\\s+([\\d\\.]+)\\s+(\\w+))?\\s*"
-      ,
-      Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
+    // repeat every  13 minutes, after pause in 17 s
+    ""
+      + "\\s*((paral\\w*|парал\\w*)\\s+)?"
+      + "repeat\\s+every\\s+([\\d.]+)\\s+(\\w+)\\s*"
+      + "(after\\s+pause\\s+in\\s+([\\d.]+)\\s+(\\w+))?\\s*"
+    ,
+    Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
 
   static ParseResult parseEng(String pattern) {
     return parseRegexp(ENG, pattern, 2, 3, 4, 6, 7);
   }
 
+  @SuppressWarnings("SameParameterValue")
   private static ParseResult parseRegexp(Pattern regexp, String pattern, int parallelGroup,
                                          int repeatingByValueGroup, int repeatingByUnitGroup,
                                          int waitingForValueGroup, int waitingForUnitGroup) {
@@ -149,7 +150,9 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
     long repeatingBy = readMillis(m.group(repeatingByValueGroup), m.group(repeatingByUnitGroup));
     long waitingFor = readMillis(m.group(waitingForValueGroup), m.group(waitingForUnitGroup));
 
-    if (repeatingBy <= 0) throw new DelegateException("Illegal value of repeating by");
+    if (repeatingBy <= 0) {
+      throw new DelegateException("Illegal value of repeating by");
+    }
 
     return new ParseResult(parallel, repeatingBy, waitingFor);
   }
@@ -176,8 +179,12 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
     SchedulerMatcherRepeat that = (SchedulerMatcherRepeat) o;
 

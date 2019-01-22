@@ -10,11 +10,11 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
   private final String pattern;
   private final String place;
 
-  private boolean months[] = null;
-  private boolean daysOfMonth[] = null;
-  private boolean daysOfWeek[] = null;
-  private boolean hours[] = null;
-  private boolean minutes[] = null;
+  private boolean[] months = null;
+  private boolean[] daysOfMonth = null;
+  private boolean[] daysOfWeek = null;
+  private boolean[] hours = null;
+  private boolean[] minutes = null;
 
   private boolean disabled = false;
 
@@ -425,7 +425,8 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
         continue;
       }
 
-      if (minusIdx >= 0) {
+      //if (minusIdx >= 0)
+      {
         final int len = array.length;
 
         final int from = toInt(subPart.substring(0, minusIdx), 0, len - 1);

@@ -4,14 +4,17 @@ import java.util.regex.Pattern;
 
 public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
 
-  public static SchedulerMatcherDisabled parse(String pattern, TaskRunStatus taskRunStatus) {
-    if (isDisabled(pattern)) return new SchedulerMatcherDisabled();
+  public static SchedulerMatcherDisabled parse(String pattern,
+                                               @SuppressWarnings("unused") TaskRunStatus taskRunStatus) {
+    if (isDisabled(pattern)) {
+      return new SchedulerMatcherDisabled();
+    }
     return null;
   }
 
   private static final Pattern DIS = Pattern.compile(
-      "\\s*(выкл\\w+|откл\\w*|off)\\s+.*",
-      Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
+    "\\s*(выкл\\w+|откл\\w*|off)\\s+.*",
+    Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
 
   static boolean isDisabled(String pattern) {
@@ -29,16 +32,13 @@ public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
   }
 
   @Override
-  public void taskStartedAt(long taskStartedAt) {
-  }
+  public void taskStartedAt(long taskStartedAt) {}
 
   @Override
-  public void taskFinishedAt(long taskFinishedAt) {
-  }
+  public void taskFinishedAt(long taskFinishedAt) {}
 
   @Override
-  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
-  }
+  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {}
 
   @Override
   public String toString() {
@@ -47,7 +47,9 @@ public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) return false;
+    if (obj == null) {
+      return false;
+    }
     return getClass() == obj.getClass();
   }
 }

@@ -18,8 +18,12 @@ public class Scheduler {
 
     for (Task task : tasks) {
       final String poolName = task.getPoolName();
-      if (poolName == null) throw new IllegalArgumentException("Task does not have a pool name " + task.infoForError());
-      if (!this.pools.containsKey(poolName)) throw new NoPoolWithName(poolName, task);
+      if (poolName == null) {
+        throw new IllegalArgumentException("Task does not have a pool name " + task.infoForError());
+      }
+      if (!this.pools.containsKey(poolName)) {
+        throw new NoPoolWithName(poolName, task);
+      }
     }
   }
 
@@ -40,14 +44,20 @@ public class Scheduler {
     for (ExecutionPool pool : pools.values()) {
       pool.tryExecuteFromQueue();
       if (pool.maxThreadWaitingDelayInMillis > 0) {
+
         if (minimalMaxThreadWaitingDelayInMillis == 0
-            || minimalMaxThreadWaitingDelayInMillis < pool.maxThreadWaitingDelayInMillis) {
+          || minimalMaxThreadWaitingDelayInMillis < pool.maxThreadWaitingDelayInMillis) {
+
           minimalMaxThreadWaitingDelayInMillis = pool.maxThreadWaitingDelayInMillis;
+
         }
+
       }
     }
 
-    if (minimalMaxThreadWaitingDelayInMillis == 0) return;
+    if (minimalMaxThreadWaitingDelayInMillis == 0) {
+      return;
+    }
 
     if (lastRunOfStopLongWaitingThreads == 0) {
       lastRunOfStopLongWaitingThreads = System.currentTimeMillis();
@@ -108,7 +118,9 @@ public class Scheduler {
   }
 
   private void markAsStarted() {
-    if (started) throw new IllegalStateException("Scheduler already started");
+    if (started) {
+      throw new IllegalStateException("Scheduler already started");
+    }
     started = true;
   }
 

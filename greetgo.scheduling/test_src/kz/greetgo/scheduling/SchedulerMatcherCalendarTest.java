@@ -55,7 +55,7 @@ public class SchedulerMatcherCalendarTest {
   }
 
   @Test(dataProvider = "toIntDayOfWeek_data")
-  public void dayOfWeekToInt(String dayName, int expectedValue) throws Exception {
+  public void dayOfWeekToInt(String dayName, int expectedValue) {
 
     //
     //
@@ -123,7 +123,7 @@ public class SchedulerMatcherCalendarTest {
   }
 
   @Test(dataProvider = "monthToInt_data")
-  public void monthToInt(String dayName, int expectedValue) throws Exception {
+  public void monthToInt(String dayName, int expectedValue) {
 
     //
     //

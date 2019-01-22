@@ -1,11 +1,6 @@
 package kz.greetgo.scheduling;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ExecutionPool {
@@ -46,7 +41,9 @@ public class ExecutionPool {
   public void stopLongWaitingThreads() {
     final long now = System.currentTimeMillis();
     for (Executor executor : executorList) {
-      if (executor.working()) continue;
+      if (executor.working()) {
+        continue;
+      }
       if (executor.hasWorkingThread()) {
         final long lastFinishMoment = executor.getLastFinishMoment();
         if (now - lastFinishMoment >= maxThreadWaitingDelayInMillis) {
@@ -62,7 +59,9 @@ public class ExecutionPool {
     StringBuilder number = new StringBuilder(len);
     number.append(executorList.size() + 1);
 
-    while (number.length() < len) number.insert(0, '0');
+    while (number.length() < len) {
+      number.insert(0, '0');
+    }
 
     return new Executor(threadNamePrefix + number);
   }

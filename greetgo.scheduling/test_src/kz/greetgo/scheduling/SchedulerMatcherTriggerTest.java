@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static kz.greetgo.scheduling.SchedulerMatcherTrigger.ensureExistsKeyValue;
 import static kz.greetgo.util.ServerUtil.dummyCheck;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -62,7 +63,7 @@ public class SchedulerMatcherTriggerTest {
     final Method method = controller.getClass().getMethod("forTest");
 
     final MySchedulerMatcherTrigger t
-        = new MySchedulerMatcherTrigger(method, controller, new File(WORK_DIR + "leftFile"));
+      = new MySchedulerMatcherTrigger(method, controller, new File(WORK_DIR + "leftFile"));
 
     t.now = at("2015-02-01 11:00:00");
 
@@ -124,7 +125,7 @@ public class SchedulerMatcherTriggerTest {
   public void reset_isItTimeToRun_withConfig_checkFileCreating() throws Exception {
 
     File configFile = new File(WORK_DIR + "reset_isItTimeToRun_withConfig_checkFileCreating"
-        + "_" + RND.intStr(5) + ".config.txt");
+      + "_" + RND.strInt(5) + ".config.txt");
 
     final TestControllerWithConfig controller = new TestControllerWithConfig();
     final Method method = controller.getClass().getMethod("forTest");
@@ -153,7 +154,7 @@ public class SchedulerMatcherTriggerTest {
   public void reset_isItTimeToRun_withConfig_checkFileReading() throws Exception {
 
     File configFile = new File(WORK_DIR + "reset_isItTimeToRun_withConfig_checkFileReading"
-        + "_" + RND.intStr(5) + ".config.txt");
+      + "_" + RND.strInt(5) + ".config.txt");
 
     {
       dummyCheck(configFile.getParentFile().mkdirs());
@@ -227,7 +228,7 @@ public class SchedulerMatcherTriggerTest {
   @Test
   public void testProcessingOfPatternFormatErrorsFromFile() throws Exception {
     File configFile = new File(WORK_DIR + "testProcessingOfPatternFormatErrorsFromFile"
-        + "_" + RND.intStr(5) + ".config.txt");
+      + "_" + RND.strInt(5) + ".config.txt");
     dummyCheck(configFile.getParentFile().mkdirs());
 
     File errorFile = new File(configFile.getPath() + ".error");
@@ -255,10 +256,10 @@ public class SchedulerMatcherTriggerTest {
     t.isItTimeToRun();
 
     assertThat(errorFile).as("Система должна понять, что файл не менялся," +
-        " и поэтому второй раз файл ошибки создаваться не должен").doesNotExist();
+      " и поэтому второй раз файл ошибки создаваться не должен").doesNotExist();
 
     assertThat(tec.caughtExceptions).as("Система должна понять, что файл не менялся," +
-        " и поэтому второй раз exception кидаться не должен").isEmpty();
+      " и поэтому второй раз exception кидаться не должен").isEmpty();
 
     setLineToFile(t, configFile, "forTest=абра кадабра всякая, но уже другая");
 
@@ -298,7 +299,7 @@ public class SchedulerMatcherTriggerTest {
   @Test
   public void testProcessingOfPatternFormatErrorsNoFile() throws Exception {
     File configFile = new File(WORK_DIR + "testProcessingOfPatternFormatErrorsNoFile"
-        + "_" + RND.intStr(5) + ".config.txt");
+      + "_" + RND.strInt(5) + ".config.txt");
 
     File errorFile = new File(configFile.getPath() + ".error");
 
@@ -328,72 +329,72 @@ public class SchedulerMatcherTriggerTest {
 
   private void assertFilesDoNotExist(File configFile, File errorFile) {
     assertThat(errorFile)
-        .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
-        .doesNotExist();
+      .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
+      .doesNotExist();
 
     assertThat(configFile)
-        .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
-        .doesNotExist();
+      .as("Если расписание берётся не из файла, то никакие файлы создаваться не должны")
+      .doesNotExist();
   }
 
   @Test
-  public void ensureExistsKeyValue_1() throws Exception {
+  public void ensureExistsKeyValue_1() {
 
     String content = "asd_key1=wow\n" +
-        "#asd_key1.m1=wow1\n";
+      "#asd_key1.m1=wow1\n";
 
     //
     //
-    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes("UTF-8"), "asd_key1", "asd_key1.m1");
+    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes(UTF_8), "asd_key1", "asd_key1.m1");
     //
     //
 
-    String newContent = new String(newContentBytes, "UTF-8");
+    String newContent = new String(newContentBytes, UTF_8);
 
     assertThat(newContent).isEqualTo(content);
 
   }
 
   @Test
-  public void ensureExistsKeyValue_2() throws Exception {
+  public void ensureExistsKeyValue_2() {
 
     String content = "asd_key1=wow\n"
-        + "#asd_key1.m1=wow1\n"
-        + "\n"
-        + "moon\n\n    \t  \n \n";
+      + "#asd_key1.m1=wow1\n"
+      + "\n"
+      + "moon\n\n    \t  \n \n";
     String expectedContent = "asd_key1=wow\n"
-        + "#asd_key1.m1=wow1\n"
-        + "#asd_key1.m2=wow\n"
-        + "\n"
-        + "moon\n";
+      + "#asd_key1.m1=wow1\n"
+      + "#asd_key1.m2=wow\n"
+      + "\n"
+      + "moon\n";
 
     //
     //
-    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes("UTF-8"), "asd_key1", "asd_key1.m2");
+    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes(UTF_8), "asd_key1", "asd_key1.m2");
     //
     //
 
-    String newContent = new String(newContentBytes, "UTF-8");
+    String newContent = new String(newContentBytes, UTF_8);
 
     assertThat(newContent).isEqualTo(expectedContent);
 
   }
 
   @Test
-  public void ensureExistsKeyValue_3() throws Exception {
+  public void ensureExistsKeyValue_3() {
 
     String content = "asd_key1=wow\n"
-        + "#asd_key1.m1=wow1\n"
-        + "\n"
-        + "moon\n";
+      + "#asd_key1.m1=wow1\n"
+      + "\n"
+      + "moon\n";
 
     //
     //
-    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes("UTF-8"), "dsa_key2", "dsa_key2.m2");
+    byte[] newContentBytes = ensureExistsKeyValue(content.getBytes(UTF_8), "dsa_key2", "dsa_key2.m2");
     //
     //
 
-    String newContent = new String(newContentBytes, "UTF-8");
+    String newContent = new String(newContentBytes, UTF_8);
 
     assertThat(newContent).isEqualTo(content);
   }

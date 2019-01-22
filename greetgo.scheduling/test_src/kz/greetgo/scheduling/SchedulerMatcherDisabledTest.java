@@ -8,7 +8,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class SchedulerMatcherDisabledTest {
 
   @Test
-  public void isDisabled_1() throws Exception {
+  public void isDisabled_1() {
 
     assertThat(isDisabled(" off left ")).isTrue();
     assertThat(isDisabled(" off ")).isTrue();

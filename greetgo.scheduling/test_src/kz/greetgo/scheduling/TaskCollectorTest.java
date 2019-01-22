@@ -18,7 +18,7 @@ public class TaskCollectorTest {
 
     long createdAt = System.currentTimeMillis();
 
-    final List<String> runs = synchronizedList(new ArrayList<String>());
+    final List<String> runs = synchronizedList(new ArrayList<>());
 
     //@Scheduled("Повторять каждые 4 секунды, начиная с паузы 1.5 секунды")
     @Scheduled("Параллельно повторять каждые 10 секунд, начиная с паузы 7 секунд")
@@ -42,18 +42,16 @@ public class TaskCollectorTest {
   public static class C2 {
     @Scheduled("13:00")
     @FromConfig("Описание 1")
-    public void helloWorld() {
-    }
+    public void helloWorld() {}
 
     @Scheduled("повторять каждые 13 мин, начиная с паузы 17 сек")
     @FromConfig("Описание 2 goodByWorld")
-    public void goodByWorld() {
-    }
+    public void goodByWorld() {}
   }
 
   @Test(enabled = false)
   public void collect_and_run() throws Exception {
-    String dir = "build/TaskCollectorTest/collect_and_run_" + RND.intStr(5);
+    String dir = "build/TaskCollectorTest/collect_and_run_" + RND.strInt(5);
 
     TaskCollector taskCollector = new TaskCollector(dir);
 
@@ -93,8 +91,8 @@ public class TaskCollectorTest {
   }
 
   @Test
-  public void collect() throws Exception {
-    String dir = "build/TaskCollectorTest/collect_" + RND.intStr(5);
+  public void collect() {
+    String dir = "build/TaskCollectorTest/collect_" + RND.strInt(5);
 
     TaskCollector taskCollector = new TaskCollector(dir);
 

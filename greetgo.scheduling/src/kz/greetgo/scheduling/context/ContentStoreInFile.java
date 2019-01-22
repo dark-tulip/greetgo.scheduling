@@ -33,6 +33,7 @@ public class ContentStoreInFile implements ContentStore {
 
   @Override
   public void setContent(byte[] content) {
+    //noinspection ResultOfMethodCallIgnored
     file.getParentFile().mkdirs();
     try (FileOutputStream out = new FileOutputStream(file)) {
       out.write(content);

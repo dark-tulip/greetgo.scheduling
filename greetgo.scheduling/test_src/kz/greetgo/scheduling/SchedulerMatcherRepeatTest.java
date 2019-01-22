@@ -10,7 +10,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class SchedulerMatcherRepeatTest {
 
   @Test
-  public void parseRus_0() throws Exception {
+  public void parseRus_0() {
     //
     //
     final ParseResult pr = parseRus(" левая строка ");
@@ -21,7 +21,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseRus_1() throws Exception {
+  public void parseRus_1()   {
     //
     //
     final ParseResult pr = parseRus(" parallel повторять каждые 13 мин, начиная  с паузы 17 сек ");
@@ -35,7 +35,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseRus_2() throws Exception {
+  public void parseRus_2()   {
     //
     //
     final ParseResult pr = parseRus(" параллельно повторять каждые 13 минут, начиная  с паузы 17 секунд ");
@@ -49,7 +49,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseRus_3() throws Exception {
+  public void parseRus_3()   {
     //
     //
     final ParseResult pr = parseRus(" повторять каждые 13 мин, начиная  с паузы 17 сек ");
@@ -64,7 +64,7 @@ public class SchedulerMatcherRepeatTest {
 
 
   @Test
-  public void parseRus_4() throws Exception {
+  public void parseRus_4()   {
     //
     //
     final ParseResult pr = parseRus(" повторять каждые 13 мин");
@@ -78,7 +78,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseRus_5() throws Exception {
+  public void parseRus_5()   {
     //
     //
     final ParseResult pr = parseRus("параллельно повторять каждые 13 мин");
@@ -92,7 +92,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseEng_0() throws Exception {
+  public void parseEng_0()   {
     //
     //
     final ParseResult pr = parseEng(" left string ");
@@ -103,7 +103,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseEng_1() throws Exception {
+  public void parseEng_1()   {
     //
     //
     final ParseResult pr = parseEng(" parallel repeat every 13 min after pause in 17 сек ");
@@ -117,7 +117,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseEng_2() throws Exception {
+  public void parseEng_2()   {
     //
     //
     final ParseResult pr = parseEng(" параллельно repeat every  13 minutes after pause in 17 s ");
@@ -131,7 +131,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseEng_3() throws Exception {
+  public void parseEng_3()   {
     //
     //
     final ParseResult pr = parseEng(" repeat every 13 min after  pause in 17 sec ");
@@ -144,9 +144,8 @@ public class SchedulerMatcherRepeatTest {
     assertThat(pr.waitingFor).isEqualTo(17L * 1000L);
   }
 
-
   @Test
-  public void parseEng_4() throws Exception {
+  public void parseEng_4(){
     //
     //
     final ParseResult pr = parseEng("repeat every 13 min");
@@ -160,7 +159,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseEng_5() throws Exception {
+  public void parseEng_5(){
     //
     //
     final ParseResult pr = parseEng("параллельно repeat every 13 min");
@@ -174,7 +173,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parse_1() throws Exception {
+  public void parse_1(){
 
     TaskRunStatus taskRunStatus = new TaskRunStatus();
 
@@ -186,7 +185,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseRus_more() throws Exception {
+  public void parseRus_more(){
     //
     //
     final ParseResult pr = parseRus(" повторять каждые 13.6 мин, начиная с паузы 2.3 минуты ");
@@ -200,7 +199,7 @@ public class SchedulerMatcherRepeatTest {
   }
 
   @Test
-  public void parseEng_more() throws Exception {
+  public void parseEng_more(){
     //
     //
     final ParseResult pr = parseEng(" repeat every 13.6 minutes after pause in 2.3 minutes ");

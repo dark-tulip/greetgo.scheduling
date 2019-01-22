@@ -20,7 +20,9 @@ public class SchedulerProbe {
     @Override
     public boolean isItTimeToRun() {
       final long now = System.currentTimeMillis();
-      if (now - lastTime < everySeconds * 1000) return false;
+      if (now - lastTime < everySeconds * 1000) {
+        return false;
+      }
       lastTime = now;
       return true;
     }
@@ -31,12 +33,10 @@ public class SchedulerProbe {
     }
 
     @Override
-    public void jobIsGoingToStart() {
-    }
+    public void jobIsGoingToStart() {}
 
     @Override
-    public void jobHasFinishedJustNow() {
-    }
+    public void jobHasFinishedJustNow() {}
 
     @Override
     public boolean disabled() {
@@ -44,12 +44,10 @@ public class SchedulerProbe {
     }
 
     @Override
-    public void markThatInExecutionQueue() {
-    }
+    public void markThatInExecutionQueue() {}
 
     @Override
-    public void reset() {
-    }
+    public void reset() {}
 
     @Override
     public boolean isResettable() {
@@ -73,7 +71,7 @@ public class SchedulerProbe {
 
   private static class PrintHelloWorld implements Job {
     @Override
-    public void doWork() throws Throwable {
+    public void doWork() {
       System.out.println(pre() + "Hello World!!!");
     }
 
@@ -113,6 +111,7 @@ public class SchedulerProbe {
   }
 
   public static void main(String[] args) throws Exception {
+    //noinspection ConstantConditions
     final boolean inMainThread = "a".equals("a1");
 
     final MyThrowableCatcher tc = new MyThrowableCatcher();
@@ -137,6 +136,7 @@ public class SchedulerProbe {
 
     final Scheduler scheduler = new Scheduler(tasks, pools);
 
+    //noinspection ConstantConditions
     if (inMainThread) {
       scheduler.startupInMyThread();
       return;

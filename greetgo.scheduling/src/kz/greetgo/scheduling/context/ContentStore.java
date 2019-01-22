@@ -8,6 +8,7 @@ public interface ContentStore {
 
   void setContent(byte[] content);
 
+  @SuppressWarnings("UnusedReturnValue")
   boolean delete();
 
   long lastModifiedMillis();

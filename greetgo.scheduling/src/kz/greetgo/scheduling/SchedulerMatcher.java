@@ -15,12 +15,16 @@ public class SchedulerMatcher {
   private static SchedulerMatcherDelegate create(String pattern, TaskRunStatus taskRunStatus, String place) {
     {
       final SchedulerMatcherDisabled smd = SchedulerMatcherDisabled.parse(pattern, taskRunStatus);
-      if (smd != null) return smd;
+      if (smd != null) {
+        return smd;
+      }
     }
 
     {
       final SchedulerMatcherDelegate smd = SchedulerMatcherRepeat.parse(pattern, taskRunStatus);
-      if (smd != null) return smd;
+      if (smd != null) {
+        return smd;
+      }
     }
 
     return new SchedulerMatcherCalendar(pattern, place);
@@ -48,8 +52,12 @@ public class SchedulerMatcher {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
     SchedulerMatcher that = (SchedulerMatcher) o;
 

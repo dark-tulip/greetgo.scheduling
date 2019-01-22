@@ -8,12 +8,7 @@ import java.io.File;
 public class TaskCollector extends AbstractTaskCollector {
   public String configExtension = ".class.scheduler";
 
-  public ThrowableCatcher throwableCatcher = new ThrowableCatcher() {
-    @Override
-    public void catchThrowable(Throwable throwable) {
-      throwable.printStackTrace();
-    }
-  };
+  public ThrowableCatcher throwableCatcher = Throwable::printStackTrace;
 
   @Override
   protected SchedulerContext getSchedulerContext(Class<?> controllerClass) {

@@ -15,7 +15,7 @@ public abstract class AbstractTaskCollector {
   private final List<Task> tasks = new ArrayList<>();
 
   protected abstract SchedulerContext getSchedulerContext(Class<?> controllerClass);
-  
+
   public List<Task> getTasks() {
     return unmodifiableList(tasks);
   }
@@ -26,7 +26,9 @@ public abstract class AbstractTaskCollector {
 
     String topPoolName = defaultPoolName;
     final UsePool classUsePool = controllerClass.getAnnotation(UsePool.class);
-    if (classUsePool != null) topPoolName = classUsePool.value().trim();
+    if (classUsePool != null) {
+      topPoolName = classUsePool.value().trim();
+    }
 
     SchedulerContext schedulerContext = getSchedulerContext(controllerClass);
 
@@ -36,7 +38,9 @@ public abstract class AbstractTaskCollector {
 
       String poolName = topPoolName;
       final UsePool usePool = controllerClass.getAnnotation(UsePool.class);
-      if (usePool != null) poolName = usePool.value();
+      if (usePool != null) {
+        poolName = usePool.value();
+      }
 
       tasks.add(new Task(poolName, smt.job, smt, schedulerContext.throwableCatcher()));
     }
