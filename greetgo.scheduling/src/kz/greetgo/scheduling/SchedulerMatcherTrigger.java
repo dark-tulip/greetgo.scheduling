@@ -33,13 +33,16 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   public static SchedulerMatcherTrigger create(final Method method, final Object controller,
                                                final SchedulerContext schedulerContext) {
 
-    if (method.getAnnotation(Scheduled.class) == null) return null;
+    if (method.getAnnotation(Scheduled.class) == null) {
+      return null;
+    }
 
     return new SchedulerMatcherTrigger(method, controller, schedulerContext);
   }
 
   protected SchedulerMatcherTrigger(final Method method, final Object controller,
                                     SchedulerContext schedulerContext) {
+
     this.schedulerContext = schedulerContext;
     configKeyName = method.getName();
 
@@ -66,16 +69,20 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
       }
       if (annotation instanceof FromConfig) {
         String s = ((FromConfig) annotation).value().trim();
-        if (s.length() == 0) throw new SchedulerException("No description: Description must be in "
-          + FromConfig.class.getSimpleName() + ".value() of "
-          + controller.getClass().getSimpleName() + "." + method.getName());
+        if (s.length() == 0) {
+          throw new SchedulerException("No description: Description must be in "
+            + FromConfig.class.getSimpleName() + ".value() of "
+            + controller.getClass().getSimpleName() + "." + method.getName());
+        }
         fromConfigDescription = s;
         continue;
       }
     }
 
-    if (initialSchedulerPattern == null) throw new IllegalArgumentException("No annotation "
-      + Scheduled.class.getSimpleName() + " in method " + method.toGenericString());
+    if (initialSchedulerPattern == null) {
+      throw new IllegalArgumentException("No annotation "
+        + Scheduled.class.getSimpleName() + " in method " + method.toGenericString());
+    }
   }
 
   private volatile long lastCheckTime = 0;
@@ -87,7 +94,9 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
 
   @Override
   public void reset() {
-    if (!isResettable()) return;
+    if (!isResettable()) {
+      return;
+    }
     matcher = null;
     checkErrorFileToDelete = true;
   }
@@ -103,17 +112,23 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   @Override
   public boolean isItTimeToRun() {
 
-    if (alwaysReturnFalse) return false;
+    if (alwaysReturnFalse) {
+      return false;
+    }
 
-    if (matcher == null) try {
-      createMatcher();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    if (matcher == null) {
+      try {
+        createMatcher();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
     SchedulerMatcher localMatcher = this.matcher;
 
-    if (localMatcher == null) return false;
+    if (localMatcher == null) {
+      return false;
+    }
 
     if (checkErrorFileToDelete && isResettable()) {
       schedulerContext.configError().delete();
@@ -199,7 +214,9 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
   @Override
   public void jobIsGoingToStart() {
     SchedulerMatcher localMatcher = matcher;
-    if (localMatcher != null) localMatcher.taskStartedAt(now());
+    if (localMatcher != null) {
+      localMatcher.taskStartedAt(now());
+    }
   }
 
   private final TaskRunStatus taskRunStatus = new TaskRunStatus();
@@ -348,7 +365,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
     String key = configKeyName;
     if (schedulerContext.machineId() == null) {
       pattern = confData.str(key);
-    } else
+    } else {
       try {
         key = keyWithMachine(configKeyName, schedulerContext.machineId());
         pattern = confData.strEx(key);
@@ -359,6 +376,7 @@ public class SchedulerMatcherTrigger extends AbstractTrigger {
         key = configKeyName;
         pattern = confData.str(key);
       }
+    }
 
     place = schedulerContext.configContent().placeInfo() + ", key: " + key;
   }

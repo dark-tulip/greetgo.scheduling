@@ -375,7 +375,9 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
   // 12/3:0/3
   private void parsePartHourAndMinute(String part) {
     final int idx = part.indexOf(':');
-    if (idx < 0) throw error("No colon on part of hours and minutes");
+    if (idx < 0) {
+      throw error("No colon on part of hours and minutes");
+    }
     String minutesPart = part.substring(idx + 1);
 
     if (minutesPart.length() > 0 && !"*".equals(minutesPart)) {
@@ -435,7 +437,6 @@ public class SchedulerMatcherCalendar implements SchedulerMatcherDelegate {
           array[i] = true;
         }
 
-        //noinspection UnnecessaryContinue
         continue;
       }
 

@@ -5,15 +5,20 @@ import java.util.regex.Pattern;
 public class SchedulerMatcherDisabled implements SchedulerMatcherDelegate {
 
   public static SchedulerMatcherDisabled parse(String pattern,
-                                               @SuppressWarnings("unused") TaskRunStatus taskRunStatus) {
+                                               @SuppressWarnings("unused")
+                                                 TaskRunStatus taskRunStatus) {
+
     if (isDisabled(pattern)) {
       return new SchedulerMatcherDisabled();
     }
+
     return null;
   }
 
   private static final Pattern DIS = Pattern.compile(
+
     "\\s*(выкл\\w+|откл\\w*|off)\\s+.*",
+
     Pattern.CASE_INSENSITIVE | Pattern.COMMENTS | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE
   );
 

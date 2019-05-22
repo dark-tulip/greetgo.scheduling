@@ -1,6 +1,7 @@
 package kz.greetgo.scheduling;
 
 public interface SchedulerMatcherDelegate {
+
   boolean match(long lastCheckTime, long now);
 
   boolean isParallel();
@@ -10,4 +11,5 @@ public interface SchedulerMatcherDelegate {
   void taskFinishedAt(long taskFinishedAt);
 
   void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt);
+
 }

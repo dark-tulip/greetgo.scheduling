@@ -36,14 +36,24 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
 
       ParseResult that = (ParseResult) o;
 
-      if (parallel != that.parallel) return false;
-      if (repeatingBy != that.repeatingBy) return false;
-      if (waitingFor != that.waitingFor) return false;
+      if (parallel != that.parallel) {
+        return false;
+      }
+      if (repeatingBy != that.repeatingBy) {
+        return false;
+      }
+      if (waitingFor != that.waitingFor) {
+        return false;
+      }
 
       return true;
     }
@@ -59,24 +69,31 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
 
   public static SchedulerMatcherDelegate parse(String pattern, TaskRunStatus taskRunStatus) {
     ParseResult parseResult = parseRus(pattern);
-    if (parseResult == null) parseResult = parseEng(pattern);
-    if (parseResult != null) return new SchedulerMatcherRepeat(parseResult, taskRunStatus);
+    if (parseResult == null) {
+      parseResult = parseEng(pattern);
+    }
+    if (parseResult != null) {
+      return new SchedulerMatcherRepeat(parseResult, taskRunStatus);
+    }
     return null;
   }
 
   @Override
-  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {
-  }
+  public void taskFellInExecutionQueueAt(long taskFellInExecutionQueueAt) {}
 
   private long lastNowOnReturnTrue = 0;
 
   @Override
   public boolean match(long lastCheckTime, long now) {
 //    System.out.println("taskStartedAt = " + taskStartedAt + ", taskFinishedAt = " + taskFinishedAt);
-    if (!parseResult.parallel && taskRunStatus.inRuntimeCount.get() > 0) return false;
+    if (!parseResult.parallel && taskRunStatus.inRuntimeCount.get() > 0) {
+      return false;
+    }
 
     long pause = parseResult.repeatingBy;
-    if (lastNowOnReturnTrue == 0) pause = parseResult.waitingFor;
+    if (lastNowOnReturnTrue == 0) {
+      pause = parseResult.waitingFor;
+    }
 
     long timeToStart = getBegin() + pause;
 
@@ -89,11 +106,17 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
 
   private long getBegin() {
     long begins = taskRunStatus.schedulerStartedAt.get();
-    if (begins < lastNowOnReturnTrue) begins = lastNowOnReturnTrue;
-    if (parseResult.parallel) return begins;
+    if (begins < lastNowOnReturnTrue) {
+      begins = lastNowOnReturnTrue;
+    }
+    if (parseResult.parallel) {
+      return begins;
+    }
     {
       long lastFinishedAt = taskRunStatus.lastFinishedAt.get();
-      if (lastFinishedAt > 0) return begins > lastFinishedAt ? begins : lastFinishedAt;
+      if (lastFinishedAt > 0) {
+        return begins > lastFinishedAt ? begins : lastFinishedAt;
+      }
     }
     return begins;
   }
@@ -104,12 +127,10 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   }
 
   @Override
-  public void taskStartedAt(long taskStartedAt) {
-  }
+  public void taskStartedAt(long taskStartedAt) {}
 
   @Override
-  public void taskFinishedAt(long taskFinishedAt) {
-  }
+  public void taskFinishedAt(long taskFinishedAt) {}
 
   private static final Pattern RUS = Pattern.compile(
     // повторять каждые 13 мин, начиная с паузы 17 мин
@@ -143,8 +164,11 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   private static ParseResult parseRegexp(Pattern regexp, String pattern, int parallelGroup,
                                          int repeatingByValueGroup, int repeatingByUnitGroup,
                                          int waitingForValueGroup, int waitingForUnitGroup) {
+
     final Matcher m = regexp.matcher(pattern);
-    if (!m.matches()) return null;
+    if (!m.matches()) {
+      return null;
+    }
 
     boolean parallel = m.group(parallelGroup) != null;
     long repeatingBy = readMillis(m.group(repeatingByValueGroup), m.group(repeatingByUnitGroup));
@@ -158,7 +182,9 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   }
 
   private static long readMillis(String value, String unit) {
-    if (value == null) return 0;
+    if (value == null) {
+      return 0;
+    }
     return Math.round(Double.parseDouble(value) * millis(unit));
   }
 
@@ -195,4 +221,5 @@ public class SchedulerMatcherRepeat implements SchedulerMatcherDelegate {
   public int hashCode() {
     return parseResult.hashCode();
   }
+
 }

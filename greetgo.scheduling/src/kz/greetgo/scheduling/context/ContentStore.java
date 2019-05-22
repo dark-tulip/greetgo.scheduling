@@ -12,6 +12,6 @@ public interface ContentStore {
   boolean delete();
 
   long lastModifiedMillis();
-  
+
   String placeInfo();
 }

@@ -1,6 +1,10 @@
 package kz.greetgo.scheduling;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Scheduler {
 
@@ -12,9 +16,13 @@ public class Scheduler {
   private volatile boolean active = true;
 
   public Scheduler(Collection<Task> tasks, Map<String, ExecutionPool> pools) {
-    if (tasks == null || tasks.size() == 0) throw new IllegalArgumentException("no tasks");
+    if (tasks == null || tasks.size() == 0) {
+      throw new IllegalArgumentException("no tasks");
+    }
     this.tasks.addAll(tasks);
-    if (pools != null) this.pools.putAll(pools);
+    if (pools != null) {
+      this.pools.putAll(pools);
+    }
 
     for (Task task : tasks) {
       final String poolName = task.getPoolName();
@@ -32,7 +40,9 @@ public class Scheduler {
   private void makeScheduleStep() {
 
     for (Task task : tasks) {
-      if (task.disabled()) continue;
+      if (task.disabled()) {
+        continue;
+      }
       if (task.isItTimeToRun()) {
         final String poolName = task.getPoolName();
         pools.get(poolName).runTask(task);
@@ -96,6 +106,7 @@ public class Scheduler {
           try {
             sync.wait(idleSleepTime);
           } catch (InterruptedException ignore) {
+            //do nothing
           }
         }
 
@@ -131,7 +142,9 @@ public class Scheduler {
   private final Object sync = new Object();
 
   public void shutdown() {
-    if (!active) return;
+    if (!active) {
+      return;
+    }
     active = false;
     synchronized (sync) {
       sync.notifyAll();
@@ -146,4 +159,5 @@ public class Scheduler {
     markAsStarted();
     runner.run();
   }
+
 }

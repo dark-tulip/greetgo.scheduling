@@ -13,7 +13,7 @@ public class TaskCollector extends AbstractTaskCollector {
   @Override
   protected SchedulerContext getSchedulerContext(Class<?> controllerClass) {
     SchedulerContextOnFile ret = new SchedulerContextOnFile(new File(
-        configDir + "/" + controllerClass.getSimpleName() + configExtension
+      configDir + "/" + controllerClass.getSimpleName() + configExtension
     ));
     ret.throwableCatcher = throwableCatcher;
     ret.makeExceptionCatcherThroughThrowableCatcher();

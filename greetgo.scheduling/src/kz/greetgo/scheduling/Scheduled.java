@@ -1,6 +1,10 @@
 package kz.greetgo.scheduling;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * <p>Marks a method that will be executed on the schedule, and also defines this schedule.
@@ -94,14 +98,14 @@ import java.lang.annotation.*;
  * "параллель|parallel", which defines the parallel mode of startup (the word is present) or sequential mode
  * of startup (the word is not present):
  * <br><b>In parallel mode</b> the system without waiting for completion of the task, awaiting time NN1  and initiates the task again,
- * and then also without waiting for completion of the task, awaiting time NN1 initiates the task again, and then till the stop of the scheduler 
+ * and then also without waiting for completion of the task, awaiting time NN1 initiates the task again, and then till the stop of the scheduler
  * the task will be initiated at regular intervals of NN1.
  * <br><b>In sequential mode</b> the system waits for task completion, and then starts timing.
  * When the time NN1 is over, the task is initiated again. Then waiting for task completion again, after completion -
  * waiting for time NN1 and startup. And then till the stop of the scheduler.
  * </p>
  * <p>
- * Examples: 
+ * Examples:
  * <br><b>repeat every 13 min after pause in 17 sec</b>
  * <br>
  * <br><b>parallel repeat every 13 sec after pause in 17 min</b>
