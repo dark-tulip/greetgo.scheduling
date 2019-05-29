@@ -33,4 +33,5 @@ public class TriggerRepeat implements Trigger {
   public boolean isDotty() {
     return true;
   }
+
 }

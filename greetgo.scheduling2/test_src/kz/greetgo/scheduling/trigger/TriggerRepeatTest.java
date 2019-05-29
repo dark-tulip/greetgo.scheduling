@@ -47,5 +47,6 @@ public class TriggerRepeatTest {
     //
 
     assertThat(hit).isEqualTo(expectedResult);
+    assertThat(trigger.isDotty()).isTrue();
   }
 }
