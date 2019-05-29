@@ -24,4 +24,19 @@ public class TriggerStructStr implements TriggerStruct {
     return "[" + source() + "]";
   }
 
+  private Trigger trigger = null;
+
+  @Override
+  public Trigger trigger() {
+    {
+      Trigger trigger = this.trigger;
+      if (trigger != null) {
+        return trigger;
+      }
+    }
+    {
+      return trigger = TriggerStructStrParser.of(range, source, System::currentTimeMillis).parse();
+    }
+  }
+
 }

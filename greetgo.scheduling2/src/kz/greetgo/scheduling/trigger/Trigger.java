@@ -1,10 +1,8 @@
 package kz.greetgo.scheduling.trigger;
 
-import java.util.Date;
-
 public interface Trigger {
 
-  boolean isHit(Date periodFrom, Date periodTo);
+  boolean isHit(long schedulerStartedAtMillis, long timeMillisFrom, long timeMillisTo);
 
   boolean isDotty();
 

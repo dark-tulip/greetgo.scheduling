@@ -1,7 +1,5 @@
 package kz.greetgo.scheduling.trigger;
 
-import java.util.Date;
-
 public class SilentTrigger implements Trigger {
 
   private final boolean dotty;
@@ -11,7 +9,7 @@ public class SilentTrigger implements Trigger {
   }
 
   @Override
-  public boolean isHit(Date periodFrom, Date periodTo) {
+  public boolean isHit(long startedSchedulerMillisAt, long timeMillisFrom, long timeMillisTo) {
     return false;
   }
 

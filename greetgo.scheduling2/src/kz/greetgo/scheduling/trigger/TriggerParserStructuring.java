@@ -106,17 +106,7 @@ public class TriggerParserStructuring {
     }
   }
 
-  class TokenError {
-    final String message;
-    final Range range;
-
-    public TokenError(Range range, String message) {
-      this.range = range;
-      this.message = message;
-    }
-  }
-
-  public final List<TokenError> tokenErrors = new ArrayList<>();
+  public final List<ParseError> parseErrors = new ArrayList<>();
 
   private TriggerStruct readStruct(Token openedBracket) {
     List<ExpressionElement> elements = new ArrayList<>();
@@ -135,7 +125,7 @@ public class TriggerParserStructuring {
 
         case CLOSE_BRACKET: {
           if (openedBracket == null) {
-            tokenErrors.add(new TokenError(token.range, "Несогласованная закрывающая скобка"));
+            parseErrors.add(new ParseError(token.range, "h56b4v6", "Несогласованная закрывающая скобка"));
           }
           return constructStruct(elements);
         }
@@ -163,7 +153,7 @@ public class TriggerParserStructuring {
   private TriggerStruct constructStruct(List<ExpressionElement> elements) {
 
     if (elements.isEmpty()) {
-      tokenErrors.add(new TokenError(null, "Нет данных"));
+      parseErrors.add(new ParseError(new Range(0, 0), "6h5bv47", "Нет данных"));
       return new TriggerStructEmpty();
     }
 
@@ -172,7 +162,7 @@ public class TriggerParserStructuring {
     {
       ExpressionElement firstElement = elements.remove(0);
       if (firstElement instanceof Operation) {
-        tokenErrors.add(new TokenError(firstElement.range(), "Нет данных"));
+        parseErrors.add(new ParseError(firstElement.range(), "6h56bv3", "Нет данных"));
         return new TriggerStructEmpty();
       }
       first = (TriggerStruct) firstElement;
@@ -194,7 +184,7 @@ public class TriggerParserStructuring {
     for (ExpressionElement element : elements) {
       if (element instanceof Operation) {
         if (pre != null) {
-          tokenErrors.add(new TokenError(element.range(), "Повторная операция"));
+          parseErrors.add(new ParseError(element.range(), "h4gh3vf", "Повторная операция"));
           return new TriggerStructEmpty();
         }
         pre = (Operation) element;
@@ -202,19 +192,16 @@ public class TriggerParserStructuring {
       }
 
       TriggerStruct triggerStruct = (TriggerStruct) element;
-
       if (pre == null) {
-        tokenErrors.add(new TokenError(triggerStruct.range(), "Отсутствует операция"));
+        parseErrors.add(new ParseError(triggerStruct.range(), "5hb6267", "Отсутствует операция впереди"));
         return new TriggerStructEmpty();
       }
-
       pairs.add(new Pair(pre, triggerStruct));
       pre = null;
-
     }
 
     if (pre != null) {
-      tokenErrors.add(new TokenError(pre.range(), "Несогласованная операция"));
+      parseErrors.add(new ParseError(pre.range(), "33j5nb6", "Несогласованная операция"));
       return new TriggerStructEmpty();
     }
 

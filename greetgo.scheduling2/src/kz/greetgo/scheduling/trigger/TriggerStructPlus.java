@@ -23,4 +23,23 @@ public class TriggerStructPlus implements TriggerStruct {
     return "(" + a.toString() + " + " + b.toString() + ")";
   }
 
+  @Override
+  public Trigger trigger() {
+    return new Trigger() {
+      Trigger triggerA = a.trigger();
+      Trigger triggerB = b.trigger();
+
+      @Override
+      public boolean isHit(long startedAt, long from, long to) {
+        return triggerA.isHit(startedAt, from, to) || triggerB.isHit(startedAt, from, to);
+      }
+
+      @Override
+      public boolean isDotty() {
+        return triggerA.isDotty() && triggerB.isDotty();
+      }
+
+    };
+  }
+
 }

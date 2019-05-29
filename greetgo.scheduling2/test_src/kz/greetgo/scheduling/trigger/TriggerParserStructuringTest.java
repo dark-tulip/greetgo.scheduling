@@ -94,6 +94,53 @@ public class TriggerParserStructuringTest {
 
   }
 
+  @Test
+  public void makeStruct_error1() {
+    TriggerParserStructuring structuring = new TriggerParserStructuring(
+      " a + b * (c + d) sss "
+
+    );
+
+    //
+    //
+    structuring.makeTokens();
+    structuring.makeStruct();
+    //
+    //
+
+    for (ParseError parseError : structuring.parseErrors) {
+      System.err.println("5gv4326gf :: " + parseError);
+    }
+
+    assertThat(structuring.parseErrors).hasSize(1);
+    assertThat(structuring.parseErrors.get(0).errorCode).isEqualTo("5hb6267");
+    assertThat(structuring.parseErrors.get(0).range).isEqualTo(Range.of(16, 21));
+  }
+
+
+  @Test
+  public void makeStruct_error2() {
+
+    TriggerParserStructuring structuring = new TriggerParserStructuring(
+      " a + b * (c + d) ) "
+    );
+
+    //
+    //
+    structuring.makeTokens();
+    structuring.makeStruct();
+    //
+    //
+
+    for (ParseError parseError : structuring.parseErrors) {
+      System.err.println("5gv4326gf :: " + parseError);
+    }
+
+    assertThat(structuring.parseErrors).hasSize(1);
+    assertThat(structuring.parseErrors.get(0).errorCode).isEqualTo("h56b4v6");
+    assertThat(structuring.parseErrors.get(0).range).isEqualTo(Range.of(17, 18));
+
+  }
 
   @Test
   public void makeStruct_plus_mul_bracket_plus() {
@@ -108,6 +155,8 @@ public class TriggerParserStructuringTest {
     structuring.makeStruct();
     //
     //
+
+    assertThat(structuring.parseErrors).isEmpty();
 
     TriggerStruct result = structuring.result;
 
