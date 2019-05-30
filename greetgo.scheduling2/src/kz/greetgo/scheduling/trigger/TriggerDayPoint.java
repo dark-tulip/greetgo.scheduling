@@ -1,20 +1,30 @@
 package kz.greetgo.scheduling.trigger;
 
+import kz.greetgo.scheduling.util.StrUtil;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class TriggerDayPoint implements Trigger {
 
   private final long startFromDay;
+  private final String point;
 
   public TriggerDayPoint(int hour, int minute, int second) {
     startFromDay = toStart(hour, minute, second);
+    point = StrUtil.toLenZero(hour, 2) + ":" + StrUtil.toLenZero(minute, 2) + ":" + StrUtil.toLenZero(second, 2);
+  }
+
+  @Override
+  public String toString() {
+    return "DayPoint{" + point + "}";
   }
 
   @Override
   public boolean isDotty() {
     return true;
   }
+
 
   private static final long MILLISECONDS_PER_SECOND = 1000;
   private static final long MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * 60;

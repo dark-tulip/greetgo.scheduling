@@ -38,6 +38,10 @@ public class TriggerStructMul implements TriggerStruct {
         return triggerA.isDotty() || triggerB.isDotty();
       }
 
+      @Override
+      public String toString() {
+        return "(" + triggerA + " * " + triggerB + ")";
+      }
     };
   }
 

@@ -16,7 +16,7 @@ public class TriggerStructEmpty implements TriggerStruct {
 
   @Override
   public String toString() {
-    return "TRIGGER_EMPTY";
+    return "EMPTY";
   }
 
 }

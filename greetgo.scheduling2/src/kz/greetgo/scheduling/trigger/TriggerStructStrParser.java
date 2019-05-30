@@ -18,7 +18,9 @@ public class TriggerStructStrParser {
 
   public Trigger parse() {
 
-    long currentTimeMillis = System.currentTimeMillis();
+    String[] split = source.trim().split("\\s+");
+
+
 
     return null;
   }

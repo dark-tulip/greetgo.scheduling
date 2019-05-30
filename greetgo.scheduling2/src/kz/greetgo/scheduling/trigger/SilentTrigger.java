@@ -17,4 +17,10 @@ public class SilentTrigger implements Trigger {
   public boolean isDotty() {
     return dotty;
   }
+
+  @Override
+  public String toString() {
+    return "Silent{dotty=" + dotty + '}';
+  }
+
 }

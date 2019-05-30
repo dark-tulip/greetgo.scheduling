@@ -11,6 +11,11 @@ public class TriggerRepeat implements Trigger {
   }
 
   @Override
+  public String toString() {
+    return "Repeat{" + startSilentMillis + " " + delayMillis + "}";
+  }
+
+  @Override
   public boolean isHit(long schedulerStartedAtMillis, long timeMillisFrom, long timeMillisTo) {
 
     long from = timeMillisFrom - schedulerStartedAtMillis;
