@@ -45,16 +45,4 @@ public class TriggerDayPoint implements Trigger {
     return isIn(startFromDay, from, delta) || isIn(startFromDay + MILLISECONDS_PER_DAY, from, delta);
   }
 
-  public static void main(String[] args) {
-    Calendar calendar = new GregorianCalendar();
-    calendar.setTimeInMillis(System.currentTimeMillis());
-
-    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-    int minute = calendar.get(Calendar.MINUTE);
-    int second = calendar.get(Calendar.SECOND);
-
-    System.out.println("hour = " + hour + ", minute = " + minute + ", second = " + second);
-
-  }
-
 }
