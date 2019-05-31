@@ -39,6 +39,10 @@ public class Range {
 
   @Override
   public String toString() {
-    return "Range{" + from + "..." + to + "}";
+    return "Range(" + from + ".." + to + ")";
+  }
+
+  public Range up(Range subRange) {
+    return Range.of(from + subRange.from, from + subRange.to);
   }
 }

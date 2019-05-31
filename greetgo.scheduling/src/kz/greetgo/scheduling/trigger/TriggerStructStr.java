@@ -35,7 +35,7 @@ public class TriggerStructStr implements TriggerStruct {
       }
     }
     {
-      return trigger = TriggerStructStrParser.of(range, source, System::currentTimeMillis).parse();
+      return trigger = TriggerStructStrParser.of(range, source).parse();
     }
   }
 
