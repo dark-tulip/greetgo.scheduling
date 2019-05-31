@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
+import static kz.greetgo.scheduling.trigger.TriggerPeriodInDay.MILLIS_HOUR;
+import static kz.greetgo.scheduling.trigger.TriggerPeriodInDay.MILLIS_MINUTE;
+import static kz.greetgo.scheduling.trigger.TriggerPeriodInDay.MILLIS_SECOND;
 
 public class TriggerStructStrLexer {
 
@@ -129,6 +132,14 @@ public class TriggerStructStrLexer {
 
       return valueInUnits * unitInMillis;
     }
+
+    public long readTimeOfDayInMillis() {
+      if (type != LexType.TIME_OF_DAY) {
+        throw new RuntimeException("time of day in millis read only from type=TIME_OF_DAY");
+      }
+      return TriggerPeriodInDay.hmsToMillis(tokens.get(0).str());
+    }
+
   }
 
   private String token(int... indexes) {
@@ -191,23 +202,23 @@ public class TriggerStructStrLexer {
   private final static Pattern TIME_OF_DAY = Pattern.compile("(\\d+):(\\d+)(:(\\d+))?");
 
   static Optional<Long> readTimeUnitInMillis(String lowercaseToken) {
-    if (lowercaseToken.startsWith("сек")) {
-      return Optional.of(1000L);
+    if (lowercaseToken.startsWith("с")) {
+      return Optional.of(MILLIS_SECOND);
     }
-    if (lowercaseToken.startsWith("sec")) {
-      return Optional.of(1000L);
+    if (lowercaseToken.startsWith("s")) {
+      return Optional.of(MILLIS_SECOND);
     }
-    if (lowercaseToken.startsWith("min")) {
-      return Optional.of(1000L * 60L);
+    if (lowercaseToken.startsWith("m")) {
+      return Optional.of(MILLIS_MINUTE);
     }
-    if (lowercaseToken.startsWith("мин")) {
-      return Optional.of(1000L * 60L);
+    if (lowercaseToken.startsWith("м")) {
+      return Optional.of(MILLIS_MINUTE);
     }
     if (lowercaseToken.startsWith("ч")) {
-      return Optional.of(1000L * 60L * 60L);
+      return Optional.of(MILLIS_HOUR);
     }
     if (lowercaseToken.startsWith("h")) {
-      return Optional.of(1000L * 60L * 60L);
+      return Optional.of(MILLIS_HOUR);
     }
     return Optional.empty();
   }

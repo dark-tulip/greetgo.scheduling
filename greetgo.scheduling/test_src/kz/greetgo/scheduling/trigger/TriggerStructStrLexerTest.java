@@ -29,12 +29,12 @@ public class TriggerStructStrLexerTest {
     //
 
     assertThat(lexer.tokenList).hasSize(6);
-    assertThat(lexer.tokenList.get(0).toString()).isEqualTo("{`54hb356hb` Range{1...10}}");
-    assertThat(lexer.tokenList.get(1).toString()).isEqualTo("{`222` Range{11...14}}");
-    assertThat(lexer.tokenList.get(2).toString()).isEqualTo("{`5646:654` Range{15...23}}");
-    assertThat(lexer.tokenList.get(3).toString()).isEqualTo("{`44=--0=` Range{24...31}}");
-    assertThat(lexer.tokenList.get(4).toString()).isEqualTo("{`111` Range{33...36}}");
-    assertThat(lexer.tokenList.get(5).toString()).isEqualTo("{`33` Range{38...40}}");
+    assertThat(lexer.tokenList.get(0).toString()).isEqualTo("{`54hb356hb` Range(1..10)}");
+    assertThat(lexer.tokenList.get(1).toString()).isEqualTo("{`222` Range(11..14)}");
+    assertThat(lexer.tokenList.get(2).toString()).isEqualTo("{`5646:654` Range(15..23)}");
+    assertThat(lexer.tokenList.get(3).toString()).isEqualTo("{`44=--0=` Range(24..31)}");
+    assertThat(lexer.tokenList.get(4).toString()).isEqualTo("{`111` Range(33..36)}");
+    assertThat(lexer.tokenList.get(5).toString()).isEqualTo("{`33` Range(38..40)}");
 
   }
 
@@ -56,7 +56,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(REPEAT);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{REPEAT-[{`повторять` Range{1...10}}, {`каждые` Range{11...17}}]}");
+      .isEqualTo("LEX{REPEAT-[{`повторять` Range(1..10)}, {`каждые` Range(11..17)}]}");
   }
 
   @Test
@@ -76,7 +76,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.errorList).isEmpty();
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(REPEAT);
-    assertThat(lexer.lexList.get(0).toString()).isEqualTo("LEX{REPEAT-[{`повторять` Range{3...12}}]}");
+    assertThat(lexer.lexList.get(0).toString()).isEqualTo("LEX{REPEAT-[{`повторять` Range(3..12)}]}");
   }
 
   @Test
@@ -114,7 +114,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.errorList).isEmpty();
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(REPEAT);
-    assertThat(lexer.lexList.get(0).toString()).isEqualTo("LEX{REPEAT-[{`repEAt` Range{2...8}}]}");
+    assertThat(lexer.lexList.get(0).toString()).isEqualTo("LEX{REPEAT-[{`repEAt` Range(2..8)}]}");
 
   }
 
@@ -136,7 +136,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(REPEAT);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{REPEAT-[{`repeat` Range{2...8}}, {`every` Range{10...15}}]}");
+      .isEqualTo("LEX{REPEAT-[{`repeat` Range(2..8)}, {`every` Range(10..15)}]}");
 
   }
 
@@ -158,7 +158,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.TIME_VALUE);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{TIME_VALUE-[{`234` Range{2...5}}, {`секунды` Range{6...13}}]}");
+      .isEqualTo("LEX{TIME_VALUE-[{`234` Range(2..5)}, {`секунды` Range(6..13)}]}");
 
   }
 
@@ -180,7 +180,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.TIME_VALUE);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{TIME_VALUE-[{`234` Range{2...5}}, {`seconds` Range{6...13}}]}");
+      .isEqualTo("LEX{TIME_VALUE-[{`234` Range(2..5)}, {`seconds` Range(6..13)}]}");
 
   }
 
@@ -240,7 +240,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.AFTER_PAUSE);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{AFTER_PAUSE-[{`начиная` Range{2...9}}, {`с` Range{11...12}}, {`паУЗЫ` Range{13...18}}]}");
+      .isEqualTo("LEX{AFTER_PAUSE-[{`начиная` Range(2..9)}, {`с` Range(11..12)}, {`паУЗЫ` Range(13..18)}]}");
 
   }
 
@@ -262,7 +262,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.AFTER_PAUSE);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{AFTER_PAUSE-[{`after` Range{2...7}}, {`pause` Range{8...13}}, {`in` Range{14...16}}]}");
+      .isEqualTo("LEX{AFTER_PAUSE-[{`after` Range(2..7)}, {`pause` Range(8..13)}, {`in` Range(14..16)}]}");
 
   }
 
@@ -418,7 +418,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.EVERY);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{EVERY-[{`каждые` Range{2...8}}]}");
+      .isEqualTo("LEX{EVERY-[{`каждые` Range(2..8)}]}");
 
   }
 
@@ -440,7 +440,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.EVERY);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{EVERY-[{`every` Range{2...7}}]}");
+      .isEqualTo("LEX{EVERY-[{`every` Range(2..7)}]}");
 
   }
 
@@ -462,7 +462,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.TIME_OF_DAY);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{TIME_OF_DAY-[{`11:34` Range{2...7}}]}");
+      .isEqualTo("LEX{TIME_OF_DAY-[{`11:34` Range(2..7)}]}");
 
   }
 
@@ -484,7 +484,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.TIME_OF_DAY);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{TIME_OF_DAY-[{`11:34:17` Range{2...10}}]}");
+      .isEqualTo("LEX{TIME_OF_DAY-[{`11:34:17` Range(2..10)}]}");
 
   }
 
@@ -570,7 +570,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(TriggerStructStrLexer.LexType.WEEK_DAY);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{WEEK_DAY-[{`понедельника` Range{2...14}}]}");
+      .isEqualTo("LEX{WEEK_DAY-[{`понедельника` Range(2..14)}]}");
 
   }
 
@@ -592,7 +592,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(AT);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{AT-[{`в` Range{2...3}}]}");
+      .isEqualTo("LEX{AT-[{`в` Range(2..3)}]}");
 
   }
 
@@ -614,7 +614,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(AT);
     assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{AT-[{`at` Range{2...4}}]}");
+      .isEqualTo("LEX{AT-[{`at` Range(2..4)}]}");
 
   }
 

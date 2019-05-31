@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.AFTER_PAUSE;
+import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.FROM;
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.REPEAT;
+import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TIME_OF_DAY;
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TIME_VALUE;
+import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TO;
 
 public class TriggerStructStrParser {
 
@@ -143,6 +146,52 @@ public class TriggerStructStrParser {
 
       }
 
+      if (lex.type == FROM) {
+        if (i + 1 >= len) {
+          errorList.add(new ParseError(lex.range(), "nsy3u8w", "Не указано количество повторений"));
+          return;
+        }
+
+        Lex fromValue = lexList.get(i + 1);
+
+        if (fromValue.type != TIME_OF_DAY) {
+          errorList.add(new ParseError(lex.range(), "n2u63h2", "Несогласованная лексема - ожидается время HH:mm[:ss]"));
+          return;
+        }
+
+        if (i + 2 >= len) {
+          errorList.add(new ParseError(lex.range(), "iqE72WW", "Не указано конечное время"));
+          return;
+        }
+
+        Lex to = lexList.get(i + 2);
+
+        if (to.type != TO) {
+          errorList.add(new ParseError(lex.range(), "ws7iq92", "Несогласованная лексема - ожидается" +
+            " указатель окончания временного интервала"));
+          return;
+        }
+
+        if (i + 3 >= len) {
+          errorList.add(new ParseError(lex.range(), "qii543w", "Незаконченая лексема - ожидается время HH:mm[:ss]"));
+          return;
+        }
+
+        Lex toValue = lexList.get(i + 3);
+
+        if (toValue.type != TIME_OF_DAY) {
+          errorList.add(new ParseError(lex.range(), "qiu2777", "Несогласованная лексема - ожидается время HH:mm[:ss]"));
+          return;
+        }
+
+        long fromMillis = fromValue.readTimeOfDayInMillis();
+        long toMillis = toValue.readTimeOfDayInMillis();
+
+        Trigger trigger = new TriggerPeriodInDay(fromMillis, toMillis);
+
+        or2.add(trigger);
+
+      }
 
       errorList.add(new ParseError(lex.range(), "j25bhj4", "Несогласованная лексема"));
       return;

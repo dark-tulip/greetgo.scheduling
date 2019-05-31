@@ -93,9 +93,21 @@ public class TriggerStructStrParserTest {
     };
   }
 
+  private static String mul(String s, int times) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < times; i++) {
+      sb.append(s);
+    }
+    return sb.toString();
+  }
+
   public static void printErrors(String source, List<ParseError> errorList) {
     for (ParseError err : errorList) {
-      System.out.println("ERR " + err + " :: `" + err.range.cut(source) + "`");
+      System.err.println("Ошибка        : " + err.errorCode + " " + err.message);
+      System.err.println("  Строка      : " + source);
+      String s1 = mul(" ", err.range.from);
+      String s2 = mul("‾", err.range.to - err.range.from);//"‾"
+      System.err.println("  Место ошибки: " + s1 + s2);
     }
   }
 
@@ -112,7 +124,6 @@ public class TriggerStructStrParserTest {
     assertThat(parser.errorList).isEmpty();
     assertThat(trigger).isNotNull();
     assertThat(1).isNotNull();
-
 
   }
 
