@@ -1,4 +1,4 @@
 rootProject.name = "greetgo.scheduling"
 
 include 'greetgo.scheduling'
-include 'greetgo.scheduling2'
+include 'greetgo.scheduling_old'
