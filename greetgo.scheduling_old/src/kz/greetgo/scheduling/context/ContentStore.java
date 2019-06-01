@@ -14,4 +14,5 @@ public interface ContentStore {
   long lastModifiedMillis();
 
   String placeInfo();
+
 }
