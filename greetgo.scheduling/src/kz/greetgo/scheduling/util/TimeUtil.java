@@ -1,5 +1,9 @@
 package kz.greetgo.scheduling.util;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import static kz.greetgo.scheduling.util.StrUtil.toLenZero;
 
 public class TimeUtil {
@@ -58,6 +62,28 @@ public class TimeUtil {
 
     return to1 >= from2 && to2 >= from1;
 
+  }
+
+  /**
+   * Переводит дату-время в количество миллисекунд прощедьшее с начала дня этой даты.
+   *
+   * @param dateTimeMillis Дата-время в миллисекундах (которая возвращается методом {@link Date#getTime()})
+   * @return количество миллисекунд прощедьшее с начала дня этой даты.
+   * Это число не может превышать следующую величину:
+   * <pre>
+   *   ЧАСОВ_В_СУТКАХ * МИНУТ_В_ЧАСЕ * СЕКУНД_В_МИНУТЕ * МИЛЛИСЕКУНД_В_СЕКУНДЕ = 24 * 60 * 60 * 1000 = 86400000
+   * </pre>
+   */
+  public static long millisFromDayBegin(long dateTimeMillis) {
+    Calendar calendar = new GregorianCalendar();
+    calendar.setTimeInMillis(dateTimeMillis);
+
+    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+    int minute = calendar.get(Calendar.MINUTE);
+    int second = calendar.get(Calendar.SECOND);
+    int milli = calendar.get(Calendar.MILLISECOND);
+
+    return longYmsToMillis(hour, minute, second) + milli;
   }
 
 }

@@ -1,5 +1,7 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.atoms;
 
+import kz.greetgo.scheduling.trigger.WeekDay;
+import kz.greetgo.scheduling.trigger.atoms.TriggerWeekDay;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

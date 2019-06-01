@@ -1,6 +1,8 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.atoms;
 
+import kz.greetgo.scheduling.trigger.Trigger;
 import kz.greetgo.scheduling.util.StrUtil;
+import kz.greetgo.scheduling.util.TimeUtil;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -13,6 +15,11 @@ public class TriggerDayPoint implements Trigger {
   public TriggerDayPoint(int hour, int minute, int second) {
     startFromDay = toStart(hour, minute, second);
     point = StrUtil.toLenZero(hour, 2) + ":" + StrUtil.toLenZero(minute, 2) + ":" + StrUtil.toLenZero(second, 2);
+  }
+
+  public TriggerDayPoint(String hms) {
+    startFromDay = TimeUtil.hmsToMillis(hms);
+    point = TimeUtil.millisToHms(startFromDay);
   }
 
   @Override

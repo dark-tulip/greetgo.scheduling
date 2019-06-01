@@ -1,5 +1,7 @@
 package kz.greetgo.scheduling.trigger;
 
+import kz.greetgo.scheduling.trigger.atoms.SilentTrigger;
+
 public class TriggerStructEmpty implements TriggerStruct {
 
   @Override

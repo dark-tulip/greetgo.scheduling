@@ -1,5 +1,6 @@
 package kz.greetgo.scheduling.trigger;
 
+import kz.greetgo.scheduling.trigger.atoms.TriggerRepeat;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -61,9 +62,11 @@ public class TriggerStructStrParserTest {
 
     parser.parse();
 
+    printErrors(source, parser.errorList);
+
     assertThat(parser.errorList).isNotEmpty();
     ParseError error = parser.errorList.get(0);
-    assertThat(error.errorCode).isEqualTo("j25bhj4");
+    assertThat(error.errorCode).isEqualTo("2h4hY88");
     assertThat(error.range.cut(source)).isEqualTo("at");
 
   }
@@ -116,27 +119,64 @@ public class TriggerStructStrParserTest {
 
     TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), source);
 
+    parser.parse();
+
+    printErrors(source, parser.errorList);
+
+    assertThat(parser.errorList).isNotEmpty();
+
+  }
+
+  @DataProvider
+  Object[][] period_in_day_DP() {
+    return new Object[][]{
+      {"от   13:31 до 15:00"},
+      {"from 13:31 to 15:00"},
+    };
+  }
+
+  @Test(dataProvider = "period_in_day_DP")
+  public void period_in_day(String source) {
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), source);
+
     Trigger trigger = parser.parse();
 
     printErrors(source, parser.errorList);
 
     assertThat(parser.errorList).isEmpty();
     assertThat(trigger).isNotNull();
-    assertThat(trigger.isDotty()).isTrue();
-    assertThat(trigger.toString()).isEqualTo("(Repeat{0 600000} and PeriodInDay{10:11:00...11:45:23})");
+    assertThat(trigger.isDotty()).isFalse();
+    assertThat(trigger.toString()).isEqualTo("PeriodInDay{13:31:00...15:00:00}");
 
   }
 
   @DataProvider
-  Object[][] repeat_from_to_twice_DP() {
+  Object[][] weekDay_DP() {
     return new Object[][]{
-      {"повторять каждую 1 минуту с    13:31 до 15:00  от   23:30 до 23:55"},
-      {"repeat    every  1 minute from 13:31 to 15:00  from 23:30 to 23:55"},
+      {" понедельник "},
+      {" monday      "},
     };
   }
 
-  @Test(dataProvider = "repeat_from_to_twice_DP")
-  public void repeat_from_to_twice(String source) {
+  @Test(dataProvider = "weekDay_DP")
+  public void weekDay(String source) {
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), source);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(source, parser.errorList);
+
+    assertThat(parser.errorList).isEmpty();
+    assertThat(trigger).isNotNull();
+    assertThat(trigger.isDotty()).isFalse();
+    assertThat(trigger.toString()).isEqualTo("WeekDay{MONDAY}");
+  }
+
+  @Test
+  public void timeOfDayToMinutes() {
+
+    String source = " 17:35 ";
 
     TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), source);
 
@@ -147,22 +187,19 @@ public class TriggerStructStrParserTest {
     assertThat(parser.errorList).isEmpty();
     assertThat(trigger).isNotNull();
     assertThat(trigger.isDotty()).isTrue();
-    assertThat(trigger.toString()).isEqualTo(
-      "(Repeat{0 60000} and (PeriodInDay{13:31:00...15:00:00} or PeriodInDay{23:30:00...23:55:00}))"
-    );
-
+    assertThat(trigger.toString()).isEqualTo("DayPoint{17:35:00}");
   }
 
   @DataProvider
-  Object[][] repeat_from_to_triple_DP() {
+  Object[][] from_to_every_DP() {
     return new Object[][]{
-      {"повторять каждые 13 секунд с    11:00 до 13:00  от   14:30 до 15:55  с    18:00 до 19:35"},
-      {"repeat    every  13 sec    from 11:00 to 13:00  from 14:30 to 15:55  from 18:00 to 19:35"},
+      {" от   13:31 до 15:00 каждые 17 минут   "},
+      {" from 13:31 to 15:00 every  17 minutes "},
     };
   }
 
-  @Test(dataProvider = "repeat_from_to_triple_DP")
-  public void repeat_from_to_triple(String source) {
+  @Test(dataProvider = "from_to_every_DP")
+  public void from_to_every(String source) {
 
     TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), source);
 
@@ -172,16 +209,32 @@ public class TriggerStructStrParserTest {
 
     assertThat(parser.errorList).isEmpty();
     assertThat(trigger).isNotNull();
-    assertThat(trigger.isDotty()).isTrue();
-    assertThat(trigger.toString()).isEqualTo(
-      "(Repeat{0 13000} and ("
-
-        + "(PeriodInDay{11:00:00...13:00:00} or PeriodInDay{14:30:00...15:55:00}) or PeriodInDay{18:00:00...19:35:00})"
-
-        + ")"
-    );
+    assertThat(trigger.isDotty()).isFalse();
+    assertThat(trigger.toString()).isEqualTo("asd");
 
   }
 
+  @DataProvider
+  Object[][] from_to_every_error_DP() {
+    return new Object[][]{
+      {" от   13:31 до 15:00 каждые "},
+      {" from 13:31 to 15:00 every  "},
+    };
+  }
+
+  @Test(dataProvider = "from_to_every_error_DP")
+  public void from_to_every_error(String source) {
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), source);
+
+    parser.parse();
+
+    printErrors(source, parser.errorList);
+
+    assertThat(parser.errorList).isNotEmpty();
+    assertThat(parser.errorList.get(0).errorCode).isEqualTo("2135jh6");
+
+
+  }
 
 }

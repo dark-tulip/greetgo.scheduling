@@ -1,17 +1,23 @@
 package kz.greetgo.scheduling.trigger;
 
 import kz.greetgo.scheduling.trigger.TriggerStructStrLexer.Lex;
-import kz.greetgo.scheduling.util.TriggerUtil;
+import kz.greetgo.scheduling.trigger.atoms.TriggerDayPoint;
+import kz.greetgo.scheduling.trigger.atoms.TriggerPeriodInDay;
+import kz.greetgo.scheduling.trigger.atoms.TriggerPeriodInDayRepeat;
+import kz.greetgo.scheduling.trigger.atoms.TriggerRepeat;
+import kz.greetgo.scheduling.trigger.atoms.TriggerWeekDay;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.AFTER_PAUSE;
+import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.EVERY;
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.FROM;
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.REPEAT;
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TIME_OF_DAY;
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TIME_VALUE;
 import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TO;
+import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.WEEK_DAY;
 
 public class TriggerStructStrParser {
 
@@ -29,8 +35,7 @@ public class TriggerStructStrParser {
 
   public final List<ParseError> errorList = new ArrayList<>();
 
-  final List<Trigger> or1 = new ArrayList<>();
-  final List<Trigger> or2 = new ArrayList<>();
+  Trigger trigger = null;
 
   public Trigger parse() {
 
@@ -49,32 +54,14 @@ public class TriggerStructStrParser {
       return null;
     }
 
-    return collectTriggers();
-  }
-
-
-  private Trigger collectTriggers() {
-
-    if (or1.isEmpty() && or2.isEmpty()) {
-      errorList.add(new ParseError(range, "5b654b7", "Нет расписания"));
+    if (trigger == null) {
+      errorList.add(new ParseError(Range.of(0, source.length()), "214hY88", "Триггер не определён"));
       return null;
     }
 
-    if (or1.isEmpty()) {
-      return TriggerUtil.orList(or2);
-    }
-    if (or2.isEmpty()) {
-      return TriggerUtil.orList(or1);
-    }
-
-    {
-      Trigger o1 = TriggerUtil.orList(or1);
-      Trigger o2 = TriggerUtil.orList(or2);
-
-      return TriggerUtil.and(o1, o2);
-    }
-
+    return trigger;
   }
+
 
   private void parseLexList(List<Lex> lexList) {
 
@@ -89,6 +76,30 @@ public class TriggerStructStrParser {
 
       Lex lex = lexList.get(i);
 
+      if (trigger != null) {
+
+        if (trigger instanceof TriggerPeriodInDay && lex.type == EVERY) {
+
+          if (i + 1 >= len) {
+            errorList.add(new ParseError(lex.range(), "2135jh6", "Не указана частота повторений"));
+            return;
+          }
+
+          Lex next = lexList.get(i);
+
+          if (next.type != TIME_VALUE) {
+            errorList.add(new ParseError(lex.range(), "1b4ydWQ", "Не та лексема - нужно указать частоту повторений"));
+            return;
+          }
+
+          trigger = new TriggerPeriodInDayRepeat((TriggerPeriodInDay)trigger, next.readTimeValueMillis());
+
+        }
+
+        errorList.add(new ParseError(lex.range(), "2h4hY88", "Лишняя лексема - триггер уже определён"));
+        return;
+      }
+
       if (lex.type == REPEAT) {
 
         int step = 2;
@@ -101,12 +112,7 @@ public class TriggerStructStrParser {
         Lex next = lexList.get(i + 1);
 
         if (next.type != TIME_VALUE) {
-          errorList.add(new ParseError(lex.range(), "2h355h4", "Нужно указать величину повторений"));
-          return;
-        }
-
-        if (or1.size() > 0) {
-          errorList.add(new ParseError(lex.range(), "b54n254", "Повторения можно указывать только один раз"));
+          errorList.add(new ParseError(lex.range(), "2h355h4", "Нужно указать частоту повторений"));
           return;
         }
 
@@ -139,7 +145,7 @@ public class TriggerStructStrParser {
 
         }
 
-        or1.add(new TriggerRepeat(startSilentMillis, delayMillis));
+        trigger = new TriggerRepeat(startSilentMillis, delayMillis);
 
         i += step;
         continue;
@@ -187,13 +193,27 @@ public class TriggerStructStrParser {
         long fromMillis = fromValue.readTimeOfDayInMillis();
         long toMillis = toValue.readTimeOfDayInMillis();
 
-        Trigger trigger = new TriggerPeriodInDay(fromMillis, toMillis);
-
-        or2.add(trigger);
+        trigger = new TriggerPeriodInDay(fromMillis, toMillis);
 
         i += 4;
         continue;
 
+      }
+
+      if (lex.type == WEEK_DAY) {
+
+        trigger = new TriggerWeekDay(lex.getWeekDay());
+
+        i++;
+        continue;
+      }
+
+      if (lex.type == TIME_OF_DAY) {
+
+        trigger = new TriggerDayPoint(lex.tokens.get(0).str());
+
+        i++;
+        continue;
       }
 
       errorList.add(new ParseError(lex.range(), "j25bhj4", "Несогласованная лексема"));
@@ -201,5 +221,6 @@ public class TriggerStructStrParser {
     }
 
   }
+
 
 }

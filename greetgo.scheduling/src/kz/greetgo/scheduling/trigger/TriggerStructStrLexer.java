@@ -142,6 +142,14 @@ public class TriggerStructStrLexer {
       return TimeUtil.hmsToMillis(tokens.get(0).str());
     }
 
+    public WeekDay getWeekDay() {
+      if (type != LexType.WEEK_DAY) {
+        throw new RuntimeException("week day read only from type=WEEK_DAY");
+      }
+
+      return readWeekDay(tokens.get(0).str()).orElseThrow(() -> new RuntimeException("cannot read week day"));
+
+    }
   }
 
   private String token(int... indexes) {
@@ -229,7 +237,7 @@ public class TriggerStructStrLexer {
     return readTimeUnitInMillis(lowercaseToken).isPresent();
   }
 
-  static Optional<WeekDay> readWeekDay(String lowercaseToken) {
+  public static Optional<WeekDay> readWeekDay(String lowercaseToken) {
 
     if (lowercaseToken.startsWith("mon")) {
       return Optional.of(WeekDay.MONDAY);
@@ -368,7 +376,7 @@ public class TriggerStructStrLexer {
     }
 
 
-    if (current.equals("from") || current.equals("с") || current.equals("от")) {
+    if (current.equals("from") || current.equals("с") || current.equals("c") || current.equals("от")) {
 
       return new LexReadResult(count, lex(i, count, LexType.FROM));
 

@@ -1,5 +1,6 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.atoms;
 
+import kz.greetgo.scheduling.trigger.atoms.TriggerRepeat;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
