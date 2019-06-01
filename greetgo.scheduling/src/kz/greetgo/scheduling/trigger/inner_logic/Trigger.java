@@ -13,4 +13,6 @@ public interface Trigger {
    */
   boolean isDotty();
 
+  boolean isParallel();
+
 }

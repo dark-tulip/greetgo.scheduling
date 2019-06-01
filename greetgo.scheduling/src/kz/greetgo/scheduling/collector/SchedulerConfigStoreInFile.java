@@ -1,4 +1,4 @@
-package kz.greetgo.scheduling.core;
+package kz.greetgo.scheduling.collector;
 
 import java.io.IOException;
 import java.nio.file.Files;
