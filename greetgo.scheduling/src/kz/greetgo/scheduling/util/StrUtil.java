@@ -2,7 +2,7 @@ package kz.greetgo.scheduling.util;
 
 public class StrUtil {
 
-  public static String toLenZero(int number, int len) {
+  public static String toLenZero(long number, int len) {
     StringBuilder sb = new StringBuilder();
     sb.append(number);
     while (sb.length() < len) {

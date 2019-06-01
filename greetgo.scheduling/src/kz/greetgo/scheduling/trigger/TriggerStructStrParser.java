@@ -191,6 +191,9 @@ public class TriggerStructStrParser {
 
         or2.add(trigger);
 
+        i += 4;
+        continue;
+
       }
 
       errorList.add(new ParseError(lex.range(), "j25bhj4", "Несогласованная лексема"));

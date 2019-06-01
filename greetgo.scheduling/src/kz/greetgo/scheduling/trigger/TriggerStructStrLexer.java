@@ -1,5 +1,7 @@
 package kz.greetgo.scheduling.trigger;
 
+import kz.greetgo.scheduling.util.TimeUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,9 +11,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
-import static kz.greetgo.scheduling.trigger.TriggerPeriodInDay.MILLIS_HOUR;
-import static kz.greetgo.scheduling.trigger.TriggerPeriodInDay.MILLIS_MINUTE;
-import static kz.greetgo.scheduling.trigger.TriggerPeriodInDay.MILLIS_SECOND;
+import static kz.greetgo.scheduling.util.TimeUtil.MILLIS_HOUR;
+import static kz.greetgo.scheduling.util.TimeUtil.MILLIS_MINUTE;
+import static kz.greetgo.scheduling.util.TimeUtil.MILLIS_SECOND;
 
 public class TriggerStructStrLexer {
 
@@ -137,7 +139,7 @@ public class TriggerStructStrLexer {
       if (type != LexType.TIME_OF_DAY) {
         throw new RuntimeException("time of day in millis read only from type=TIME_OF_DAY");
       }
-      return TriggerPeriodInDay.hmsToMillis(tokens.get(0).str());
+      return TimeUtil.hmsToMillis(tokens.get(0).str());
     }
 
   }

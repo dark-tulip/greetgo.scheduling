@@ -34,6 +34,12 @@ public class TriggerUtil {
       public boolean isDotty() {
         return a.isDotty() && b.isDotty();
       }
+
+      @Override
+      public String toString() {
+        return "(" + a.toString() + " or " + b.toString() + ")";
+      }
+
     };
   }
 
@@ -66,6 +72,12 @@ public class TriggerUtil {
       public boolean isDotty() {
         return a.isDotty() || b.isDotty();
       }
+
+      @Override
+      public String toString() {
+        return "(" + a.toString() + " and " + b.toString() + ")";
+      }
+
     };
   }
 
