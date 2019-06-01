@@ -1,4 +1,4 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.inner_logic;
 
 import java.util.Calendar;
 

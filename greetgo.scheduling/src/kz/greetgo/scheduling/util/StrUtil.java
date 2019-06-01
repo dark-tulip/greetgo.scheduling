@@ -11,4 +11,11 @@ public class StrUtil {
     return sb.toString();
   }
 
+  public static String mul(String s, int times) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < times; i++) {
+      sb.append(s);
+    }
+    return sb.toString();
+  }
 }

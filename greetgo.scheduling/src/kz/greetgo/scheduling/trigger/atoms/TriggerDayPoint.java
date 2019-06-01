@@ -1,6 +1,6 @@
 package kz.greetgo.scheduling.trigger.atoms;
 
-import kz.greetgo.scheduling.trigger.Trigger;
+import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 import kz.greetgo.scheduling.util.StrUtil;
 import kz.greetgo.scheduling.util.TimeUtil;
 

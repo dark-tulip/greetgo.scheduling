@@ -1,6 +1,7 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.inner_logic;
 
-import kz.greetgo.scheduling.trigger.TriggerStructStrLexer.Lex;
+import kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.Lex;
+import kz.greetgo.scheduling.trigger.atoms.SilentTrigger;
 import kz.greetgo.scheduling.trigger.atoms.TriggerDayPoint;
 import kz.greetgo.scheduling.trigger.atoms.TriggerPeriodInDay;
 import kz.greetgo.scheduling.trigger.atoms.TriggerPeriodInDayRepeat;
@@ -10,14 +11,14 @@ import kz.greetgo.scheduling.trigger.atoms.TriggerWeekDay;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.AFTER_PAUSE;
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.EVERY;
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.FROM;
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.REPEAT;
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TIME_OF_DAY;
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TIME_VALUE;
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.TO;
-import static kz.greetgo.scheduling.trigger.TriggerStructStrLexer.LexType.WEEK_DAY;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.AFTER_PAUSE;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.EVERY;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.FROM;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.REPEAT;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TIME_OF_DAY;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TIME_VALUE;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TO;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.WEEK_DAY;
 
 public class TriggerStructStrParser {
 
@@ -45,18 +46,18 @@ public class TriggerStructStrParser {
 
     if (lexer.errorList.size() > 0) {
       errorList.addAll(lexer.errorList);
-      return null;
+      return new SilentTrigger();
     }
 
     parseLexList(lexer.lexList);
 
     if (lexer.errorList.size() > 0) {
-      return null;
+      return new SilentTrigger();
     }
 
     if (trigger == null) {
       errorList.add(new ParseError(Range.of(0, source.length()), "214hY88", "Триггер не определён"));
-      return null;
+      return new SilentTrigger();
     }
 
     return trigger;
@@ -176,13 +177,13 @@ public class TriggerStructStrParser {
         Lex to = lexList.get(i + 2);
 
         if (to.type != TO) {
-          errorList.add(new ParseError(lex.range(), "ws7iq92", "Несогласованная лексема - ожидается" +
+          errorList.add(new ParseError(fromValue.range(), "ws7iq92", "Несогласованная лексема - ожидается" +
             " указатель окончания временного интервала"));
           return;
         }
 
         if (i + 3 >= len) {
-          errorList.add(new ParseError(lex.range(), "qii543w", "Незаконченая лексема - ожидается время HH:mm[:ss]"));
+          errorList.add(new ParseError(to.range(), "qii543w", "Незаконченая лексема - ожидается время HH:mm[:ss]"));
           return;
         }
 

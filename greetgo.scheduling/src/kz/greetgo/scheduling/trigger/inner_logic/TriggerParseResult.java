@@ -1,4 +1,6 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.inner_logic;
+
+import kz.greetgo.scheduling.trigger.TriggerParseError;
 
 import java.util.List;
 

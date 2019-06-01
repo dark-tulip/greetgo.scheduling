@@ -1,14 +1,10 @@
 package kz.greetgo.scheduling.trigger.atoms;
 
-import kz.greetgo.scheduling.trigger.Trigger;
+import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 
 public class SilentTrigger implements Trigger {
 
-  private final boolean dotty;
-
-  public SilentTrigger(boolean dotty) {
-    this.dotty = dotty;
-  }
+  public SilentTrigger() {}
 
   @Override
   public boolean isHit(long startedSchedulerMillisAt, long timeMillisFrom, long timeMillisTo) {
@@ -17,12 +13,12 @@ public class SilentTrigger implements Trigger {
 
   @Override
   public boolean isDotty() {
-    return dotty;
+    return true;
   }
 
   @Override
   public String toString() {
-    return "Silent{dotty=" + dotty + '}';
+    return "Silent";
   }
 
 }

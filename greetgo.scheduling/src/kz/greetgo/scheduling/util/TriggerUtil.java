@@ -1,6 +1,6 @@
 package kz.greetgo.scheduling.util;
 
-import kz.greetgo.scheduling.trigger.Trigger;
+import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 
 import java.util.List;
 

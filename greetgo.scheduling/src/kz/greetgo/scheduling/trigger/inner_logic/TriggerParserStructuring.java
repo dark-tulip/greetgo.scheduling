@@ -1,4 +1,6 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.inner_logic;
+
+import kz.greetgo.scheduling.trigger.TriggerParseError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class TriggerParserStructuring {
 
   public final List<Token> tokens = new ArrayList<>();
 
-  public void makeTokens() {
+  void makeTokens() {
 
     int prevIndex = 0;
 
@@ -84,13 +86,13 @@ public class TriggerParserStructuring {
 
   }
 
-  public TriggerStruct result;
+  TriggerStruct triggerStruct;
 
   int tokenIndex = 0;
 
-  public void makeStruct() {
+  void makeStruct() {
     tokenIndex = 0;
-    result = readStruct(null);
+    triggerStruct = readStruct(null);
   }
 
   class Operation implements ExpressionElement {
@@ -241,5 +243,18 @@ public class TriggerParserStructuring {
 
     return first;
   }
+
+  public void makeResult() {
+
+    makeTokens();
+    makeStruct();
+
+    errors = triggerStruct.errors(triggerString);
+    result = triggerStruct.trigger();
+
+  }
+
+  public List<TriggerParseError> errors;
+  public Trigger result;
 
 }

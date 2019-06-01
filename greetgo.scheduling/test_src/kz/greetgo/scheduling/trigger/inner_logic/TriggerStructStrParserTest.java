@@ -1,6 +1,7 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.inner_logic;
 
 import kz.greetgo.scheduling.trigger.atoms.TriggerRepeat;
+import kz.greetgo.scheduling.util.StrUtil;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -88,20 +89,12 @@ public class TriggerStructStrParserTest {
   }
 
 
-  private static String mul(String s, int times) {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < times; i++) {
-      sb.append(s);
-    }
-    return sb.toString();
-  }
-
   public static void printErrors(String source, List<ParseError> errorList) {
     for (ParseError err : errorList) {
       System.err.println("Ошибка   : " + err.errorCode + " " + err.message + " : `" + err.range.cut(source) + "`");
       System.err.println("  Строка : " + source);
-      String s1 = mul(" ", err.range.from);
-      String s2 = mul("¯", err.range.to - err.range.from);//"‾¯"
+      String s1 = StrUtil.mul(" ", err.range.from);
+      String s2 = StrUtil.mul("¯", err.range.to - err.range.from);//"‾¯"
       System.err.println("           " + s1 + s2);
     }
   }

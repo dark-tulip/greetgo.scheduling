@@ -1,4 +1,10 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.inner_logic;
+
+import kz.greetgo.scheduling.trigger.TriggerParseError;
+
+import java.util.List;
+
+import static kz.greetgo.scheduling.util.ListUtil.concatLists;
 
 public class TriggerStructPlus implements TriggerStruct {
 
@@ -45,6 +51,11 @@ public class TriggerStructPlus implements TriggerStruct {
       }
 
     };
+  }
+
+  @Override
+  public List<TriggerParseError> errors(String triggerString) {
+    return concatLists(a.errors(triggerString), a.errors(triggerString));
   }
 
 }

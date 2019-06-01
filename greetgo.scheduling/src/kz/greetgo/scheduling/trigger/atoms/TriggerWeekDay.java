@@ -1,7 +1,7 @@
 package kz.greetgo.scheduling.trigger.atoms;
 
-import kz.greetgo.scheduling.trigger.Trigger;
-import kz.greetgo.scheduling.trigger.WeekDay;
+import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
+import kz.greetgo.scheduling.trigger.inner_logic.WeekDay;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

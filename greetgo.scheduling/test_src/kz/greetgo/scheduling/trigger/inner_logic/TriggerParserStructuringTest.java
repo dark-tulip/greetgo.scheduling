@@ -1,12 +1,12 @@
-package kz.greetgo.scheduling.trigger;
+package kz.greetgo.scheduling.trigger.inner_logic;
 
 import org.testng.annotations.Test;
 
-import static kz.greetgo.scheduling.trigger.TriggerParserStructuring.TokenType.CLOSE_BRACKET;
-import static kz.greetgo.scheduling.trigger.TriggerParserStructuring.TokenType.MUL;
-import static kz.greetgo.scheduling.trigger.TriggerParserStructuring.TokenType.OPEN_BRACKET;
-import static kz.greetgo.scheduling.trigger.TriggerParserStructuring.TokenType.PLUS;
-import static kz.greetgo.scheduling.trigger.TriggerParserStructuring.TokenType.STR;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.CLOSE_BRACKET;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.MUL;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.OPEN_BRACKET;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.PLUS;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.STR;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class TriggerParserStructuringTest {
@@ -25,7 +25,7 @@ public class TriggerParserStructuringTest {
     //
     //
 
-    TriggerStruct struct = structuring.result;
+    TriggerStruct struct = structuring.triggerStruct;
 
     assertThat(struct).isNotNull();
     assertThat(struct).isInstanceOf(TriggerStructPlus.class);
@@ -158,9 +158,9 @@ public class TriggerParserStructuringTest {
 
     assertThat(structuring.parseErrors).isEmpty();
 
-    TriggerStruct result = structuring.result;
+    TriggerStruct result = structuring.triggerStruct;
 
-    System.out.println("result = " + result);
+    System.out.println("vb543n26v :: result = " + result);
 
     assertThat(result).isNotNull();
     assertThat(result).isInstanceOf(TriggerStructPlus.class);
