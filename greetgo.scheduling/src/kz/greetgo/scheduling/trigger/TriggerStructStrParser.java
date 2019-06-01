@@ -85,14 +85,17 @@ public class TriggerStructStrParser {
             return;
           }
 
-          Lex next = lexList.get(i);
+          Lex next = lexList.get(i + 1);
 
           if (next.type != TIME_VALUE) {
-            errorList.add(new ParseError(lex.range(), "1b4ydWQ", "Не та лексема - нужно указать частоту повторений"));
+            errorList.add(new ParseError(next.range(), "1b4ydWQ", "Не та лексема - нужно указать частоту повторений"));
             return;
           }
 
-          trigger = new TriggerPeriodInDayRepeat((TriggerPeriodInDay)trigger, next.readTimeValueMillis());
+          trigger = new TriggerPeriodInDayRepeat((TriggerPeriodInDay) trigger, next.readTimeValueMillis());
+
+          i += 2;
+          continue;
 
         }
 

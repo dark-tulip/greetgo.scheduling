@@ -40,4 +40,9 @@ public class TriggerPeriodInDayRepeat implements Trigger {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "PeriodInDayRepeat{" + period.toString() + " repeat " + delayMillis + "}";
+  }
+
 }

@@ -209,8 +209,10 @@ public class TriggerStructStrParserTest {
 
     assertThat(parser.errorList).isEmpty();
     assertThat(trigger).isNotNull();
-    assertThat(trigger.isDotty()).isFalse();
-    assertThat(trigger.toString()).isEqualTo("asd");
+    assertThat(trigger.isDotty()).isTrue();
+    assertThat(trigger.toString()).isEqualTo(
+      "PeriodInDayRepeat{PeriodInDay{13:31:00...15:00:00} repeat 1020000}"
+    );
 
   }
 
