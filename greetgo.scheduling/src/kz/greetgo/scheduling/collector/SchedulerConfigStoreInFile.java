@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class SchedulerConfigStoreInFile implements SchedulerConfigStore {
 
   private final Path root;
@@ -18,16 +20,22 @@ public class SchedulerConfigStoreInFile implements SchedulerConfigStore {
   }
 
   @Override
-  public byte[] getContent(String location) {
+  public String getContent(String location) {
     try {
-      return Files.readAllBytes(root.resolve(location));
+
+      if (Files.exists(root.resolve(location))) {
+        return new String(Files.readAllBytes(root.resolve(location)), UTF_8);
+      }
+
+      return null;
+
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
   @Override
-  public void setContent(String location, byte[] content) {
+  public void setContent(String location, String content) {
     Path path = root.resolve(location);
 
     if (content == null) {
@@ -42,7 +50,7 @@ public class SchedulerConfigStoreInFile implements SchedulerConfigStore {
     //noinspection ResultOfMethodCallIgnored
     path.toFile().getParentFile().mkdirs();
     try {
-      Files.write(path, content);
+      Files.write(path, content.getBytes(UTF_8));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

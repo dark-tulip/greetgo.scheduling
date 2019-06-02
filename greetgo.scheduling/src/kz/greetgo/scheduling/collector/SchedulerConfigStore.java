@@ -4,9 +4,9 @@ public interface SchedulerConfigStore {
 
   boolean exists(String location);
 
-  byte[] getContent(String location);
+  String getContent(String location);
 
-  void setContent(String location, byte[] content);
+  void setContent(String location, String content);
 
   default void delete(String location) {
     setContent(location, null);

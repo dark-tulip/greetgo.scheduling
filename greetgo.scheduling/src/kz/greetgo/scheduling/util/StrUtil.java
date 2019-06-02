@@ -1,5 +1,9 @@
 package kz.greetgo.scheduling.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class StrUtil {
 
   public static String toLenZero(long number, int len) {
@@ -17,5 +21,21 @@ public class StrUtil {
       sb.append(s);
     }
     return sb.toString();
+  }
+
+  public static String streamToStr(InputStream inputStream) {
+    try {
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      byte[] buffer = new byte[1024 * 4];
+      while (true) {
+        int count = inputStream.read(buffer);
+        if (count < 0) {
+          return out.toString("UTF-8");
+        }
+        out.write(buffer, 0, count);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
