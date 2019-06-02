@@ -9,10 +9,17 @@ import static java.util.Objects.requireNonNull;
 
 public class TriggerParserStructuring {
 
-  private final String triggerString;
+  private final Range top;
+  private final String triggerString, topTriggerString;
 
-  public TriggerParserStructuring(String triggerString) {
-    this.triggerString = triggerString;
+  private TriggerParserStructuring(Range top, String triggerString) {
+    this.top = top;
+    this.triggerString = top.cut(triggerString);
+    topTriggerString = triggerString;
+  }
+
+  public static TriggerParserStructuring of(Range top, String triggerString) {
+    return new TriggerParserStructuring(top, triggerString);
   }
 
   enum TokenType {
@@ -249,7 +256,7 @@ public class TriggerParserStructuring {
     makeTokens();
     makeStruct();
 
-    errors = triggerStruct.errors(triggerString);
+    errors = triggerStruct.errors(top, topTriggerString);
     result = triggerStruct.trigger();
 
   }

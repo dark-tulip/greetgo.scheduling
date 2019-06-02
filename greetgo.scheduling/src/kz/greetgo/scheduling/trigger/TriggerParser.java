@@ -11,13 +11,24 @@ import java.util.List;
 
 public class TriggerParser {
 
+  private interface ParallelParseResult {
+
+    Range range();
+
+    boolean isParallel();
+
+  }
+
   public static TriggerParseResult parse(String triggerString) {
 
     if (isCommented(triggerString)) {
       return silentResult;
     }
 
-    TriggerParserStructuring struct = new TriggerParserStructuring(triggerString);
+    ParallelParseResult ppr = parseParallel(triggerString);
+
+    TriggerParserStructuring struct = TriggerParserStructuring.of(ppr.range(), triggerString);
+
     struct.makeResult();
 
     if (struct.result != null && struct.errors.isEmpty() && !struct.result.isDotty()) {
@@ -25,14 +36,112 @@ public class TriggerParser {
     }
 
     return new TriggerParseResult() {
+      final Trigger trigger = wrap(ppr, struct.result);
+
       @Override
       public Trigger trigger() {
-        return struct.result;
+        return trigger;
       }
 
       @Override
       public List<TriggerParseError> errors() {
         return struct.errors;
+      }
+
+    };
+  }
+
+  private static Trigger wrap(ParallelParseResult ppr, Trigger input) {
+    return new Trigger() {
+      @Override
+      public boolean isHit(long schedulerStartedAtMillis, long timeMillisFrom, long timeMillisTo) {
+        return input.isHit(schedulerStartedAtMillis, timeMillisFrom, timeMillisTo);
+      }
+
+      @Override
+      public boolean isDotty() {
+        return input.isDotty();
+      }
+
+      @Override
+      public boolean isParallel() {
+        return ppr.isParallel();
+      }
+
+      @Override
+      public String toString() {
+        return input.toString();
+      }
+    };
+  }
+
+  private static ParallelParseResult parseParallel(String triggerString) {
+
+    int i1 = -1, i2 = -1;
+
+    for (int i = 0, len = triggerString.length(); i < len; i++) {
+
+      boolean isWhitespace = Character.isWhitespace(triggerString.charAt(i));
+
+      if (isWhitespace) {
+
+        if (i1 >= 0) {
+          break;
+        }
+
+      } else {
+
+        i2 = i;
+        if (i1 < 0) {
+          i1 = 0;
+        }
+
+      }
+
+    }
+
+    if (i1 < 0) {
+      return getSequenceParseResult(triggerString);
+    }
+
+    String firstWord = triggerString.substring(i1, i2 + 1).toLowerCase();
+
+    if (firstWord.startsWith("парал") || firstWord.equals("parallel")) {
+      return getParallelParseResult(triggerString, i2);
+    }
+
+    return getSequenceParseResult(triggerString);
+  }
+
+  private static ParallelParseResult getSequenceParseResult(String triggerString) {
+    return new ParallelParseResult() {
+      final Range range = Range.of(0, triggerString.length());
+
+      @Override
+      public Range range() {
+        return range;
+      }
+
+      @Override
+      public boolean isParallel() {
+        return false;
+      }
+    };
+  }
+
+  private static ParallelParseResult getParallelParseResult(String triggerString, int i2) {
+    return new ParallelParseResult() {
+      final int fromIndex = i2 + 1;
+      final Range range = Range.of(fromIndex, triggerString.length());
+
+      @Override
+      public Range range() {
+        return range;
+      }
+
+      @Override
+      public boolean isParallel() {
+        return true;
       }
     };
   }

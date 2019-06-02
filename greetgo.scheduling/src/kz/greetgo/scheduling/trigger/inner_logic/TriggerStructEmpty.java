@@ -26,7 +26,7 @@ public class TriggerStructEmpty implements TriggerStruct {
   }
 
   @Override
-  public List<TriggerParseError> errors(String triggerString) {
+  public List<TriggerParseError> errors(Range top, String triggerString) {
     return Collections.emptyList();
   }
 

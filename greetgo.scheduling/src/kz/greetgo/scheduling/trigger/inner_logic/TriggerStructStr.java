@@ -35,12 +35,12 @@ public class TriggerStructStr implements TriggerStruct {
   private List<ParseError> errorList = new ArrayList<>();
 
   @Override
-  public List<TriggerParseError> errors(String triggerString) {
+  public List<TriggerParseError> errors(Range top, String triggerString) {
     trigger();
-    return errorList.stream().map(e -> convertError(e, triggerString)).collect(Collectors.toList());
+    return errorList.stream().map(e -> convertError(top, e, triggerString)).collect(Collectors.toList());
   }
 
-  private TriggerParseError convertError(ParseError parseError, String triggerString) {
+  private TriggerParseError convertError(Range top, ParseError parseError, String triggerString) {
     return new TriggerParseError() {
       @Override
       public String errorMessage() {
@@ -54,7 +54,7 @@ public class TriggerStructStr implements TriggerStruct {
 
       @Override
       public Range errorPlace() {
-        return range.up(parseError.range);
+        return top.up(range.up(parseError.range));
       }
 
       @Override

@@ -54,8 +54,8 @@ public class TriggerStructPlus implements TriggerStruct {
   }
 
   @Override
-  public List<TriggerParseError> errors(String triggerString) {
-    return concatLists(a.errors(triggerString), a.errors(triggerString));
+  public List<TriggerParseError> errors(Range top, String triggerString) {
+    return concatLists(a.errors(top, triggerString), a.errors(top, triggerString));
   }
 
 }

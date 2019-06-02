@@ -8,6 +8,6 @@ public interface TriggerStruct extends ExpressionElement {
 
   Trigger trigger();
 
-  List<TriggerParseError> errors(String triggerString);
+  List<TriggerParseError> errors(Range top, String triggerString);
 
 }

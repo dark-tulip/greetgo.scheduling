@@ -13,9 +13,8 @@ public class TriggerParserStructuringTest {
 
   @Test
   public void makeStruct_plus_mul() {
-    TriggerParserStructuring structuring = new TriggerParserStructuring(
-      " asd 123  fds + asd 1-0 * x1 "
-    );
+    String source = " asd 123  fds + asd 1-0 * x1 ";
+    TriggerParserStructuring structuring = TriggerParserStructuring.of(Range.of(0, source.length()), source);
 
     structuring.makeTokens();
 
@@ -57,9 +56,8 @@ public class TriggerParserStructuringTest {
 
   @Test
   public void makeTokens() {
-    TriggerParserStructuring structuring = new TriggerParserStructuring(
-      " asd 123  fds + asd 1-0 * (x1 + 77 11 ddd) * --11 1g2 "
-    );
+    String source = " asd 123  fds + asd 1-0 * (x1 + 77 11 ddd) * --11 1g2 ";
+    TriggerParserStructuring structuring = TriggerParserStructuring.of(Range.of(0, source.length()), source);
 
     //
     //
@@ -96,10 +94,8 @@ public class TriggerParserStructuringTest {
 
   @Test
   public void makeStruct_error1() {
-    TriggerParserStructuring structuring = new TriggerParserStructuring(
-      " a + b * (c + d) sss "
-
-    );
+    String source = " a + b * (c + d) sss ";
+    TriggerParserStructuring structuring = TriggerParserStructuring.of(Range.of(0, source.length()), source);
 
     //
     //
@@ -120,10 +116,8 @@ public class TriggerParserStructuringTest {
 
   @Test
   public void makeStruct_error2() {
-
-    TriggerParserStructuring structuring = new TriggerParserStructuring(
-      " a + b * (c + d) ) "
-    );
+    String source = " a + b * (c + d) ) ";
+    TriggerParserStructuring structuring = TriggerParserStructuring.of(Range.of(0, source.length()), source);
 
     //
     //
@@ -144,9 +138,8 @@ public class TriggerParserStructuringTest {
 
   @Test
   public void makeStruct_plus_mul_bracket_plus() {
-    TriggerParserStructuring structuring = new TriggerParserStructuring(
-      " a + b * (c + d) "
-    );
+    String source = " a + b * (c + d) ";
+    TriggerParserStructuring structuring = TriggerParserStructuring.of(Range.of(0, source.length()), source);
 
     structuring.makeTokens();
 
