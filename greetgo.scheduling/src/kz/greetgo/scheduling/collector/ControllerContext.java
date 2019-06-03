@@ -19,8 +19,8 @@ public class ControllerContext {
                            LongSupplier currentTimeMillis) {
     Objects.requireNonNull(ccs, "controllerConfigStore");
     Objects.requireNonNull(currentTimeMillis, "currentTimeMillis");
-    configFile = new FileContent(ccs.schedulerConfigStore(), ccs.configLocation());
-    errorFile = new FileContent(ccs.schedulerConfigStore(), ccs.configErrorLocation());
+    configFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configLocation());
+    errorFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configErrorLocation());
     this.headerHelp = headerHelp;
     this.checkFileDelayMillis = checkFileDelayMillis;
     this.currentTimeMillis = currentTimeMillis;
