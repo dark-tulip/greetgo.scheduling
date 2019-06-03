@@ -15,8 +15,11 @@ public class MemoryFileContent implements FileContent {
     this.currentTimeMillis = currentTimeMillis;
   }
 
+  public boolean getCalled;
+
   @Override
   public String get() {
+    getCalled = true;
     return content;
   }
 

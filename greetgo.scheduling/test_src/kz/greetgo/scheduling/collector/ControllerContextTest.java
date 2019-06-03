@@ -34,7 +34,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     Trigger trigger1 = context.trigger(definition);
     System.out.println("43h26v :: trigger1 = " + trigger1);
@@ -71,7 +71,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     Trigger trigger = context.trigger(definition);
     System.out.println("43h26v :: trigger = " + trigger);
@@ -104,7 +104,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     //
     //
@@ -145,7 +145,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     //
     //
@@ -175,6 +175,7 @@ public class ControllerContextTest {
     configFile.content = "" +
       "name1 = 23:17\n" +
       "name2 = 14:45\n";
+    configFile.lastModifiedAt = currentTime[0];
 
     long checkFileDelayMillis = 500;
 
@@ -189,7 +190,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     //
     //
@@ -210,6 +211,7 @@ public class ControllerContextTest {
     configFile.content = "" +
       "name10 = 23:17\n" +
       "name20 = 14:45\n";
+    configFile.lastModifiedAt = currentTime[0];
 
     long checkFileDelayMillis = 500;
 
@@ -224,7 +226,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     assertThat(configFile.content.split("\n")).doesNotContain("name1 = 11:21");
 
@@ -251,6 +253,7 @@ public class ControllerContextTest {
     configFile.content = "" +
       "name1 = 23:17\n" +
       "name2 = 14:45\n";
+    configFile.lastModifiedAt = currentTime[0];
 
     long checkFileDelayMillis = 500;
 
@@ -265,7 +268,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     //
     //
@@ -273,7 +276,7 @@ public class ControllerContextTest {
     //
     //
 
-    currentTime[0] = 200 + 500 - 3;
+    currentTime[0] += checkFileDelayMillis - 3;
     configFile.lastModifiedAtCalled = false;
 
     //
@@ -295,6 +298,7 @@ public class ControllerContextTest {
     configFile.content = "" +
       "name1 = 23:17\n" +
       "name2 = 14:45\n";
+    configFile.lastModifiedAt = currentTime[0];
 
     long checkFileDelayMillis = 500;
 
@@ -309,7 +313,7 @@ public class ControllerContextTest {
 
     ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
 
-    currentTime[0] = 200;
+    currentTime[0] += 100;
 
     //
     //
@@ -317,8 +321,9 @@ public class ControllerContextTest {
     //
     //
 
-    currentTime[0] = 200 + 500 + 3;
+    currentTime[0] += checkFileDelayMillis + 3;
     configFile.lastModifiedAtCalled = false;
+    configFile.getCalled = false;
 
     //
     //
@@ -327,27 +332,193 @@ public class ControllerContextTest {
     //
 
     assertThat(configFile.lastModifiedAtCalled).isTrue();
+    assertThat(configFile.getCalled).isFalse();
 
   }
 
   @Test
-  public void trigger__readFile__nextSlowCallDoCheckFileModificationTime_loadFileBecauseTimeChanged() {
-    assertThat(1).isEqualTo(2);
+  public void trigger__readFile__nextSlowCallDoCheckFileModificationTime_loadFileBecauseModTimeChanged() {
+    long[] currentTime = new long[]{100};
+    MemoryFileContent configFile = new MemoryFileContent(() -> currentTime[0]);
+    MemoryFileContent errorFile = new MemoryFileContent(() -> currentTime[0]);
+
+    configFile.content = "name1 = 23:17";
+    configFile.lastModifiedAt = currentTime[0];
+
+    long checkFileDelayMillis = 500;
+
+    ControllerContext context = new ControllerContext(
+      configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
+    );
+
+    assertThat(configFile.exists()).isFalse();
+
+    String confLine1 = RND.str(10);
+    String confLine2 = RND.str(10);
+
+    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+
+    currentTime[0] += 100;
+
+    //
+    //
+    Trigger trigger1 = context.trigger(definition);
+    //
+    //
+
+    assertThat("" + trigger1).contains("23:17:45");
+
+    currentTime[0] += 100;
+    configFile.content = "name1 = 17:17:17";
+    configFile.lastModifiedAt = currentTime[0];
+
+
+    currentTime[0] += checkFileDelayMillis + 3;
+    configFile.lastModifiedAtCalled = false;
+    configFile.getCalled = false;
+
+    //
+    //
+    Trigger trigger2 = context.trigger(definition);
+    //
+    //
+
+    assertThat(configFile.lastModifiedAtCalled).isTrue();
+    assertThat(configFile.getCalled).isTrue();
+
+    assertThat("" + trigger2).contains("17:17:17");
   }
 
   @Test
   public void trigger__readFile_writeErrorFile__myTriggerIsOk() {
-    assertThat(1).isEqualTo(2);
+    long[] currentTime = new long[]{100};
+    MemoryFileContent configFile = new MemoryFileContent(() -> currentTime[0]);
+    MemoryFileContent errorFile = new MemoryFileContent(() -> currentTime[0]);
+
+    configFile.content = "" +
+      "name1 = 23:17\n" +
+      "name2 = left trigger\n";
+    configFile.lastModifiedAt = currentTime[0];
+
+    long checkFileDelayMillis = 500;
+
+    ControllerContext context = new ControllerContext(
+      configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
+    );
+
+    assertThat(configFile.exists()).isFalse();
+
+    String confLine1 = RND.str(10);
+    String confLine2 = RND.str(10);
+
+    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+
+    currentTime[0] += 100;
+
+    //
+    //
+    Trigger trigger = context.trigger(definition);
+    //
+    //
+
+    System.out.println("h5b426v54 :: errorFile :\n" + errorFile.content);
+
+    assertThat("" + trigger).contains("23:17:00");
+
+    assertThat(errorFile.lastModifiedAt).isEqualTo(currentTime[0]);
+
+    String[] errorLines = errorFile.content.split("\n");
+
+    assertThat(errorLines).contains("Ошибка");
+
   }
 
   @Test
   public void trigger__readFile_writeErrorFile__myTriggerIsBroken() {
-    assertThat(1).isEqualTo(2);
+    long[] currentTime = new long[]{100};
+    MemoryFileContent configFile = new MemoryFileContent(() -> currentTime[0]);
+    MemoryFileContent errorFile = new MemoryFileContent(() -> currentTime[0]);
+
+    configFile.content = "" +
+      "name1 = left\n" +
+      "name2 = left trigger\n";
+    configFile.lastModifiedAt = currentTime[0];
+
+    long checkFileDelayMillis = 500;
+
+    ControllerContext context = new ControllerContext(
+      configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
+    );
+
+    assertThat(configFile.exists()).isFalse();
+
+    String confLine1 = RND.str(10);
+    String confLine2 = RND.str(10);
+
+    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+
+    currentTime[0] += 100;
+
+    //
+    //
+    Trigger trigger = context.trigger(definition);
+    //
+    //
+
+    System.out.println("g6v543c7 :: errorFile :\n" + errorFile.content);
+
+    assertThat("" + trigger).contains("SILENT");
+
+    assertThat(errorFile.lastModifiedAt).isEqualTo(currentTime[0]);
+
+    String[] errorLines = errorFile.content.split("\n");
+
+    assertThat(errorLines).contains("Ошибка");
   }
 
   @Test
   public void trigger__readFile_removeErrorFileBecauseOfNoErrors() {
-    assertThat(1).isEqualTo(2);
+    long[] currentTime = new long[]{100};
+    MemoryFileContent configFile = new MemoryFileContent(() -> currentTime[0]);
+    MemoryFileContent errorFile = new MemoryFileContent(() -> currentTime[0]);
+
+    configFile.content = "" +
+      "name1 = 16:11\n" +
+      "name2 = 21:00\n";
+    configFile.lastModifiedAt = currentTime[0];
+
+    errorFile.content = RND.str(10);
+
+    long checkFileDelayMillis = 500;
+
+    ControllerContext context = new ControllerContext(
+      configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
+    );
+
+    assertThat(configFile.exists()).isFalse();
+
+    String confLine1 = RND.str(10);
+    String confLine2 = RND.str(10);
+
+    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+
+    currentTime[0] += 100;
+
+    //
+    //
+    Trigger trigger = context.trigger(definition);
+    //
+    //
+
+    System.out.println("g6v543c7 :: errorFile :\n" + errorFile.content);
+
+    assertThat("" + trigger).contains("16:11:00");
+
+    assertThat(errorFile.lastModifiedAt).isEqualTo(currentTime[0]);
+
+    String[] errorLines = errorFile.content.split("\n");
+
+    assertThat(errorLines).contains("Ошибка");
   }
 
 }
