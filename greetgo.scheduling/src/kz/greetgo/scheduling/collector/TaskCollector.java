@@ -88,12 +88,15 @@ public class TaskCollector {
 
   public TaskCollector addController(Object controller) {
 
-    ControllerConfigStore controllerConfigStore = new ControllerConfigStore(
+    ControllerConfigStore ccs = new ControllerConfigStore(
       schedulerConfigStoreWithExtensions, controller
     );
 
+    FileContent configFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configLocation());
+    FileContent errorFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configLocation());
+
     ControllerContext controllerContext = new ControllerContext(
-      controllerConfigStore, headerHelp, checkFileDelayMillis, System::currentTimeMillis
+      configFile, errorFile, headerHelp, checkFileDelayMillis, System::currentTimeMillis
     );
 
     for (Method method : controller.getClass().getMethods()) {

@@ -5,6 +5,9 @@ import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 import java.util.Objects;
 import java.util.function.LongSupplier;
 
+/**
+ * Этот класс используется только из одного потока
+ */
 public class ControllerContext {
 
   private final FileContent configFile;
@@ -13,14 +16,17 @@ public class ControllerContext {
   private final long checkFileDelayMillis;
   private final LongSupplier currentTimeMillis;
 
-  public ControllerContext(ControllerConfigStore ccs,
+  public ControllerContext(FileContent configFile,
+                           FileContent errorFile,
                            String headerHelp,
                            long checkFileDelayMillis,
                            LongSupplier currentTimeMillis) {
-    Objects.requireNonNull(ccs, "controllerConfigStore");
+
+    Objects.requireNonNull(configFile, "configFile");
+    Objects.requireNonNull(errorFile, "errorFile");
     Objects.requireNonNull(currentTimeMillis, "currentTimeMillis");
-    configFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configLocation());
-    errorFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configErrorLocation());
+    this.configFile = configFile;
+    this.errorFile = errorFile;
     this.headerHelp = headerHelp;
     this.checkFileDelayMillis = checkFileDelayMillis;
     this.currentTimeMillis = currentTimeMillis;

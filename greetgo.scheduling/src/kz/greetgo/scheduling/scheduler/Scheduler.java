@@ -51,6 +51,7 @@ public class Scheduler {
     });
     thread.set(aThread);
 
+    aThread.setName("greetgo! Scheduler Thread");
     aThread.start();
 
   }
