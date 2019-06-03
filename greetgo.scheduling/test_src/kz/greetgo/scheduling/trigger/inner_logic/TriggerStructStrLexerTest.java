@@ -10,7 +10,7 @@ import java.util.Optional;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.AT;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.REPEAT;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TIME_VALUE;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TriggerStructStrLexerTest {
 

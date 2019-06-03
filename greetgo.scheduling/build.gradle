@@ -1,4 +1,4 @@
 dependencies {
 //  compile "kz.greetgo.conf:greetgo.conf:$greetgoConfVersion"
-//  compile "kz.greetgo.util:greetgo.util:$greetgoUtilVersion"
+  testCompile "kz.greetgo.util:greetgo.util:$greetgoUtilVersion"
 }

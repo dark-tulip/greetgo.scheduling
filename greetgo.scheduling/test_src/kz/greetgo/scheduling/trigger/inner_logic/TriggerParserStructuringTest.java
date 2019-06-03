@@ -7,7 +7,7 @@ import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.OPEN_BRACKET;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.PLUS;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerParserStructuring.TokenType.STR;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TriggerParserStructuringTest {
 

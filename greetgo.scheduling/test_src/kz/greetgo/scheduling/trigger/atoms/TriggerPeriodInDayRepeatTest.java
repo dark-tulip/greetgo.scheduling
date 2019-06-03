@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static kz.greetgo.scheduling.util.TimeUtil.MILLIS_MINUTE;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("PointlessArithmeticExpression")
 public class TriggerPeriodInDayRepeatTest {

@@ -6,8 +6,10 @@ public class MemoryFileContent implements FileContent {
 
   private final LongSupplier currentTimeMillis;
 
-  private String content;
-  private long lastModifiedAt = 0;
+  public String content;
+  public long lastModifiedAt = 0;
+
+  public boolean lastModifiedAtCalled;
 
   public MemoryFileContent(LongSupplier currentTimeMillis) {
     this.currentTimeMillis = currentTimeMillis;
@@ -26,6 +28,7 @@ public class MemoryFileContent implements FileContent {
 
   @Override
   public long lastModifiedAt() {
+    lastModifiedAtCalled = true;
     return lastModifiedAt;
   }
 
