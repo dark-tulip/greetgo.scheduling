@@ -2,10 +2,10 @@ package kz.greetgo.scheduling.collector;
 
 public class TriggerConfigTest implements TriggerConfig {
 
-  private final TriggerConfigSource source;
+  private final SchedulerConfigStoreWithExtensions source;
   private final String locationPrefix;
 
-  public TriggerConfigTest(TriggerConfigSource source, String locationPrefix) {
+  public TriggerConfigTest(SchedulerConfigStoreWithExtensions source, String locationPrefix) {
     this.source = source;
     this.locationPrefix = locationPrefix;
   }

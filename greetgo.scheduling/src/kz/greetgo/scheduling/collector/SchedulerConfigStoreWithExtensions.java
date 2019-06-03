@@ -1,6 +1,6 @@
 package kz.greetgo.scheduling.collector;
 
-public interface TriggerConfigSource {
+public interface SchedulerConfigStoreWithExtensions {
 
   SchedulerConfigStore schedulerConfigStore();
 

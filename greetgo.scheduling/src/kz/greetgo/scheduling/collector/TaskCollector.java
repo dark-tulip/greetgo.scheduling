@@ -53,7 +53,7 @@ public class TaskCollector {
     return this;
   }
 
-  private final TriggerConfigSource triggerConfigSource = new TriggerConfigSource() {
+  private final SchedulerConfigStoreWithExtensions schedulerConfigStoreWithExtensions = new SchedulerConfigStoreWithExtensions() {
 
     @Override
     public SchedulerConfigStore schedulerConfigStore() {
@@ -88,7 +88,13 @@ public class TaskCollector {
 
   public TaskCollector addController(Object controller) {
 
-    MethodTriggerConfig triggerConfig = new MethodTriggerConfig(triggerConfigSource, controller);
+    ControllerConfigStore controllerConfigStore = new ControllerConfigStore(
+      schedulerConfigStoreWithExtensions, controller
+    );
+
+    ControllerContext controllerContext = new ControllerContext(
+      controllerConfigStore, headerHelp, checkFileDelayMillis, System::currentTimeMillis
+    );
 
     for (Method method : controller.getClass().getMethods()) {
 
@@ -102,9 +108,8 @@ public class TaskCollector {
       FromConfig fromConfig = method.getAnnotation(FromConfig.class);
       UsePool usePool = method.getAnnotation(UsePool.class);
 
-      Trigger trigger = TriggerOverMethod.create(method.getName(),
-        triggerConfig, scheduled, fromConfig, headerHelp,
-        checkFileDelayMillis, System::currentTimeMillis
+      Trigger trigger = TriggerOverMethod.create(
+        method.getName(), scheduled, fromConfig, controllerContext
       );
 
       taskList.add(CallMethodTask.of(id, trigger, usePool, job));

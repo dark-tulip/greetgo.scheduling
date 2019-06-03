@@ -1,11 +1,11 @@
 package kz.greetgo.scheduling.collector;
 
-public class MethodTriggerConfig implements TriggerConfig {
+public class ControllerConfigStore implements TriggerConfig {
 
-  private final TriggerConfigSource source;
+  private final SchedulerConfigStoreWithExtensions source;
   private final String locationPrefix;
 
-  public MethodTriggerConfig(TriggerConfigSource source, Object controller) {
+  public ControllerConfigStore(SchedulerConfigStoreWithExtensions source, Object controller) {
     this.source = source;
     locationPrefix = controller.getClass().getSimpleName();
   }
