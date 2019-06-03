@@ -74,7 +74,6 @@ public class ControllerContextTest {
     currentTime[0] += 100;
 
     Trigger trigger = context.trigger("name1");
-    System.out.println("43h26v :: trigger = " + trigger);
 
     assertThat("" + trigger).contains("11:21:00");
 
@@ -112,7 +111,7 @@ public class ControllerContextTest {
     //
     //
 
-    currentTime[0] = 300;
+    currentTime[0] += checkFileDelayMillis - 5;
     configFile.lastModifiedAtCalled = false;
 
     //
@@ -124,7 +123,6 @@ public class ControllerContextTest {
     assertThat(configFile.lastModifiedAtCalled).isFalse();
 
   }
-
 
   @Test
   public void trigger__afterFirstCreation_secondSlowCallDoCheckFileModification() {
@@ -149,16 +147,16 @@ public class ControllerContextTest {
 
     //
     //
-    context.trigger("name");
+    context.trigger("name1");
     //
     //
 
-    currentTime[0] = 200 + 500 + 1;
+    currentTime[0] += checkFileDelayMillis + 3;
     configFile.lastModifiedAtCalled = false;
 
     //
     //
-    context.trigger("name");
+    context.trigger("name1");
     //
     //
 
@@ -189,12 +187,13 @@ public class ControllerContextTest {
     String confLine2 = RND.str(10);
 
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
+    context.register(new ScheduledDefinition("name2", "11:21", true, "описание чиво"));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger = context.trigger("name");
+    Trigger trigger = context.trigger("name1");
     //
     //
 
@@ -210,7 +209,7 @@ public class ControllerContextTest {
 
     configFile.content = "" +
       "name10 = 23:17\n" +
-      "name20 = 14:45\n";
+      "name2 = 14:45\n";
     configFile.lastModifiedAt = currentTime[0];
 
     long checkFileDelayMillis = 500;
@@ -225,6 +224,7 @@ public class ControllerContextTest {
     String confLine2 = RND.str(10);
 
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
+    context.register(new ScheduledDefinition("name2", "11:21", true, "описание чиво"));
 
     currentTime[0] += 100;
 
@@ -232,7 +232,7 @@ public class ControllerContextTest {
 
     //
     //
-    Trigger trigger = context.trigger("name");
+    Trigger trigger = context.trigger("name1");
     //
     //
 
@@ -267,12 +267,13 @@ public class ControllerContextTest {
     String confLine2 = RND.str(10);
 
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
+    context.register(new ScheduledDefinition("name2", "11:21", true, "описание чиво"));
 
     currentTime[0] += 100;
 
     //
     //
-    context.trigger("name");
+    context.trigger("name1");
     //
     //
 
@@ -281,7 +282,7 @@ public class ControllerContextTest {
 
     //
     //
-    context.trigger("name");
+    context.trigger("name1");
     //
     //
 
@@ -312,12 +313,13 @@ public class ControllerContextTest {
     String confLine2 = RND.str(10);
 
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
+    context.register(new ScheduledDefinition("name2", "11:21", true, "описание чиво"));
 
     currentTime[0] += 100;
 
     //
     //
-    context.trigger("name");
+    context.trigger("name1");
     //
     //
 
@@ -327,7 +329,7 @@ public class ControllerContextTest {
 
     //
     //
-    context.trigger("name");
+    context.trigger("name1");
     //
     //
 
@@ -362,7 +364,7 @@ public class ControllerContextTest {
 
     //
     //
-    Trigger trigger1 = context.trigger("name");
+    Trigger trigger1 = context.trigger("name1");
     //
     //
 
@@ -379,7 +381,7 @@ public class ControllerContextTest {
 
     //
     //
-    Trigger trigger2 = context.trigger("name");
+    Trigger trigger2 = context.trigger("name1");
     //
     //
 
@@ -412,12 +414,13 @@ public class ControllerContextTest {
     String confLine2 = RND.str(10);
 
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
+    context.register(new ScheduledDefinition("name2", "11:21", true, "описание чиво"));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger = context.trigger("name");
+    Trigger trigger = context.trigger("name1");
     //
     //
 
@@ -456,12 +459,13 @@ public class ControllerContextTest {
     String confLine2 = RND.str(10);
 
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
+    context.register(new ScheduledDefinition("name2", "11:21", true, "описание чиво"));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger = context.trigger("name");
+    Trigger trigger = context.trigger("name1");
     //
     //
 
@@ -506,7 +510,7 @@ public class ControllerContextTest {
 
     //
     //
-    Trigger trigger = context.trigger("name");
+    Trigger trigger = context.trigger("name1");
     //
     //
 

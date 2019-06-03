@@ -3,21 +3,21 @@ package kz.greetgo.scheduling.collector;
 import kz.greetgo.scheduling.trigger.TriggerParser;
 import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.LongSupplier;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
 /**
+ * <p>
+ * Обеспечивает логику работы с файлами: конфигом и его ошибками - их чтение, создание, обновление, удаление
+ * </p>
+ * <p>
  * Этот класс используется только из одного потока
+ * </p>
  */
 public class ControllerContext {
 
@@ -42,13 +42,39 @@ public class ControllerContext {
 
   }
 
+  private long lastCheckTime = 0;
+  private long lastGetModificationTime = 0;
+  private List<String> lines = null;
+  private Map<String, String> patterns = null;
+
+  private final List<ScheduledDefinition> definitions = new ArrayList<>();
+  private final Map<String, ScheduledDefinition> definitionMap = new HashMap<>();
 
   public void register(ScheduledDefinition definition) {
-
+    definitions.add(definition);
+    definitionMap.put(definition.name, definition);
   }
 
+  private final Map<String, Trigger> triggers = new HashMap<>();
+
   public Trigger trigger(String name) {
-    return null;
+    prepare();
+
+    {
+      Trigger trigger = triggers.get(name);
+      if (trigger != null) {
+        return trigger;
+      }
+    }
+    {
+      Trigger trigger = TriggerParser.parse(patterns.get(name)).trigger();
+      triggers.put(name, trigger);
+      return trigger;
+    }
+  }
+
+  private void prepare() {
+
   }
 
 }
