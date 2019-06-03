@@ -1,5 +1,8 @@
 package kz.greetgo.scheduling.collector;
 
+import kz.greetgo.scheduling.FromConfig;
+import kz.greetgo.scheduling.Scheduled;
+
 public class ScheduledDefinition {
 
   public final String name;
@@ -13,4 +16,15 @@ public class ScheduledDefinition {
     this.isFromFile = isFromFile;
     this.patternDescription = patternDescription;
   }
+
+  public static ScheduledDefinition of(String methodName, Scheduled scheduled, FromConfig fromConfig) {
+
+    if (fromConfig == null) {
+      return new ScheduledDefinition(methodName, scheduled.value(), false, null);
+    } else {
+      return new ScheduledDefinition(methodName, scheduled.value(), true, fromConfig.value());
+    }
+
+  }
+
 }

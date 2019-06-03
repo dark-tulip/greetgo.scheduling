@@ -1,9 +1,20 @@
 package kz.greetgo.scheduling.collector;
 
+import kz.greetgo.scheduling.trigger.TriggerParser;
 import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.LongSupplier;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Этот класс используется только из одного потока
@@ -16,23 +27,27 @@ public class ControllerContext {
   private final long checkFileDelayMillis;
   private final LongSupplier currentTimeMillis;
 
-  public ControllerContext(FileContent configFile,
-                           FileContent errorFile,
-                           String headerHelp,
-                           long checkFileDelayMillis,
+  public ControllerContext(FileContent configFile, FileContent errorFile,
+                           String headerHelp, long checkFileDelayMillis,
                            LongSupplier currentTimeMillis) {
 
-    Objects.requireNonNull(configFile, "configFile");
-    Objects.requireNonNull(errorFile, "errorFile");
-    Objects.requireNonNull(currentTimeMillis, "currentTimeMillis");
+    requireNonNull(configFile, "configFile");
+    requireNonNull(errorFile, "errorFile");
+    requireNonNull(currentTimeMillis, "currentTimeMillis");
     this.configFile = configFile;
     this.errorFile = errorFile;
     this.headerHelp = headerHelp;
     this.checkFileDelayMillis = checkFileDelayMillis;
     this.currentTimeMillis = currentTimeMillis;
+
   }
 
-  public Trigger trigger(ScheduledDefinition definition) {
+
+  public void register(ScheduledDefinition definition) {
+
+  }
+
+  public Trigger trigger(String name) {
     return null;
   }
 

@@ -21,6 +21,10 @@ public class TriggerParser {
 
   public static TriggerParseResult parse(String triggerString) {
 
+    if (triggerString == null) {
+      return silentResult;
+    }
+
     if (isCommented(triggerString)) {
       return silentResult;
     }

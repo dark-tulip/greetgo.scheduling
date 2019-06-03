@@ -111,9 +111,9 @@ public class TaskCollector {
       FromConfig fromConfig = method.getAnnotation(FromConfig.class);
       UsePool usePool = method.getAnnotation(UsePool.class);
 
-      Trigger trigger = TriggerOverMethod.create(
-        method.getName(), scheduled, fromConfig, controllerContext
-      );
+      ScheduledDefinition definition = ScheduledDefinition.of(method.getName(), scheduled, fromConfig);
+      controllerContext.register(definition);
+      Trigger trigger = TriggerOverMethod.create(definition, controllerContext);
 
       taskList.add(CallMethodTask.of(id, trigger, usePool, job));
     }

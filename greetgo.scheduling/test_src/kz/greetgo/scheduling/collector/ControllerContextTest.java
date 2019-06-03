@@ -32,11 +32,11 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
-    Trigger trigger1 = context.trigger(definition);
+    Trigger trigger1 = context.trigger("name1");
     System.out.println("43h26v :: trigger1 = " + trigger1);
 
     assertThat("" + trigger1).contains("11:21:00");
@@ -69,11 +69,11 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
-    Trigger trigger = context.trigger(definition);
+    Trigger trigger = context.trigger("name1");
     System.out.println("43h26v :: trigger = " + trigger);
 
     assertThat("" + trigger).contains("11:21:00");
@@ -102,13 +102,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name1");
     //
     //
 
@@ -117,7 +117,7 @@ public class ControllerContextTest {
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name1");
     //
     //
 
@@ -143,13 +143,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name");
     //
     //
 
@@ -158,7 +158,7 @@ public class ControllerContextTest {
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name");
     //
     //
 
@@ -188,13 +188,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger = context.trigger(definition);
+    Trigger trigger = context.trigger("name");
     //
     //
 
@@ -224,7 +224,7 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
@@ -232,7 +232,7 @@ public class ControllerContextTest {
 
     //
     //
-    Trigger trigger = context.trigger(definition);
+    Trigger trigger = context.trigger("name");
     //
     //
 
@@ -266,13 +266,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name");
     //
     //
 
@@ -281,7 +281,7 @@ public class ControllerContextTest {
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name");
     //
     //
 
@@ -311,13 +311,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name");
     //
     //
 
@@ -327,7 +327,7 @@ public class ControllerContextTest {
 
     //
     //
-    context.trigger(definition);
+    context.trigger("name");
     //
     //
 
@@ -356,13 +356,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger1 = context.trigger(definition);
+    Trigger trigger1 = context.trigger("name");
     //
     //
 
@@ -379,7 +379,7 @@ public class ControllerContextTest {
 
     //
     //
-    Trigger trigger2 = context.trigger(definition);
+    Trigger trigger2 = context.trigger("name");
     //
     //
 
@@ -411,13 +411,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger = context.trigger(definition);
+    Trigger trigger = context.trigger("name");
     //
     //
 
@@ -455,13 +455,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger = context.trigger(definition);
+    Trigger trigger = context.trigger("name");
     //
     //
 
@@ -500,13 +500,13 @@ public class ControllerContextTest {
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
-    ScheduledDefinition definition = new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2);
+    context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
 
     //
     //
-    Trigger trigger = context.trigger(definition);
+    Trigger trigger = context.trigger("name");
     //
     //
 
