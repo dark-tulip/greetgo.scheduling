@@ -15,6 +15,15 @@ public class StrUtil {
     return sb.toString();
   }
 
+  public static String toLenSpace(Object object, int len) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(object);
+    while (sb.length() < len) {
+      sb.insert(0, ' ');
+    }
+    return sb.toString();
+  }
+
   public static String mul(String s, int times) {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < times; i++) {

@@ -35,13 +35,13 @@ public class ControllerContextTest {
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
+    long time2 = currentTime[0];
 
     Trigger trigger1 = context.trigger("name1");
-    System.out.println("43h26v :: trigger1 = " + trigger1);
 
     assertThat("" + trigger1).contains("11:21:00");
 
-    assertThat(configFile.lastModifiedAt).isEqualTo(100);
+    assertThat(configFile.lastModifiedAt).isEqualTo(time2);
     String[] configLines = configFile.content.split("\n");
     assertThat(configLines).contains("# " + helpLine1);
     assertThat(configLines).contains("# " + helpLine2);
@@ -72,12 +72,13 @@ public class ControllerContextTest {
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
 
     currentTime[0] += 100;
+    long time2 = currentTime[0];
 
     Trigger trigger = context.trigger("name1");
 
     assertThat("" + trigger).contains("11:21:00");
 
-    assertThat(configFile.lastModifiedAt).isEqualTo(100);
+    assertThat(configFile.lastModifiedAt).isEqualTo(time2);
     String[] configLines = configFile.content.split("\n");
     assertThat(configLines).contains("# " + confLine1);
     assertThat(configLines).contains("# " + confLine2);
@@ -181,13 +182,11 @@ public class ControllerContextTest {
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
 
-    assertThat(configFile.exists()).isFalse();
-
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
     context.register(new ScheduledDefinition("name1", "11:21", true, confLine1 + "\n" + confLine2));
-    context.register(new ScheduledDefinition("name2", "11:21", true, "описание чиво"));
+    context.register(new ScheduledDefinition("name2", "13:31", true, "описание чиво"));
 
     currentTime[0] += 100;
 
@@ -197,8 +196,8 @@ public class ControllerContextTest {
     //
     //
 
-    assertThat("" + trigger).doesNotContain("11:21");
     assertThat("" + trigger).contains("23:17:00");
+    assertThat("" + trigger).doesNotContain("11:21");
   }
 
   @Test
@@ -217,8 +216,6 @@ public class ControllerContextTest {
     ControllerContext context = new ControllerContext(
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
-
-    assertThat(configFile.exists()).isFalse();
 
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
@@ -260,8 +257,6 @@ public class ControllerContextTest {
     ControllerContext context = new ControllerContext(
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
-
-    assertThat(configFile.exists()).isFalse();
 
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
@@ -307,8 +302,6 @@ public class ControllerContextTest {
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
 
-    assertThat(configFile.exists()).isFalse();
-
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
@@ -344,7 +337,7 @@ public class ControllerContextTest {
     MemoryFileContent configFile = new MemoryFileContent(() -> currentTime[0]);
     MemoryFileContent errorFile = new MemoryFileContent(() -> currentTime[0]);
 
-    configFile.content = "name1 = 23:17";
+    configFile.content = "name1 = 23:17:45";
     configFile.lastModifiedAt = currentTime[0];
 
     long checkFileDelayMillis = 500;
@@ -352,8 +345,6 @@ public class ControllerContextTest {
     ControllerContext context = new ControllerContext(
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
-
-    assertThat(configFile.exists()).isFalse();
 
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
@@ -408,8 +399,6 @@ public class ControllerContextTest {
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
 
-    assertThat(configFile.exists()).isFalse();
-
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
@@ -424,7 +413,7 @@ public class ControllerContextTest {
     //
     //
 
-    System.out.println("h5b426v54 :: errorFile :\n" + errorFile.content);
+    System.err.println("h5b426v54 :: errorFile :\n" + errorFile.content);
 
     assertThat("" + trigger).contains("23:17:00");
 
@@ -432,7 +421,8 @@ public class ControllerContextTest {
 
     String[] errorLines = errorFile.content.split("\n");
 
-    assertThat(errorLines).contains("Ошибка");
+    assertThat(String.join(" ", errorLines)).contains("ошибка: 26kjb43");
+    assertThat(String.join(" ", errorLines)).contains("Строка 2,");
 
   }
 
@@ -453,8 +443,6 @@ public class ControllerContextTest {
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
 
-    assertThat(configFile.exists()).isFalse();
-
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
@@ -469,15 +457,15 @@ public class ControllerContextTest {
     //
     //
 
-    System.out.println("g6v543c7 :: errorFile :\n" + errorFile.content);
+    System.err.println("g6v543c7 :: errorFile :\n" + errorFile.content);
 
-    assertThat("" + trigger).contains("SILENT");
+    assertThat("" + trigger).contains("Silent");
 
     assertThat(errorFile.lastModifiedAt).isEqualTo(currentTime[0]);
 
     String[] errorLines = errorFile.content.split("\n");
 
-    assertThat(errorLines).contains("Ошибка");
+    assertThat(String.join(" ", errorLines)).contains("26kjb43");
   }
 
   @Test
@@ -499,8 +487,6 @@ public class ControllerContextTest {
       configFile, errorFile, null, checkFileDelayMillis, () -> currentTime[0]
     );
 
-    assertThat(configFile.exists()).isFalse();
-
     String confLine1 = RND.str(10);
     String confLine2 = RND.str(10);
 
@@ -514,15 +500,11 @@ public class ControllerContextTest {
     //
     //
 
-    System.out.println("g6v543c7 :: errorFile :\n" + errorFile.content);
-
     assertThat("" + trigger).contains("16:11:00");
 
     assertThat(errorFile.lastModifiedAt).isEqualTo(currentTime[0]);
 
-    String[] errorLines = errorFile.content.split("\n");
-
-    assertThat(errorLines).contains("Ошибка");
+    assertThat(errorFile.content).isNull();
   }
 
 }
