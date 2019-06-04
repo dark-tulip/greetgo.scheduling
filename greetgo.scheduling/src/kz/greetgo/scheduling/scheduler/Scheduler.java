@@ -5,7 +5,6 @@ import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Scheduler {
 
@@ -25,11 +24,10 @@ public class Scheduler {
   private long lastMillis;
   private long schedulerStartedAtMillis;
 
-  private final AtomicReference<Thread> thread = new AtomicReference<>(null);
-
   public void startup() {
 
-    schedulerStartedAtMillis = lastMillis = System.currentTimeMillis();
+    schedulerStartedAtMillis = System.currentTimeMillis();
+    lastMillis = schedulerStartedAtMillis - 1000L;
 
     Thread aThread = new Thread(() -> {
 
@@ -49,7 +47,6 @@ public class Scheduler {
       }
 
     });
-    thread.set(aThread);
 
     aThread.setName("greetgo! Scheduler Thread");
     aThread.start();

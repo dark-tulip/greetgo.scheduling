@@ -153,6 +153,8 @@ public class ControllerContext {
           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
           String nowStr = sdf.format(new Date(now));
 
+          lines.add("");
+          lines.add("#");
           lines.add("# Added at " + nowStr);
         }
         added = true;
@@ -178,6 +180,8 @@ public class ControllerContext {
       for (String line : headerHelp.split("\n")) {
         lines.add("# " + line);
       }
+      lines.add("#");
+      lines.add("#");
       lines.add("");
     }
 
@@ -199,6 +203,7 @@ public class ControllerContext {
     for (String line : definition.patternDescription.split("\n")) {
       lines.add("# " + line);
     }
+    lines.add("#");
     lines.add(definition.name + " = " + definition.patternFromAnnotation);
     patterns.put(definition.name, definition.patternFromAnnotation);
     lineNumbers.put(definition.name, lines.size());

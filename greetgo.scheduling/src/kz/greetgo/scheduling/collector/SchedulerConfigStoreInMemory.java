@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 
 public class SchedulerConfigStoreInMemory implements SchedulerConfigStore {
 
-  private final Supplier<Supplier<Long>> currentTimeMillis;
+  private final Supplier<Long> currentTimeMillis;
 
-  public SchedulerConfigStoreInMemory(Supplier<Supplier<Long>> currentTimeMillis) {
+  public SchedulerConfigStoreInMemory(Supplier<Long> currentTimeMillis) {
     this.currentTimeMillis = currentTimeMillis;
   }
 
@@ -33,7 +33,7 @@ public class SchedulerConfigStoreInMemory implements SchedulerConfigStore {
   @Override
   public void setContent(String location, String content) {
     this.content.put(location, content);
-    contentModification.put(location, currentTimeMillis.get().get());
+    contentModification.put(location, currentTimeMillis.get());
   }
 
   @Override

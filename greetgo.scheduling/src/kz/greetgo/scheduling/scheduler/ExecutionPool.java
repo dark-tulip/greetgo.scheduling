@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecutionPool {
+  public static final String DEF_POOL_NAME = "default";
 
   private final String poolName;
   private final int maxSize;
@@ -81,7 +82,5 @@ public class ExecutionPool {
     }
 
   }
-
-
 
 }

@@ -76,6 +76,7 @@ public class TimeUtil {
    */
   public static long millisFromDayBegin(long dateTimeMillis) {
     Calendar calendar = new GregorianCalendar();
+
     calendar.setTimeInMillis(dateTimeMillis);
 
     int hour = calendar.get(Calendar.HOUR_OF_DAY);

@@ -21,7 +21,7 @@ public class TaskCollector {
     headerHelp = streamToStr(getClass().getResourceAsStream("scheduler-help.txt"));
   }
 
-  public static TaskCollector create() {
+  public static TaskCollector newTaskCollector() {
     return new TaskCollector();
   }
 
@@ -93,7 +93,7 @@ public class TaskCollector {
     );
 
     FileContent configFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configLocation());
-    FileContent errorFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configLocation());
+    FileContent errorFile = new FileContentBridge(ccs.schedulerConfigStore(), ccs.configErrorLocation());
 
     ControllerContext controllerContext = new ControllerContext(
       configFile, errorFile, headerHelp, checkFileDelayMillis, System::currentTimeMillis

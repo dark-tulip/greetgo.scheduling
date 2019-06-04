@@ -15,6 +15,12 @@ import static java.util.stream.Collectors.toMap;
 
 public class SchedulerBuilder {
 
+  private SchedulerBuilder() {}
+
+  public static SchedulerBuilder newSchedulerBuilder() {
+    return new SchedulerBuilder();
+  }
+
   private ThrowCatcher throwCatcher = Throwable::printStackTrace;
 
   public SchedulerBuilder setThrowCatcher(ThrowCatcher throwCatcher) {
@@ -55,7 +61,7 @@ public class SchedulerBuilder {
     return size == null ? defaultExecutionPoolSize : size;
   }
 
-  public List<Task> taskList = new ArrayList<>();
+  private List<Task> taskList = new ArrayList<>();
 
   public SchedulerBuilder addTask(Task task) {
     taskList.add(task);

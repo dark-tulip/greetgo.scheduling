@@ -1,44 +1,20 @@
 package kz.greetgo.scheduling.collector;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class TriggerOverMethodTest {
 
-  Supplier<Long> currentTimeMillis = null;
-
-  final SchedulerConfigStoreInMemory configStore = new SchedulerConfigStoreInMemory(() -> currentTimeMillis);
-
-  private final SchedulerConfigStoreWithExtensions schedulerConfigStoreWithExtensions = new SchedulerConfigStoreWithExtensions() {
-    @Override
-    public SchedulerConfigStore schedulerConfigStore() {
-      return configStore;
-    }
-
-    @Override
-    public String configExtension() {
-      return ".config.txt";
-    }
-
-    @Override
-    public String configErrorsExtension() {
-      return ".errors.txt";
-    }
-  };
-
-  @BeforeMethod
-  public void clearAll() {
-    configStore.clear();
-    currentTimeMillis = null;
-  }
-
   @Test
-  public void name() {
-    assertThat(1).isEqualTo(2);
+  public void withoutFromFile() {
+
+    ScheduledDefinition definition = new ScheduledDefinition("name1", "12:00", false, null);
+
+    TriggerOverMethod triggerOverMethod = TriggerOverMethod.create(definition, null);
+
+    assertThat(triggerOverMethod.toString()).contains("12:00:00");
+
   }
+
 }

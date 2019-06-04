@@ -41,6 +41,8 @@ public class SchedulerConfigStoreInFile implements SchedulerConfigStore {
     if (content == null) {
       try {
         Files.delete(path);
+      } catch (java.nio.file.NoSuchFileException ignore) {
+        return;
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -61,6 +63,8 @@ public class SchedulerConfigStoreInFile implements SchedulerConfigStore {
   public long lastModifiedMillis(String location) {
     try {
       return Files.getLastModifiedTime(root.resolve(location)).toMillis();
+    } catch (java.nio.file.NoSuchFileException ignore) {
+      return 0;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
