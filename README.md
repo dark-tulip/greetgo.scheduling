@@ -6,7 +6,7 @@ Run tasks by scheduling
 
 Include library:
 
-    compile "kz.greetgo:greetgo.scheduling:2.0.2"
+    compile "kz.greetgo:greetgo.scheduling:3.0.0"
 
 Using next imports:
 
