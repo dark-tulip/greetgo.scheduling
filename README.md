@@ -1,101 +1,103 @@
 # greetgo.scheduling
 
-Запуск задач по расписанию
+Run tasks by scheduling
 
 ### Быстрый старт
 
-Подключаем библиотеку:
+Include library:
 
     compile "kz.greetgo:greetgo.scheduling:2.0.2"
 
-Нужны такие импорты:
+Using next imports:
 
 ```java
-import kz.greetgo.scheduling.ExecutionPool;
-import kz.greetgo.scheduling.Scheduled;
-import kz.greetgo.scheduling.Scheduler;
-import kz.greetgo.scheduling.Task;
-import kz.greetgo.scheduling.TaskCollector;
-import kz.greetgo.scheduling.ThrowableCatcher;
 import kz.greetgo.scheduling.FromConfig;
 import kz.greetgo.scheduling.UsePool;
+import kz.greetgo.scheduling.Scheduled;
+import kz.greetgo.scheduling.collector.SchedulerConfigStore;
+import kz.greetgo.scheduling.collector.SchedulerConfigStoreInFile;
+import kz.greetgo.scheduling.collector.Task;
+
+import static kz.greetgo.scheduling.collector.TaskCollector.newTaskCollector;
+import static kz.greetgo.scheduling.scheduler.SchedulerBuilder.newSchedulerBuilder;
 ```
 
-Создатём класс с публичными методами, помеченными аннотацией @Scheduled:
+Creates class with public method, marked with annotation @Scheduled:
 
 ```java
 public class SomeScheduledClass {
   
-  @Scheduled("запускать каждые 10 секунд")//фиксированное расписание
+  @Scheduled("repeat every 10 seconds")
   public void task1() {
-    System.out.println("Идёт работа таски №1");
+    System.out.println("Task №1 is working...");
   }
   
-  @FromConfig("Таска номер 2")//расписание будет браться из файла-конфига dir/to/configs/SomeScheduledClass.hotconfig
-  //если файла-конфига нет, то он создастся автоматически
-  @Scheduled("запускать каждые 20 секунд")//а это расписание по-умолчанию
-  public void task2() {//имя метода - это ключ в файле конфиге : значение будет присваиваться по-умолчанию
-    System.out.println("Идёт работа таски №2");
+  @FromConfig("Task number 2 description")//scheduler takes from config dir/to/configs/SomeScheduledClass.sch.txt
+  //If config is absent, it will be created automatically
+  @Scheduled("repeat every 20 seconds")//it is scheduling by default
+  public void task2() {//method name - key in file config : value will be from @Scheduled
+    System.out.println("Task №2 is working...");
   }
   
-  @FromConfig("Таска номер 3")
-  @UsePool("Hello")//эта задача будет запускаться в пуле Hello. Другие задачи: в пуле по-умолчанию
-  @Scheduled("запускать каждые 5 секунд")
+  @FromConfig("Description of task number 3")
+  @UsePool("Hello")//This task will be pul in execution pool `Hello`
+  @Scheduled("repeat every 5 seconds")
   public void task3() {
-    System.out.println("Идёт работа таски №3");
+    System.out.println("Task №3 is working...");
   }
   
 }
 
 ```
 
-(таких классов может быть много)
+(such classes may be many)
 
-И потом запускаем шедулер таким способом:
+And then run scheduler as following:
 
 ```java
 public class RunScheduler {
   public static void main(String[] args) {
     
-    //Вначале нужно собрать таски с помощью объекта
-    TaskCollector taskCollector = new TaskCollector("dir/to/configs");
+    //dir for config files
+    Path configRoot = Paths.get("dir/to/configs");
     
-    // в папке dir/to/configs будут создаваться конфиги для тасков, помеченные аннотацией @FromConfig
+    //Creates config storage in files. You can implement SchedulerConfigStore to store configs where ever else
+    SchedulerConfigStore configStore = new SchedulerConfigStoreInFile(configRoot);
     
-    // указываем, как будут обрабатываться исключения в тасках
-    taskCollector.throwableCatcher = new ThrowableCatcher() {
-      @Override
-      public void catchThrowable(Throwable throwable) {
-        System.out.println("Wow " + throwable);
-      }
-    };
-    
+    //Takes controllers
     SomeScheduledClass x = new SomeScheduledClass();
     SomeScheduledClass2 y = new SomeScheduledClass2();
     
-    //теперь собираем таски
-    taskCollector.collect(x); 
-    taskCollector.collect(y);
+    // Now creates tasks
+    List<Task> tasks = newTaskCollector()
+          .setSchedulerConfigStore(configStore)
+          .setConfigExtension(".cfg.txt")//config extension
+          .setConfigErrorsExtension(".cfg.error.txt")//extension for errors from config
+          .addController(x)//register controllers
+          .addController(y)
+          .getTasks();//generate and get tasks
     
-    //Получаем собранные таски
-    List<Task> tasks = taskCollector.getTasks();
+    // Creates scheduler
+    Scheduler scheduler = newSchedulerBuilder()
+          .setPingDelayMillis(200)//check task run delay
+          .setDefaultExecutionPoolSize(100)//max 
+          .setExecutionPoolSize("large", 1000)
+          .setThrowCatcher((throwable -> {
+            System.out.println("Error in scheduler method come here");
+            throwable.printStackTrace(System.out);
+          }))
+          .addTasks(tasks)
+          .build();
     
-    // Теперь собираем пулы, которые нужны таскам
-    Map<String, ExecutionPool> executionPoolMap = ExecutionPool.poolsForTasks(tasks);
-    
-    // Создаём объект-исполнитель расписаний, который и будет запускать наши таски по расписанию
-    // и следить за изменениями расписаний в конфигурационных файлах
-    Scheduler scheduler = new Scheduler(tasks, executionPoolMap);
-    
-    // Ну а теперь стартуем сам процесс запуска тасков по расписанию
+    // Start scheduler for all tasks
     scheduler.startup();
-    //с этого момента начинают запускаться таски по расписанию...
+    //from here all task will be started by their scheduler
     
     //...
     //...
     //...
     
-    //Если запускание тасков по расписанию больше не нужно - останавливаем процесс так:
+    //Stop all task running, if need
     scheduler.shutdown();
     
   }
