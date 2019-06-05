@@ -2,7 +2,7 @@
 
 Run tasks by scheduling
 
-### Быстрый старт
+### Quick start
 
 Include library:
 
