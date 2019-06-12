@@ -79,6 +79,7 @@ public class SchedulerTest {
     File freezeTemplate = configRoot.resolve("freeze-template").toFile();
     File freeze = configRoot.resolve("freeze").toFile();
     if (!freeze.exists()) {
+      freezeTemplate.getParentFile().mkdirs();
       freezeTemplate.createNewFile();
     }
 

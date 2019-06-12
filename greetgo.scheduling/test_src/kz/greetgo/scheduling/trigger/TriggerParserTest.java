@@ -107,4 +107,25 @@ public class TriggerParserTest {
 
   }
 
+  @Test
+  public void parse_parallel_error2() {
+
+    String triggerString = " repeat every 5 sec * (mon + wed zzz1)";
+
+    //
+    //
+    TriggerParseResult result = TriggerParser.parse(triggerString);
+    //
+    //
+
+    List<TriggerParseError> errors = result.errors();
+
+    Optional<String> error = ScheduledParseException.generateErrorMessage(errors);
+
+    System.out.println("j6b542447 :: " + error);
+
+    assertThat(errors).isNotEmpty();
+
+  }
+
 }

@@ -1,6 +1,5 @@
 package kz.greetgo.scheduling.trigger.atoms;
 
-import kz.greetgo.scheduling.trigger.atoms.TriggerPeriodInDay;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
