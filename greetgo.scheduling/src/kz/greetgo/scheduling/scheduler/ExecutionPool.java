@@ -16,6 +16,21 @@ public class ExecutionPool {
 
   private final AtomicInteger threadSize = new AtomicInteger(0);
 
+  // TODO это поле показывать в SchedulerStateInfo
+  public int getCurrentSize() {
+    return threadSize.get();
+  }
+
+  // TODO это поле показывать в SchedulerStateInfo
+  public int getMaxSize() {
+    return maxSize;
+  }
+
+  // TODO это поле показывать в SchedulerStateInfo
+  public String getPoolName() {
+    return poolName;
+  }
+
   private final ConcurrentLinkedQueue<TaskHolder> queue = new ConcurrentLinkedQueue<>();
 
   public void execute(TaskHolder taskHolder) {

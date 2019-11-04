@@ -5,10 +5,13 @@ import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Scheduler {
 
   private final List<TaskHolder> taskHolderList;
+
+  // TODO это поле показывать в SchedulerStateInfo (пройтись по values)
   private final Map<String, ExecutionPool> executionPoolMap;
   private final long pingDelayMillis;
 
@@ -19,10 +22,21 @@ public class Scheduler {
     this.pingDelayMillis = pingDelayMillis;
   }
 
+  // TODO это поле показывать в SchedulerStateInfo
   private final AtomicBoolean working = new AtomicBoolean(true);
 
+  // TODO это поле показывать в SchedulerStateInfo
   private long lastMillis;
+  // TODO это поле показывать в SchedulerStateInfo
   private long schedulerStartedAtMillis;
+
+  // TODO это поле показывать в SchedulerStateInfo
+  private final AtomicLong workingCounter = new AtomicLong(0);
+  // TODO это поле показывать в SchedulerStateInfo
+  private final AtomicLong runTaskCounter = new AtomicLong(0);
+
+  // TODO это поле показывать в SchedulerStateInfo
+  private final AtomicBoolean wasInterrupted = new AtomicBoolean(false);
 
   public void startup() {
 
@@ -40,9 +54,11 @@ public class Scheduler {
             Thread.sleep(pingDelayMillis);
           } catch (InterruptedException e) {
             working.set(false);
+            wasInterrupted.set(true);
           }
         }
 
+        workingCounter.incrementAndGet();
 
       }
 
@@ -57,6 +73,7 @@ public class Scheduler {
 
     long current = System.currentTimeMillis();
 
+    //TODO показать также все запущенные задачи и сколько раз они запущены и в каком пуле
     for (TaskHolder taskHolder : taskHolderList) {
 
       Trigger trigger = taskHolder.task.trigger();
@@ -74,6 +91,8 @@ public class Scheduler {
       executionPoolMap
         .get(taskHolder.task.executionPoolName())
         .execute(taskHolder);
+
+      runTaskCounter.incrementAndGet();
 
     }
 
