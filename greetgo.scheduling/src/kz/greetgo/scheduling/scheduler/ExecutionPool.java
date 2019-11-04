@@ -42,6 +42,10 @@ public class ExecutionPool {
       int newSize = size + 1;
 
       if (newSize > maxSize) {
+        queue.remove(taskHolder);
+        taskHolder.runCount.decrementAndGet();
+        taskHolder.throwCatcher.catchThrowable(new RuntimeException("Таска `" + taskHolder.task.id() +
+          "` не запустилась, потому что пул `" + getPoolName() + "` переполнен. maxSize = " + maxSize));
         return;
       }
 
