@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Scheduler {
 
@@ -38,14 +39,14 @@ public class Scheduler {
   // TODO это поле показывать в SchedulerStateInfo
   private final AtomicBoolean wasInterrupted = new AtomicBoolean(false);
 
-  private Thread mainSchedulerThread;
+  private final AtomicReference<Thread> mainSchedulerThread = new AtomicReference<>(null);
 
   public void startup() {
 
     schedulerStartedAtMillis = System.currentTimeMillis();
     lastMillis = schedulerStartedAtMillis - 1000L;
 
-    mainSchedulerThread = new Thread(() -> {
+    mainSchedulerThread.set(new Thread(() -> {
 
       while (working.get()) {
 
@@ -64,10 +65,10 @@ public class Scheduler {
 
       }
 
-    });
+    }));
 
-    mainSchedulerThread.setName("greetgo! Scheduler Thread");
-    mainSchedulerThread.start();
+    mainSchedulerThread.get().setName("greetgo! Scheduler Thread");
+    mainSchedulerThread.get().start();
 
   }
 
