@@ -38,12 +38,14 @@ public class Scheduler {
   // TODO это поле показывать в SchedulerStateInfo
   private final AtomicBoolean wasInterrupted = new AtomicBoolean(false);
 
+  private Thread mainSchedulerThread;
+
   public void startup() {
 
     schedulerStartedAtMillis = System.currentTimeMillis();
     lastMillis = schedulerStartedAtMillis - 1000L;
 
-    Thread aThread = new Thread(() -> {
+    mainSchedulerThread = new Thread(() -> {
 
       while (working.get()) {
 
@@ -64,8 +66,8 @@ public class Scheduler {
 
     });
 
-    aThread.setName("greetgo! Scheduler Thread");
-    aThread.start();
+    mainSchedulerThread.setName("greetgo! Scheduler Thread");
+    mainSchedulerThread.start();
 
   }
 
@@ -88,6 +90,7 @@ public class Scheduler {
 
       taskHolder.runCount.incrementAndGet();
 
+      //TODO собрать информацию по каждому пулу
       executionPoolMap
         .get(taskHolder.task.executionPoolName())
         .execute(taskHolder);
@@ -96,7 +99,7 @@ public class Scheduler {
 
     }
 
-    lastMillis = current;
+    lastMillis = current + 1;
 
   }
 

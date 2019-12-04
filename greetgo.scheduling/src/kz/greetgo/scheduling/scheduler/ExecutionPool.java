@@ -31,6 +31,7 @@ public class ExecutionPool {
     return poolName;
   }
 
+  // TODO queue.size показывать в SchedulerStateInfo
   private final ConcurrentLinkedQueue<TaskHolder> queue = new ConcurrentLinkedQueue<>();
 
   public void execute(TaskHolder taskHolder) {
