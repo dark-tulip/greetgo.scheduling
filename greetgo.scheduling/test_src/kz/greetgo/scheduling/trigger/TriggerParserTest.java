@@ -158,6 +158,40 @@ public class TriggerParserTest {
 
     System.out.println("hit = " + hit);
 
+    assertThat(hit).isTrue();
+
+  }
+
+  @Test
+  public void parse_special_002() throws ParseException {
+
+    String triggerString = "8:00";
+
+    //
+    //
+    TriggerParseResult result = TriggerParser.parse(triggerString);
+    //
+    //
+
+    List<TriggerParseError> errors = result.errors();
+
+    Optional<String> error = ScheduledParseException.generateErrorMessage(errors);
+
+    System.out.println("df3qw3414 :: " + error);
+
+    System.out.println("result = " + result.trigger());
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    long startedAt = sdf.parse("2019-12-19 01:00:00").getTime();
+    long millis = sdf.parse("2019-12-19 08:00:00").getTime();
+
+    boolean hit = result.trigger().isHit(startedAt, millis - 1, millis + 1);
+
+    System.out.println("hit = " + hit);
+
+    assertThat(hit).isTrue();
+
   }
 
 }
