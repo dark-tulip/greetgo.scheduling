@@ -44,7 +44,11 @@ public class TimeUtil {
   }
 
   public static long longYmsToMillis(long hours, long minutes, long seconds) {
-    return MILLIS_SECOND * seconds + MILLIS_MINUTE * minutes + MILLIS_HOUR * hours;
+    return longYmsToMillis(hours, minutes, seconds, 0);
+  }
+
+  public static long longYmsToMillis(long hours, long minutes, long seconds, long millis) {
+    return millis + MILLIS_SECOND * seconds + MILLIS_MINUTE * minutes + MILLIS_HOUR * hours;
   }
 
   public static boolean isIntersect(long from1, long to1, long from2, long to2) {
@@ -74,6 +78,7 @@ public class TimeUtil {
    *   ЧАСОВ_В_СУТКАХ * МИНУТ_В_ЧАСЕ * СЕКУНД_В_МИНУТЕ * МИЛЛИСЕКУНД_В_СЕКУНДЕ = 24 * 60 * 60 * 1000 = 86400000
    * </pre>
    */
+  @SuppressWarnings("DuplicatedCode")
   public static long millisFromDayBegin(long dateTimeMillis) {
     Calendar calendar = new GregorianCalendar();
 

@@ -34,6 +34,7 @@ public class TriggerPeriodInDay implements Trigger {
     return false;
   }
 
+  @SuppressWarnings("DuplicatedCode")
   @Override
   public boolean isHit(long schedulerStartedAtMillis, long timeMillisFrom, long timeMillisTo) {
 
@@ -43,7 +44,9 @@ public class TriggerPeriodInDay implements Trigger {
     int hours = c.get(Calendar.HOUR_OF_DAY);
     int minutes = c.get(Calendar.MINUTE);
     int seconds = c.get(Calendar.SECOND);
-    long millisFrom = TimeUtil.longYmsToMillis(hours, minutes, seconds);
+    int millis = c.get(Calendar.MILLISECOND);
+
+    long millisFrom = TimeUtil.longYmsToMillis(hours, minutes, seconds, millis);
 
     long delta = timeMillisTo - timeMillisFrom;
 

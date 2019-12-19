@@ -40,6 +40,8 @@ public class TriggerPeriodInDayRepeatTest {
       {"11:30", "12:11", 1 * MILLIS_MINUTE, "2019-01-23 11:59:58", "2019-01-23 11:59:59", false},
       {"11:30", "12:11", 1 * MILLIS_MINUTE, "2019-01-23 12:00:01", "2019-01-23 12:00:02", false},
 
+      {"08:00", "18:00", 30 * MILLIS_MINUTE, "2019-12-19 07:59:59", "2019-12-19 08:00:01", true},
+
     };
   }
 
@@ -68,4 +70,51 @@ public class TriggerPeriodInDayRepeatTest {
 
   }
 
+  @Test
+  public void specialVariant_08_00() throws ParseException {
+
+    TriggerPeriodInDay periodInDay = new TriggerPeriodInDay("08:00", "18:00");
+    TriggerPeriodInDayRepeat trigger = new TriggerPeriodInDayRepeat(periodInDay, 30 * MILLIS_MINUTE);
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    long started = sdf.parse("2019-12-19 01:00:00").getTime();
+    long it = sdf.parse("2019-12-19 08:00:00").getTime();
+
+    boolean triggerHit = trigger.isHit(started, it - 1, it + 1);
+
+    assertThat(triggerHit).isTrue();
+
+  }
+
+  @Test
+  public void specialVariant_08_00__another() throws ParseException {
+
+    TriggerPeriodInDay periodInDay = new TriggerPeriodInDay("08:00", "18:00");
+    TriggerPeriodInDayRepeat trigger = new TriggerPeriodInDayRepeat(periodInDay, 30 * MILLIS_MINUTE);
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    long started = sdf.parse("2019-12-19 01:00:00").getTime();
+    long it = sdf.parse("2019-12-19 08:00:00").getTime();
+
+    boolean triggerHit = trigger.isHit(started, it - 100, it + 100);
+
+    assertThat(triggerHit).isTrue();
+
+  }
+
+  @Test
+  public void specialVariant_08_30() throws ParseException {
+
+    TriggerPeriodInDay periodInDay = new TriggerPeriodInDay("08:00", "18:00");
+    TriggerPeriodInDayRepeat trigger = new TriggerPeriodInDayRepeat(periodInDay, 30 * MILLIS_MINUTE);
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    long started = sdf.parse("2019-12-19 01:00:00").getTime();
+    long it = sdf.parse("2019-12-19 08:30:00").getTime();
+
+    boolean triggerHit = trigger.isHit(started, it - 1, it + 1);
+
+    assertThat(triggerHit).isTrue();
+
+  }
 }

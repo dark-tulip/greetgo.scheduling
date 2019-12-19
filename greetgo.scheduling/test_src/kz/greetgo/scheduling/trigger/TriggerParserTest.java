@@ -4,6 +4,8 @@ import kz.greetgo.scheduling.exceptions.ScheduledParseException;
 import kz.greetgo.scheduling.trigger.inner_logic.TriggerParseResult;
 import org.testng.annotations.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,6 +127,36 @@ public class TriggerParserTest {
     System.out.println("j6b542447 :: " + error);
 
     assertThat(errors).isNotEmpty();
+
+  }
+
+  @Test
+  public void parse_special_001() throws ParseException {
+
+    String triggerString = "from 8:00 to 18:00 every 30 min";
+
+    //
+    //
+    TriggerParseResult result = TriggerParser.parse(triggerString);
+    //
+    //
+
+    List<TriggerParseError> errors = result.errors();
+
+    Optional<String> error = ScheduledParseException.generateErrorMessage(errors);
+
+    System.out.println("j6b542447 :: " + error);
+
+    System.out.println("result = " + result.trigger());
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    long startedAt = sdf.parse("2019-12-19 01:00:00").getTime();
+    long millis = sdf.parse("2019-12-19 08:00:00").getTime();
+
+    boolean hit = result.trigger().isHit(startedAt, millis - 1, millis + 1);
+
+    System.out.println("hit = " + hit);
 
   }
 
