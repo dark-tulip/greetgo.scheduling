@@ -28,10 +28,10 @@ import static kz.greetgo.scheduling.util.StrUtil.toLenSpace;
  */
 public class ControllerContext {
 
-  private final FileContent configFile;
-  private final FileContent errorFile;
-  private final String headerHelp;
-  private final long checkFileDelayMillis;
+  private final FileContent  configFile;
+  private final FileContent  errorFile;
+  private final String       headerHelp;
+  private final long         checkFileDelayMillis;
   private final LongSupplier currentTimeMillis;
 
   public ControllerContext(FileContent configFile, FileContent errorFile,
@@ -41,19 +41,19 @@ public class ControllerContext {
     requireNonNull(configFile, "configFile");
     requireNonNull(errorFile, "errorFile");
     requireNonNull(currentTimeMillis, "currentTimeMillis");
-    this.configFile = configFile;
-    this.errorFile = errorFile;
-    this.headerHelp = headerHelp;
+    this.configFile           = configFile;
+    this.errorFile            = errorFile;
+    this.headerHelp           = headerHelp;
     this.checkFileDelayMillis = checkFileDelayMillis;
-    this.currentTimeMillis = currentTimeMillis;
+    this.currentTimeMillis    = currentTimeMillis;
 
   }
 
-  private long lastCheckTime = 0;
-  private long savedLastModifiedTime = 0;
-  private List<String> lines = null;
-  private Map<String, String> patterns = null;
-  private Map<String, Integer> lineNumbers = null;
+  private long                 lastCheckTime         = 0;
+  private long                 savedLastModifiedTime = 0;
+  private List<String>         lines                 = null;
+  private Map<String, String>  patterns              = null;
+  private Map<String, Integer> lineNumbers           = null;
 
   private final List<ScheduledDefinition> definitions = new ArrayList<>();
 
@@ -121,7 +121,7 @@ public class ControllerContext {
     triggers = null;
     String content = configFile.get();
     savedLastModifiedTime = configFile.lastModifiedAt();
-    lastCheckTime = now;
+    lastCheckTime         = now;
 
     if (content == null) {
       createContent(now);
@@ -140,7 +140,7 @@ public class ControllerContext {
 
   private void saveContent(long now) {
     configFile.set(getContent());
-    lastCheckTime = now;
+    lastCheckTime         = now;
     savedLastModifiedTime = configFile.lastModifiedAt();
   }
 
@@ -150,8 +150,8 @@ public class ControllerContext {
     for (ScheduledDefinition definition : definitions) {
       if (!patterns.containsKey(definition.name)) {
         if (!added) {
-          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-          String nowStr = sdf.format(new Date(now));
+          SimpleDateFormat sdf    = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+          String           nowStr = sdf.format(new Date(now));
 
           lines.add("");
           lines.add("#");
@@ -168,12 +168,12 @@ public class ControllerContext {
   }
 
   private void createContent(long now) {
-    List<String> lines = new ArrayList<>();
-    Map<String, String> patterns = new HashMap<>();
+    List<String>         lines       = new ArrayList<>();
+    Map<String, String>  patterns    = new HashMap<>();
     Map<String, Integer> lineNumbers = new HashMap<>();
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    String nowStr = sdf.format(new Date(now));
+    SimpleDateFormat sdf    = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    String           nowStr = sdf.format(new Date(now));
 
     lines.add("# Created at " + nowStr);
     if (headerHelp != null) {
@@ -189,8 +189,8 @@ public class ControllerContext {
       appendDefinition(lines, patterns, lineNumbers, definition);
     }
 
-    this.lines = lines;
-    this.patterns = patterns;
+    this.lines       = lines;
+    this.patterns    = patterns;
     this.lineNumbers = lineNumbers;
 
   }
@@ -200,7 +200,8 @@ public class ControllerContext {
                                        Map<String, Integer> lineNumbers,
                                        ScheduledDefinition definition) {
     lines.add("#");
-    for (String line : definition.patternDescription.split("\n")) {
+    String patternDescription = definition.patternDescription;
+    for (String line : (patternDescription == null ? "" : patternDescription).split("\n")) {
       lines.add("# " + line);
     }
     lines.add("#");
@@ -211,8 +212,8 @@ public class ControllerContext {
   }
 
   private void setContent(String content) {
-    Map<String, String> patterns = new HashMap<>();
-    List<String> lines = new ArrayList<>();
+    Map<String, String>  patterns    = new HashMap<>();
+    List<String>         lines       = new ArrayList<>();
     Map<String, Integer> lineNumbers = new HashMap<>();
 
     for (String line : content.split("\n")) {
@@ -224,14 +225,14 @@ public class ControllerContext {
       if (idx < 0) {
         continue;
       }
-      String name = line.substring(0, idx).trim();
+      String name  = line.substring(0, idx).trim();
       String value = line.substring(idx + 1);
       patterns.put(name, value);
       lineNumbers.put(name, lines.size());
     }
 
-    this.patterns = patterns;
-    this.lines = lines;
+    this.patterns    = patterns;
+    this.lines       = lines;
     this.lineNumbers = lineNumbers;
   }
 
@@ -248,9 +249,9 @@ public class ControllerContext {
 
     for (ScheduledDefinition definition : definitions) {
 
-      String pattern = patterns.get(definition.name);
-      TriggerParseResult result = TriggerParser.parse(pattern);
-      int lineNumber = Optional.ofNullable(lineNumbers.get(definition.name)).orElse(0);
+      String             pattern    = patterns.get(definition.name);
+      TriggerParseResult result     = TriggerParser.parse(pattern);
+      int                lineNumber = Optional.ofNullable(lineNumbers.get(definition.name)).orElse(0);
 
       for (TriggerParseError error : result.errors()) {
         String ln = toLenSpace(lineNumber, maxNumberLength);
