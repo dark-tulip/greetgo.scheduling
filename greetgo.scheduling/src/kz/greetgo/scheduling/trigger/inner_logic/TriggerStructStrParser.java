@@ -21,6 +21,7 @@ import static kz.greetgo.scheduling.trigger.inner_logic.LexType.TIME_OF_DAY;
 import static kz.greetgo.scheduling.trigger.inner_logic.LexType.TIME_VALUE;
 import static kz.greetgo.scheduling.trigger.inner_logic.LexType.TO;
 import static kz.greetgo.scheduling.trigger.inner_logic.LexType.WEEK_DAY;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.YEAR;
 
 public class TriggerStructStrParser {
 
@@ -65,7 +66,6 @@ public class TriggerStructStrParser {
     return trigger;
   }
 
-
   private void parseLexList(List<Lex> lexList) {
 
     if (lexList.isEmpty()) {
@@ -73,14 +73,8 @@ public class TriggerStructStrParser {
       return;
     }
 
-    if (lexList.stream().anyMatch(x -> x.type == MONTH)) {
-
-      if (lexList.size() == 1) {
-        trigger = new TriggerMonth(lexList.get(0).getMonth());
-        return;
-      }
-
-      errorList.add(new ParseError(range, "vvEi4t867q", "Неизвестная лексема с месяцем"));
+    if (lexList.stream().anyMatch(x -> x.type == MONTH || x.type == YEAR)) {
+      parseMonthOrYear(lexList);
       return;
     }
 
@@ -239,5 +233,13 @@ public class TriggerStructStrParser {
 
   }
 
+  private void parseMonthOrYear(List<Lex> lexList) {
+    if (lexList.size() == 1) {
+      trigger = new TriggerMonth(lexList.get(0).getMonth());
+      return;
+    }
+
+    errorList.add(new ParseError(range, "vvEi4t867q", "Неизвестная лексема с месяцем"));
+  }
 
 }

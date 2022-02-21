@@ -442,4 +442,73 @@ public class TriggerStructStrParserTest {
     assertThat(trigger.toString()).isEqualTo("asd");
   }
 
+  @Test
+  public void yearsWithDigitsAndRanges() {
+
+    String src = " 1997 год ";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isEmpty();
+    assertThat(trigger).isNotNull();
+    assertThat(trigger.isDotty()).isFalse();
+
+    assertThat(trigger.toString()).isEqualTo("asd");
+  }
+
+  @Test
+  public void manyYears() {
+
+    String src = " 1997 год year ";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isNotEmpty();
+    assertThat(parser.errorList.get(0).message).startsWith("98LbBw3QKN");
+    assertThat(trigger).isNotNull();
+    assertThat(trigger).isInstanceOf(SilentTrigger.class);
+  }
+
+  @Test
+  public void monthYearMonth() {
+
+    String src = " 3 сентября 1997 год 5 августа ";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isNotEmpty();
+    assertThat(parser.errorList.get(0).message).startsWith("VK7Bu1e7yo");
+    assertThat(trigger).isNotNull();
+    assertThat(trigger).isInstanceOf(SilentTrigger.class);
+  }
+
+  @Test
+  public void yearMonthYear() {
+
+    String src = " 1997 год 5 августа 2020 год ";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isNotEmpty();
+    assertThat(parser.errorList.get(0).message).startsWith("LDBdBY03i5");
+    assertThat(trigger).isNotNull();
+    assertThat(trigger).isInstanceOf(SilentTrigger.class);
+  }
+
 }

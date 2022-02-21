@@ -428,7 +428,6 @@ public class TriggerStructStrLexer {
     String current = token(i);
     int    count   = 1;
 
-
     if (current.startsWith("пов")) {
 
       if (i + 1 < len() && token(i + 1).startsWith("каж")) {
@@ -436,7 +435,6 @@ public class TriggerStructStrLexer {
       }
 
       return new LexReadResult(count, lex(i, count, LexType.REPEAT));
-
     }
 
     if (current.equals("repeat")) {
@@ -446,7 +444,6 @@ public class TriggerStructStrLexer {
       }
 
       return new LexReadResult(count, lex(i, count, LexType.REPEAT));
-
     }
 
     if (current.equals("начиная")) {
@@ -460,7 +457,6 @@ public class TriggerStructStrLexer {
       ));
 
       return null;
-
     }
 
     if (current.equals("after")) {
@@ -474,33 +470,24 @@ public class TriggerStructStrLexer {
       ));
 
       return null;
-
     }
 
 
     if (current.equals("from") || current.equals("с") || current.equals("c") || current.equals("от")) {
-
       return new LexReadResult(count, lex(i, count, LexType.FROM));
-
     }
 
     if (current.equals("to") || current.equals("по") || current.equals("до")) {
-
       return new LexReadResult(count, lex(i, count, LexType.TO));
-
     }
 
     if (current.equals("в") || current.equals("at")) {
-
       return new LexReadResult(count, lex(i, count, LexType.AT));
-
     }
 
     //noinspection SpellCheckingInspection
     if (current.startsWith("кажд") || current.equals("every")) {
-
       return new LexReadResult(1, lex(i, 1, LexType.EVERY));
-
     }
 
     if (DIGITS.matcher(current).matches()) {
@@ -511,25 +498,18 @@ public class TriggerStructStrLexer {
       }
 
       return new LexReadResult(count, lex(i, count, LexType.DIGIT));
-
     }
 
     if (TIME_OF_DAY.matcher(current).matches()) {
-
       return new LexReadResult(1, lex(i, 1, LexType.TIME_OF_DAY));
-
     }
 
     if (isWeekDay(current)) {
-
       return new LexReadResult(1, lex(i, 1, LexType.WEEK_DAY));
-
     }
 
     if (isMonth(current)) {
-
       return new LexReadResult(1, lex(i, 1, LexType.MONTH));
-
     }
 
     if ("..".equals(current)) {
