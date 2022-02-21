@@ -90,10 +90,6 @@ public class TriggerStructStrLexer {
 
   }
 
-  enum LexType {
-    TIME_VALUE, AFTER_PAUSE, FROM, TO, EVERY, TIME_OF_DAY, WEEK_DAY, AT, REPEAT, MONTH,
-  }
-
   class Lex {
 
     final LexType     type;
@@ -224,25 +220,30 @@ public class TriggerStructStrLexer {
   private final static Pattern DIGITS      = Pattern.compile("\\d+");
   private final static Pattern TIME_OF_DAY = Pattern.compile("(\\d+):(\\d+)(:(\\d+))?");
 
+  private final static Optional<Long> oSeconds = Optional.of(MILLIS_SECOND);
+  private final static Optional<Long> oMinutes = Optional.of(MILLIS_MINUTE);
+  private final static Optional<Long> oHours   = Optional.of(MILLIS_HOUR);
+
   static Optional<Long> readTimeUnitInMillis(String lowercaseToken) {
-    if (lowercaseToken.startsWith("с")) {
-      return Optional.of(MILLIS_SECOND);
-    }
-    if (lowercaseToken.startsWith("s")) {
-      return Optional.of(MILLIS_SECOND);
-    }
-    if (lowercaseToken.startsWith("m")) {
-      return Optional.of(MILLIS_MINUTE);
-    }
-    if (lowercaseToken.startsWith("м")) {
-      return Optional.of(MILLIS_MINUTE);
-    }
-    if (lowercaseToken.startsWith("ч")) {
-      return Optional.of(MILLIS_HOUR);
-    }
-    if (lowercaseToken.startsWith("h")) {
-      return Optional.of(MILLIS_HOUR);
-    }
+    //@formatter:off
+    if (lowercaseToken == null) return Optional.empty();
+
+    if (lowercaseToken.    equals("с"   )) return oSeconds;
+    if (lowercaseToken.startsWith("сек" )) return oSeconds;
+    if (lowercaseToken.    equals("s"   )) return oSeconds;
+    if (lowercaseToken.startsWith("sec" )) return oSeconds;
+
+    if (lowercaseToken.    equals("m"   )) return oMinutes;
+    if (lowercaseToken.startsWith("min" )) return oMinutes;
+    if (lowercaseToken.    equals("м"   )) return oMinutes;
+    if (lowercaseToken.startsWith("мин" )) return oMinutes;
+
+    if (lowercaseToken.    equals("ч"   )) return oHours;
+    if (lowercaseToken.startsWith("час" )) return oHours;
+    if (lowercaseToken.    equals("h"   )) return oHours;
+    if (lowercaseToken.startsWith("hour")) return oHours;
+    //@formatter:on
+
     return Optional.empty();
   }
 
@@ -480,9 +481,10 @@ public class TriggerStructStrLexer {
 
       if (i + 1 < len() && isTimeUnit(token(i + 1))) {
         count++;
+        return new LexReadResult(count, lex(i, count, LexType.TIME_VALUE));
       }
 
-      return new LexReadResult(count, lex(i, count, LexType.TIME_VALUE));
+      return new LexReadResult(count, lex(i, count, LexType.DIGIT));
 
     }
 

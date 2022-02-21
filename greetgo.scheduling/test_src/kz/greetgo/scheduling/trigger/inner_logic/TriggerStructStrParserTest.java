@@ -352,11 +352,22 @@ public class TriggerStructStrParserTest {
     assertThat(trigger.toString()).isEqualTo("Month{" + month + "}");
   }
 
+  @Test
   public void monthWithDigits() {
 
     String src = " 2 14 21 марта декабря";
 
     TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isEmpty();
+    assertThat(trigger).isNotNull();
+    assertThat(trigger.isDotty()).isFalse();
+
+    assertThat(trigger.toString()).isEqualTo("asd");
   }
 
 }

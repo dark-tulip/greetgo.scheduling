@@ -12,15 +12,15 @@ import kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.Lex;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.AFTER_PAUSE;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.EVERY;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.FROM;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.MONTH;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.REPEAT;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TIME_OF_DAY;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TIME_VALUE;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TO;
-import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.WEEK_DAY;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.AFTER_PAUSE;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.EVERY;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.FROM;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.MONTH;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.REPEAT;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.TIME_OF_DAY;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.TIME_VALUE;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.TO;
+import static kz.greetgo.scheduling.trigger.inner_logic.LexType.WEEK_DAY;
 
 public class TriggerStructStrParser {
 
