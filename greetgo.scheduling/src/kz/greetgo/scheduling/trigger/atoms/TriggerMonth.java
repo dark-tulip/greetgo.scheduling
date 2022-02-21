@@ -37,8 +37,11 @@ public class TriggerMonth implements Trigger {
     calendarFrom.setTimeInMillis(timeMillisFrom);
     calendarTo.setTimeInMillis(timeMillisTo);
 
+    int calendarMonth = month - 1;
+
     while (true) {
-      if (calendarFrom.get(Calendar.MONTH) == month) {
+      //noinspection MagicConstant
+      if (calendarFrom.get(Calendar.MONTH) == calendarMonth) {
         return true;
       }
 

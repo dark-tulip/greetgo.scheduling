@@ -299,21 +299,22 @@ public class TriggerParserTest {
 
     Calendar calendar = new GregorianCalendar();
     calendar.setTime(RND.dateYears(-3, 0));
-    calendar.set(Calendar.MONTH, monthNumber);
     calendar.set(Calendar.HOUR_OF_DAY, 11);
     calendar.set(Calendar.MINUTE, 0);
     calendar.set(Calendar.SECOND, 0);
     calendar.set(Calendar.MILLISECOND, 0);
+    calendar.set(Calendar.DAY_OF_MONTH, 5);
+    calendar.set(Calendar.MONTH, monthNumber - 1);
 
     System.out.println("GhVySxwAHv :: calendar " + calendar.getTime()
                          + ", monthNumber = " + monthNumber
                          + ", monthName = " + monthName);
 
     long millis = calendar.getTimeInMillis();
-    calendar.add(Calendar.HOUR, -3);
+    calendar.add(Calendar.HOUR, -13);
     long startedAt = calendar.getTimeInMillis();
 
-    boolean hit = result.trigger().isHit(startedAt, millis - 1, millis + 1);
+    boolean hit = result.trigger().isHit(startedAt, millis - 10000, millis + 10000);
 
     System.out.println("b75iBypR38 :: hit = " + hit);
 
