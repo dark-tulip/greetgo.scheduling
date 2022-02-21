@@ -825,4 +825,36 @@ public class TriggerStructStrLexerTest {
 
   }
 
+
+  @Test
+  public void parse_years() {
+
+    String source = "  2020 год ";
+    Range  top    = Range.of(10, 10 + source.length());
+
+    TriggerStructStrLexer lexer = new TriggerStructStrLexer(top, source);
+
+    //
+    //
+    lexer.parse();
+    //
+    //
+
+    assertThat(lexer.errorList).isEmpty();
+
+    for (final Lex lex : lexer.lexList) {
+      System.out.println("qun9j7jmt4 :: lex = " + lex);
+    }
+
+    assertThat(lexer.lexList.get(0).type).isEqualTo(LexType.DIGIT);
+    assertThat(lexer.lexList.get(1).type).isEqualTo(LexType.YEAR);
+
+    assertThat(lexer.lexList.get(0).toString()).isEqualTo("LEX{DIGIT-[{`2020` Range(2..6)}]}");
+    assertThat(lexer.lexList.get(1).toString()).isEqualTo("LEX{YEAR-[{`год` Range(7..10)}]}");
+
+    assertThat(lexer.lexList).hasSize(2);
+
+  }
+
+
 }

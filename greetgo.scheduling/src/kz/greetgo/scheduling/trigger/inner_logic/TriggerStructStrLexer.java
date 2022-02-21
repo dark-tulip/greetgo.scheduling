@@ -414,6 +414,16 @@ public class TriggerStructStrLexer {
     return readMonth(lowercaseToken) > 0;
   }
 
+  private static boolean isYear(String lowercaseToken) {
+    if (lowercaseToken.startsWith("год")) {
+      return true;
+    }
+    if (lowercaseToken.startsWith("year")) {
+      return true;
+    }
+    return false;
+  }
+
   private LexReadResult readLex(int i) {
     String current = token(i);
     int    count   = 1;
@@ -524,6 +534,10 @@ public class TriggerStructStrLexer {
 
     if ("..".equals(current)) {
       return new LexReadResult(1, lex(i, 1, LexType.RANGE_DELIMITER));
+    }
+
+    if (isYear(current)) {
+      return new LexReadResult(1, lex(i, 1, LexType.YEAR));
     }
 
     errorList.add(new ParseError(tokenList.get(i).range, "26kjb43", "Неизвестная лексема"));
