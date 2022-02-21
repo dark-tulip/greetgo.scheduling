@@ -63,18 +63,34 @@ public class TriggerStructStrLexer {
     boolean isSpace     = true;
     int     startedFrom = 0;
 
-    for (int i = 0; i < source.length(); i++) {
-      if (Character.isWhitespace(source.charAt(i))) {
+    char prev, ch = ' ';
+
+    for (int i = 0, count = source.length(); i < count; i++) {
+      prev = ch;
+      ch   = source.charAt(i);
+      if (Character.isWhitespace(ch)) {
 
         if (isSpace) {
           continue;
         }
         isSpace = true;
-        tokenList.add(new Token(startedFrom, i));
+
+        if (startedFrom < i) {
+          tokenList.add(new Token(startedFrom, i));
+        }
 
       } else {
 
         if (!isSpace) {
+
+          if (ch == '.' && prev == '.') {
+            if (startedFrom != i - 1) {
+              tokenList.add(new Token(startedFrom, i - 1));
+            }
+            tokenList.add(new Token(i - 1, i + 1));
+            startedFrom = i + 1;
+          }
+
           continue;
         }
 
@@ -504,6 +520,10 @@ public class TriggerStructStrLexer {
 
       return new LexReadResult(1, lex(i, 1, LexType.MONTH));
 
+    }
+
+    if ("..".equals(current)) {
+      return new LexReadResult(1, lex(i, 1, LexType.RANGE_DELIMITER));
     }
 
     errorList.add(new ParseError(tokenList.get(i).range, "26kjb43", "Неизвестная лексема"));

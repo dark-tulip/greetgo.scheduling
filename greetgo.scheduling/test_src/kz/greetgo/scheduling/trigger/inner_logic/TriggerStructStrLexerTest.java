@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TriggerStructStrLexerTest {
 
   @Test
-  public void tokenize() {
+  public void tokenize_01() {
 
     String source = " 54hb356hb 222 5646:654 44=--0=  111  33 ";
     Range  top    = Range.of(10, 10 + source.length());
@@ -35,6 +35,106 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.tokenList.get(3).toString()).isEqualTo("{`44=--0=` Range(24..31)}");
     assertThat(lexer.tokenList.get(4).toString()).isEqualTo("{`111` Range(33..36)}");
     assertThat(lexer.tokenList.get(5).toString()).isEqualTo("{`33` Range(38..40)}");
+
+  }
+
+  @Test
+  public void tokenize_02() {
+
+    String source = " 12..34 ";
+    Range  top    = Range.of(10, 10 + source.length());
+
+    TriggerStructStrLexer lexer = new TriggerStructStrLexer(top, source);
+
+    //
+    //
+    lexer.tokenize();
+    //
+    //
+
+    for (final TriggerStructStrLexer.Token token : lexer.tokenList) {
+      System.out.println("81Z5qBT2nC :: token = " + token);
+    }
+
+    assertThat(lexer.tokenList.get(0).toString()).isEqualTo("{`12` Range(1..3)}");
+    assertThat(lexer.tokenList.get(1).toString()).isEqualTo("{`..` Range(3..5)}");
+    assertThat(lexer.tokenList.get(2).toString()).isEqualTo("{`34` Range(5..7)}");
+    assertThat(lexer.tokenList).hasSize(3);
+
+  }
+
+  @Test
+  public void tokenize_03() {
+
+    String source = " 12..  34 ";
+    Range  top    = Range.of(10, 10 + source.length());
+
+    TriggerStructStrLexer lexer = new TriggerStructStrLexer(top, source);
+
+    //
+    //
+    lexer.tokenize();
+    //
+    //
+
+    for (final TriggerStructStrLexer.Token token : lexer.tokenList) {
+      System.out.println("13cza1EwP0 :: token = " + token);
+    }
+
+    assertThat(lexer.tokenList.get(0).toString()).isEqualTo("{`12` Range(1..3)}");
+    assertThat(lexer.tokenList.get(1).toString()).isEqualTo("{`..` Range(3..5)}");
+    assertThat(lexer.tokenList.get(2).toString()).isEqualTo("{`34` Range(7..9)}");
+    assertThat(lexer.tokenList).hasSize(3);
+
+  }
+
+  @Test
+  public void tokenize_04() {
+
+    String source = " 12  ..34 ";
+    Range  top    = Range.of(10, 10 + source.length());
+
+    TriggerStructStrLexer lexer = new TriggerStructStrLexer(top, source);
+
+    //
+    //
+    lexer.tokenize();
+    //
+    //
+
+    for (final TriggerStructStrLexer.Token token : lexer.tokenList) {
+      System.out.println("BZ5Z7j5gg2 :: token = " + token);
+    }
+
+    assertThat(lexer.tokenList.get(0).toString()).isEqualTo("{`12` Range(1..3)}");
+    assertThat(lexer.tokenList.get(1).toString()).isEqualTo("{`..` Range(5..7)}");
+    assertThat(lexer.tokenList.get(2).toString()).isEqualTo("{`34` Range(7..9)}");
+    assertThat(lexer.tokenList).hasSize(3);
+
+  }
+
+  @Test
+  public void tokenize_05() {
+
+    String source = "   12  ..   347 ";
+    Range  top    = Range.of(10, 10 + source.length());
+
+    TriggerStructStrLexer lexer = new TriggerStructStrLexer(top, source);
+
+    //
+    //
+    lexer.tokenize();
+    //
+    //
+
+    for (final TriggerStructStrLexer.Token token : lexer.tokenList) {
+      System.out.println("W6gpOQOQiu :: token = " + token);
+    }
+
+    assertThat(lexer.tokenList.get(0).toString()).isEqualTo("{`12` Range(3..5)}");
+    assertThat(lexer.tokenList.get(1).toString()).isEqualTo("{`..` Range(7..9)}");
+    assertThat(lexer.tokenList.get(2).toString()).isEqualTo("{`347` Range(12..15)}");
+    assertThat(lexer.tokenList).hasSize(3);
 
   }
 
@@ -417,8 +517,7 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.errorList).isEmpty();
     assertThat(lexer.lexList).hasSize(1);
     assertThat(lexer.lexList.get(0).type).isEqualTo(LexType.EVERY);
-    assertThat(lexer.lexList.get(0).toString())
-      .isEqualTo("LEX{EVERY-[{`каждые` Range(2..8)}]}");
+    assertThat(lexer.lexList.get(0).toString()).isEqualTo("LEX{EVERY-[{`каждые` Range(2..8)}]}");
 
   }
 
@@ -488,6 +587,7 @@ public class TriggerStructStrLexerTest {
 
   }
 
+  @SuppressWarnings("SpellCheckingInspection")
   @DataProvider
   public Object[][] readWeekDayDataProvider() {
     return new Object[][]{
@@ -680,6 +780,48 @@ public class TriggerStructStrLexerTest {
     assertThat(lexer.lexList.get(4).toString()).isEqualTo("LEX{MONTH-[{`декабря` Range(16..23)}]}");
 
     assertThat(lexer.lexList).hasSize(5);
+
+  }
+
+  @Test
+  public void parse_daysMonthsRanges() {
+
+    String source = "  10..15 21 апреля сентября..декабрь";
+    Range  top    = Range.of(10, 10 + source.length());
+
+    TriggerStructStrLexer lexer = new TriggerStructStrLexer(top, source);
+
+    //
+    //
+    lexer.parse();
+    //
+    //
+
+    assertThat(lexer.errorList).isEmpty();
+
+    for (final Lex lex : lexer.lexList) {
+      System.out.println("35J761zLGz :: lex = " + lex);
+    }
+
+    assertThat(lexer.lexList.get(0).type).isEqualTo(LexType.DIGIT);
+    assertThat(lexer.lexList.get(1).type).isEqualTo(LexType.RANGE_DELIMITER);
+    assertThat(lexer.lexList.get(2).type).isEqualTo(LexType.DIGIT);
+    assertThat(lexer.lexList.get(3).type).isEqualTo(LexType.DIGIT);
+    assertThat(lexer.lexList.get(4).type).isEqualTo(LexType.MONTH);
+    assertThat(lexer.lexList.get(5).type).isEqualTo(LexType.MONTH);
+    assertThat(lexer.lexList.get(6).type).isEqualTo(LexType.RANGE_DELIMITER);
+    assertThat(lexer.lexList.get(7).type).isEqualTo(LexType.MONTH);
+
+    assertThat(lexer.lexList.get(0).toString()).isEqualTo("LEX{DIGIT-[{`10` Range(2..4)}]}");
+    assertThat(lexer.lexList.get(1).toString()).isEqualTo("LEX{RANGE_DELIMITER-[{`..` Range(4..6)}]}");
+    assertThat(lexer.lexList.get(2).toString()).isEqualTo("LEX{DIGIT-[{`15` Range(6..8)}]}");
+    assertThat(lexer.lexList.get(3).toString()).isEqualTo("LEX{DIGIT-[{`21` Range(9..11)}]}");
+    assertThat(lexer.lexList.get(4).toString()).isEqualTo("LEX{MONTH-[{`апреля` Range(12..18)}]}");
+    assertThat(lexer.lexList.get(5).toString()).isEqualTo("LEX{MONTH-[{`сентября` Range(19..27)}]}");
+    assertThat(lexer.lexList.get(6).toString()).isEqualTo("LEX{RANGE_DELIMITER-[{`..` Range(27..29)}]}");
+    assertThat(lexer.lexList.get(7).toString()).isEqualTo("LEX{MONTH-[{`декабрь` Range(29..36)}]}");
+
+    assertThat(lexer.lexList).hasSize(8);
 
   }
 
