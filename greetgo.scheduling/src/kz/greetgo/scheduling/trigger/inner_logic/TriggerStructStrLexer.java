@@ -17,14 +17,13 @@ import static kz.greetgo.scheduling.util.TimeUtil.MILLIS_SECOND;
 
 public class TriggerStructStrLexer {
 
-  private final Range topRange;
+  private final Range  topRange;
   private final String source;
 
   public TriggerStructStrLexer(Range topRange, String source) {
     this.topRange = topRange;
-    this.source = source;
+    this.source   = source;
   }
-
 
   class Token {
     final Range range;
@@ -41,6 +40,7 @@ public class TriggerStructStrLexer {
       return str().toLowerCase();
     }
 
+    @SuppressWarnings("unused")
     Range topRang() {
       return topRange.up(range);
     }
@@ -60,8 +60,8 @@ public class TriggerStructStrLexer {
 
   void tokenize() {
 
-    boolean isSpace = true;
-    int startedFrom = 0;
+    boolean isSpace     = true;
+    int     startedFrom = 0;
 
     for (int i = 0; i < source.length(); i++) {
       if (Character.isWhitespace(source.charAt(i))) {
@@ -78,7 +78,7 @@ public class TriggerStructStrLexer {
           continue;
         }
 
-        isSpace = false;
+        isSpace     = false;
         startedFrom = i;
 
       }
@@ -91,16 +91,16 @@ public class TriggerStructStrLexer {
   }
 
   enum LexType {
-    TIME_VALUE, AFTER_PAUSE, FROM, TO, EVERY, TIME_OF_DAY, WEEK_DAY, AT, REPEAT
+    TIME_VALUE, AFTER_PAUSE, FROM, TO, EVERY, TIME_OF_DAY, WEEK_DAY, AT, REPEAT, MONTH,
   }
 
   class Lex {
 
-    final LexType type;
+    final LexType     type;
     final List<Token> tokens;
 
     public Lex(LexType type, List<Token> tokens) {
-      this.type = type;
+      this.type   = type;
       this.tokens = unmodifiableList(tokens);
     }
 
@@ -111,10 +111,10 @@ public class TriggerStructStrLexer {
 
     public Range range() {
       return tokens.stream()
-        .map(t -> t.range)
-        .filter(Objects::nonNull)
-        .reduce(Range::union)
-        .orElseThrow(() -> new RuntimeException("5hb436b6 :: no ranges"));
+                   .map(t -> t.range)
+                   .filter(Objects::nonNull)
+                   .reduce(Range::union)
+                   .orElseThrow(() -> new RuntimeException("5hb436b6 :: no ranges"));
     }
 
     public long readTimeValueMillis() {
@@ -137,27 +137,40 @@ public class TriggerStructStrLexer {
 
     public long readTimeOfDayInMillis() {
       if (type != LexType.TIME_OF_DAY) {
-        throw new RuntimeException("time of day in millis read only from type=TIME_OF_DAY");
+        throw new RuntimeException("NA93ZKH0uD :: time of day in millis read only from type=" + LexType.TIME_OF_DAY);
       }
       return TimeUtil.hmsToMillis(tokens.get(0).str());
     }
 
     public WeekDay getWeekDay() {
       if (type != LexType.WEEK_DAY) {
-        throw new RuntimeException("week day read only from type=WEEK_DAY");
+        throw new RuntimeException("l90h2f1J90 :: week day read only from type=" + LexType.WEEK_DAY);
       }
 
-      return readWeekDay(tokens.get(0).str()).orElseThrow(() -> new RuntimeException("cannot read week day"));
+      return readWeekDay(tokens.get(0).str()).orElseThrow(
+        () -> new RuntimeException("q6zD8A9IT8 :: cannot read week day"));
 
+    }
+
+    public int getMonth() {
+      if (type != LexType.MONTH) {
+        throw new RuntimeException("BdWsFzm2yX :: month read only from type=" + LexType.MONTH);
+      }
+
+      int month = readMonth(tokens.get(0).str());
+      if (month <= 0) {
+        throw new RuntimeException("Ze3fw8hS12 :: Cannot ream month from `" + tokens.get(0).str() + "`");
+      }
+      return month;
     }
   }
 
   private String token(int... indexes) {
 
     return Arrays.stream(indexes)
-      .mapToObj(tokenList::get)
-      .map(Token::strNormy)
-      .collect(Collectors.joining(" "))
+                 .mapToObj(tokenList::get)
+                 .map(Token::strNormy)
+                 .collect(Collectors.joining(" "))
       ;
 
   }
@@ -170,7 +183,7 @@ public class TriggerStructStrLexer {
 
     public LexReadResult(int count, Lex lex) {
       this.count = count;
-      this.lex = lex;
+      this.lex   = lex;
     }
   }
 
@@ -208,7 +221,7 @@ public class TriggerStructStrLexer {
     return tokenList.size();
   }
 
-  private final static Pattern DIGITS = Pattern.compile("\\d+");
+  private final static Pattern DIGITS      = Pattern.compile("\\d+");
   private final static Pattern TIME_OF_DAY = Pattern.compile("(\\d+):(\\d+)(:(\\d+))?");
 
   static Optional<Long> readTimeUnitInMillis(String lowercaseToken) {
@@ -237,7 +250,65 @@ public class TriggerStructStrLexer {
     return readTimeUnitInMillis(lowercaseToken).isPresent();
   }
 
+  /**
+   * преобразует строку в месяц
+   *
+   * @param lowercaseToken преобразуемая строка
+   * @return номер месяца (1-янв, 2-фев, ...) или 0, если преобразовать не получилось
+   */
+  public static int readMonth(String lowercaseToken) {
+    if (lowercaseToken == null) {
+      return 0;
+    }
+
+    //@formatter:off
+
+    if (lowercaseToken.startsWith("янв")) return  1;
+    if (lowercaseToken.startsWith("jan")) return  1;
+
+    if (lowercaseToken.startsWith("фев")) return  2;
+    if (lowercaseToken.startsWith("feb")) return  2;
+
+    if (lowercaseToken.startsWith("мар")) return  3;
+    if (lowercaseToken.startsWith("mar")) return  3;
+
+    if (lowercaseToken.startsWith("апр")) return  4;
+    if (lowercaseToken.startsWith("apr")) return  4;
+
+    if (lowercaseToken.startsWith("май")) return  5;
+    if (lowercaseToken.startsWith("may")) return  5;
+
+    if (lowercaseToken.startsWith("июн")) return  6;
+    if (lowercaseToken.startsWith("jun")) return  6;
+
+    if (lowercaseToken.startsWith("июл")) return  7;
+    if (lowercaseToken.startsWith("jul")) return  7;
+
+    if (lowercaseToken.startsWith("авг")) return  8;
+    if (lowercaseToken.startsWith("aug")) return  8;
+
+    if (lowercaseToken.startsWith("сен")) return  9;
+    if (lowercaseToken.startsWith("sep")) return  9;
+
+    if (lowercaseToken.startsWith("окт")) return 10;
+    if (lowercaseToken.startsWith("oct")) return 10;
+
+    if (lowercaseToken.startsWith("ноя")) return 11;
+    if (lowercaseToken.startsWith("nov")) return 11;
+
+    if (lowercaseToken.startsWith("дек")) return 12;
+    if (lowercaseToken.startsWith("dec")) return 12;
+
+    //@formatter:on
+
+    return 0;
+  }
+
   public static Optional<WeekDay> readWeekDay(String lowercaseToken) {
+
+    if (lowercaseToken == null) {
+      return Optional.empty();
+    }
 
     if (lowercaseToken.startsWith("mon")) {
       return Optional.of(WeekDay.MONDAY);
@@ -322,9 +393,13 @@ public class TriggerStructStrLexer {
     return readWeekDay(lowercaseToken).isPresent();
   }
 
+  private static boolean isMonth(String lowercaseToken) {
+    return readMonth(lowercaseToken) > 0;
+  }
+
   private LexReadResult readLex(int i) {
     String current = token(i);
-    int count = 1;
+    int    count   = 1;
 
 
     if (current.startsWith("пов")) {
@@ -394,6 +469,7 @@ public class TriggerStructStrLexer {
 
     }
 
+    //noinspection SpellCheckingInspection
     if (current.startsWith("кажд") || current.equals("every")) {
 
       return new LexReadResult(1, lex(i, 1, LexType.EVERY));
@@ -422,7 +498,13 @@ public class TriggerStructStrLexer {
 
     }
 
-    errorList.add(new ParseError(tokenList.get(i).range, "26kjb43", "Неизвесная лексема"));
+    if (isMonth(current)) {
+
+      return new LexReadResult(1, lex(i, 1, LexType.MONTH));
+
+    }
+
+    errorList.add(new ParseError(tokenList.get(i).range, "26kjb43", "Неизвестная лексема"));
     return null;
   }
 

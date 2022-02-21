@@ -1,12 +1,13 @@
 package kz.greetgo.scheduling.trigger.inner_logic;
 
-import kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.Lex;
 import kz.greetgo.scheduling.trigger.atoms.SilentTrigger;
 import kz.greetgo.scheduling.trigger.atoms.TriggerDayPoint;
+import kz.greetgo.scheduling.trigger.atoms.TriggerMonth;
 import kz.greetgo.scheduling.trigger.atoms.TriggerPeriodInDay;
 import kz.greetgo.scheduling.trigger.atoms.TriggerPeriodInDayRepeat;
 import kz.greetgo.scheduling.trigger.atoms.TriggerRepeat;
 import kz.greetgo.scheduling.trigger.atoms.TriggerWeekDay;
+import kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.Lex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.AFTER_PAUSE;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.EVERY;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.FROM;
+import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.MONTH;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.REPEAT;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TIME_OF_DAY;
 import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.LexType.TIME_VALUE;
@@ -22,11 +24,11 @@ import static kz.greetgo.scheduling.trigger.inner_logic.TriggerStructStrLexer.Le
 
 public class TriggerStructStrParser {
 
-  private final Range range;
+  private final Range  range;
   private final String source;
 
   private TriggerStructStrParser(Range range, String source) {
-    this.range = range;
+    this.range  = range;
     this.source = source;
   }
 
@@ -68,6 +70,17 @@ public class TriggerStructStrParser {
 
     if (lexList.isEmpty()) {
       errorList.add(new ParseError(range, "n1w2mk5", "Нет расписания"));
+      return;
+    }
+
+    if (lexList.stream().anyMatch(x -> x.type == MONTH)) {
+
+      if (lexList.size() == 1) {
+        trigger = new TriggerMonth(lexList.get(0).getMonth());
+        return;
+      }
+
+      errorList.add(new ParseError(range, "vvEi4t867q", "Неизвестная лексема с месяцем"));
       return;
     }
 
@@ -142,7 +155,7 @@ public class TriggerStructStrParser {
               return;
             }
 
-            step = 4;
+            step              = 4;
             startSilentMillis = next3.readTimeValueMillis();
 
           }
@@ -183,7 +196,7 @@ public class TriggerStructStrParser {
         }
 
         if (i + 3 >= len) {
-          errorList.add(new ParseError(to.range(), "qii543w", "Незаконченая лексема - ожидается время HH:mm[:ss]"));
+          errorList.add(new ParseError(to.range(), "qii543w", "Незаконченная лексема - ожидается время HH:mm[:ss]"));
           return;
         }
 
@@ -195,7 +208,7 @@ public class TriggerStructStrParser {
         }
 
         long fromMillis = fromValue.readTimeOfDayInMillis();
-        long toMillis = toValue.readTimeOfDayInMillis();
+        long toMillis   = toValue.readTimeOfDayInMillis();
 
         trigger = new TriggerPeriodInDay(fromMillis, toMillis);
 

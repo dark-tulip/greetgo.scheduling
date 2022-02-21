@@ -230,10 +230,7 @@ public class TriggerStructStrParserTest {
 
     assertThat(parser.errorList).isNotEmpty();
     assertThat(parser.errorList.get(0).errorCode).isEqualTo("2135jh6");
-
-
   }
-
 
   @DataProvider
   private Object[][] daysOfWeekDataProvider() {
@@ -291,7 +288,7 @@ public class TriggerStructStrParserTest {
 
     Trigger trigger = parser.parse();
 
-    printErrors(source, parser.errorList);
+    printErrors(src.toString(), parser.errorList);
 
     assertThat(parser.errorList).isEmpty();
     assertThat(trigger).isNotNull();
@@ -342,11 +339,11 @@ public class TriggerStructStrParserTest {
 
     System.out.println("XbnZ6HRg1e :: src = [" + src + "]");
 
-    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), src.toString());
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src.toString());
 
     Trigger trigger = parser.parse();
 
-    printErrors(source, parser.errorList);
+    printErrors(src.toString(), parser.errorList);
 
     assertThat(parser.errorList).isEmpty();
     assertThat(trigger).isNotNull();
