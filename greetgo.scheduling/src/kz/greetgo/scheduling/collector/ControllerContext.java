@@ -131,11 +131,9 @@ public class ControllerContext {
 
     setContent(content);
 
-
     checkAllDefinitions(now);
 
     updateErrorFile();
-
   }
 
   private void saveContent(long now) {
@@ -150,6 +148,7 @@ public class ControllerContext {
     for (ScheduledDefinition definition : definitions) {
       if (!patterns.containsKey(definition.name)) {
         if (!added) {
+          //noinspection SpellCheckingInspection
           SimpleDateFormat sdf    = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
           String           nowStr = sdf.format(new Date(now));
 
@@ -172,6 +171,7 @@ public class ControllerContext {
     Map<String, String>  patterns    = new HashMap<>();
     Map<String, Integer> lineNumbers = new HashMap<>();
 
+    //noinspection SpellCheckingInspection
     SimpleDateFormat sdf    = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     String           nowStr = sdf.format(new Date(now));
 

@@ -162,7 +162,7 @@ public class TriggerParserStructuring {
   private TriggerStruct constructStruct(List<ExpressionElement> elements) {
 
     if (elements.isEmpty()) {
-      parseErrors.add(new ParseError(new Range(0, 0), "6h5bv47", "Нет данных"));
+      parseErrors.add(new ParseError(new Range(0, 0), "UMBo7MopE4", "Нет данных"));
       return new TriggerStructEmpty();
     }
 
@@ -171,7 +171,7 @@ public class TriggerParserStructuring {
     {
       ExpressionElement firstElement = elements.remove(0);
       if (firstElement instanceof Operation) {
-        parseErrors.add(new ParseError(firstElement.range(), "6h56bv3", "Нет данных"));
+        parseErrors.add(new ParseError(firstElement.range(), "Ka4zG7L9e1", "Нет данных"));
         return new TriggerStructEmpty();
       }
       first = (TriggerStruct) firstElement;
