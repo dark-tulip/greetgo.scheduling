@@ -1,5 +1,6 @@
 package kz.greetgo.scheduling.trigger.inner_logic;
 
+import kz.greetgo.scheduling.trigger.atoms.SilentTrigger;
 import kz.greetgo.scheduling.trigger.atoms.TriggerRepeat;
 import kz.greetgo.scheduling.util.StrUtil;
 import kz.greetgo.util.RND;
@@ -353,9 +354,80 @@ public class TriggerStructStrParserTest {
   }
 
   @Test
+  public void monthTooBig() {
+
+    String src = " 2100 марта ";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    assertThat(trigger).isNotNull();
+    assertThat(trigger).isInstanceOf(SilentTrigger.class);
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isNotNull();
+  }
+
+  @Test
   public void monthWithDigits() {
 
     String src = " 2 14 21 марта декабря";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isEmpty();
+    assertThat(trigger).isNotNull();
+    assertThat(trigger.isDotty()).isFalse();
+
+    assertThat(trigger.toString()).isEqualTo("asd");
+  }
+
+  @Test
+  public void monthWithDigitsAndRanges() {
+
+    String src = " 3..10 17 19 23..26 29 март..июнь ноябрь";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isEmpty();
+    assertThat(trigger).isNotNull();
+    assertThat(trigger.isDotty()).isFalse();
+
+    assertThat(trigger.toString()).isEqualTo("asd");
+  }
+
+  @Test
+  public void monthYearsWithDigitsAndRanges() {
+
+    String src = " 3..10 17 19 23..26 29 март..июнь ноябрь 1997 2000..2010 2020 года";
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
+
+    Trigger trigger = parser.parse();
+
+    printErrors(src, parser.errorList);
+
+    assertThat(parser.errorList).isEmpty();
+    assertThat(trigger).isNotNull();
+    assertThat(trigger.isDotty()).isFalse();
+
+    assertThat(trigger.toString()).isEqualTo("asd");
+  }
+
+  @Test
+  public void yearsMonthWithDigitsAndRanges() {
+
+    String src = " 1997 2000..2010 2020 год 3..10 17 19 23..26 29 март..июнь ноябрь ";
 
     TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
 
