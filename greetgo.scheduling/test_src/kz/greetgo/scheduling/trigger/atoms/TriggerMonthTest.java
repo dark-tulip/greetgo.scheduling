@@ -1,5 +1,6 @@
 package kz.greetgo.scheduling.trigger.atoms;
 
+import kz.greetgo.scheduling.trigger.inner_logic.Range;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -37,7 +38,7 @@ public class TriggerMonthTest {
     Date from = sdf.parse(fromStr);
     Date to   = sdf.parse(toStr);
 
-    TriggerMonth trigger = new TriggerMonth(month);
+    TriggerMonth trigger = new TriggerMonth(Range.of(month, month));
 
     //
     //
@@ -49,4 +50,5 @@ public class TriggerMonthTest {
     assertThat(trigger.isDotty()).isFalse();
 
   }
+
 }

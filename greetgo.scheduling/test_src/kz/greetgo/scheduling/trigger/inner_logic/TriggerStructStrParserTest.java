@@ -350,24 +350,7 @@ public class TriggerStructStrParserTest {
     assertThat(trigger).isNotNull();
     assertThat(trigger.isDotty()).isFalse();
 
-    assertThat(trigger.toString()).isEqualTo("Month{" + month + "}");
-  }
-
-  @Test
-  public void monthTooBig() {
-
-    String src = " 2100 марта ";
-
-    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, src.length()), src);
-
-    Trigger trigger = parser.parse();
-
-    assertThat(trigger).isNotNull();
-    assertThat(trigger).isInstanceOf(SilentTrigger.class);
-
-    printErrors(src, parser.errorList);
-
-    assertThat(parser.errorList).isNotNull();
+    assertThat(trigger.toString()).isEqualTo("Month{" + month + ".." + month + "}");
   }
 
   @Test
@@ -385,7 +368,8 @@ public class TriggerStructStrParserTest {
     assertThat(trigger).isNotNull();
     assertThat(trigger.isDotty()).isFalse();
 
-    assertThat(trigger.toString()).isEqualTo("asd");
+    assertThat(trigger.toString()).isEqualTo("(((MonthDay{2..2} or MonthDay{14..14}) or MonthDay{21..21})" +
+                                               " and (Month{3..3} or Month{12..12}))");
   }
 
   @Test
@@ -403,7 +387,9 @@ public class TriggerStructStrParserTest {
     assertThat(trigger).isNotNull();
     assertThat(trigger.isDotty()).isFalse();
 
-    assertThat(trigger.toString()).isEqualTo("asd");
+    assertThat(trigger.toString()).isEqualTo("(((((MonthDay{3..10} or MonthDay{17..17}) or MonthDay{19..19})" +
+                                               " or MonthDay{23..26}) or MonthDay{29..29})" +
+                                               " and (Month{3..6} or Month{11..11}))");
   }
 
   @Test
@@ -421,7 +407,11 @@ public class TriggerStructStrParserTest {
     assertThat(trigger).isNotNull();
     assertThat(trigger.isDotty()).isFalse();
 
-    assertThat(trigger.toString()).isEqualTo("asd");
+    assertThat(trigger.toString()).isEqualTo(
+      "((((((MonthDay{3..10} or MonthDay{17..17}) or MonthDay{19..19}) or MonthDay{23..26}) or MonthDay{29..29})" +
+        " and (Month{3..6} or Month{11..11})) " +
+        "and ((Year{1997..1997} or Year{2000..2010}) or Year{2020..2020}))"
+    );
   }
 
   @Test
@@ -439,7 +429,11 @@ public class TriggerStructStrParserTest {
     assertThat(trigger).isNotNull();
     assertThat(trigger.isDotty()).isFalse();
 
-    assertThat(trigger.toString()).isEqualTo("asd");
+    assertThat(trigger.toString()).isEqualTo(
+      "((((((MonthDay{3..10} or MonthDay{17..17}) or MonthDay{19..19}) or MonthDay{23..26}) or MonthDay{29..29})" +
+        " and (Month{3..6} or Month{11..11}))" +
+        " and ((Year{1997..1997} or Year{2000..2010}) or Year{2020..2020}))"
+    );
   }
 
   @Test
@@ -457,7 +451,7 @@ public class TriggerStructStrParserTest {
     assertThat(trigger).isNotNull();
     assertThat(trigger.isDotty()).isFalse();
 
-    assertThat(trigger.toString()).isEqualTo("asd");
+    assertThat(trigger.toString()).isEqualTo("Year{1997..1997}");
   }
 
   @Test
@@ -472,7 +466,7 @@ public class TriggerStructStrParserTest {
     printErrors(src, parser.errorList);
 
     assertThat(parser.errorList).isNotEmpty();
-    assertThat(parser.errorList.get(0).message).startsWith("98LbBw3QKN");
+    assertThat(parser.errorList.get(0).errorCode).isEqualTo("uEIlY6GC5T");
     assertThat(trigger).isNotNull();
     assertThat(trigger).isInstanceOf(SilentTrigger.class);
   }
@@ -489,7 +483,7 @@ public class TriggerStructStrParserTest {
     printErrors(src, parser.errorList);
 
     assertThat(parser.errorList).isNotEmpty();
-    assertThat(parser.errorList.get(0).message).startsWith("VK7Bu1e7yo");
+    assertThat(parser.errorList.get(0).errorCode).startsWith("A6Dy08k7CL");
     assertThat(trigger).isNotNull();
     assertThat(trigger).isInstanceOf(SilentTrigger.class);
   }
@@ -506,7 +500,7 @@ public class TriggerStructStrParserTest {
     printErrors(src, parser.errorList);
 
     assertThat(parser.errorList).isNotEmpty();
-    assertThat(parser.errorList.get(0).message).startsWith("LDBdBY03i5");
+    assertThat(parser.errorList.get(0).errorCode).startsWith("uEIlY6GC5T");
     assertThat(trigger).isNotNull();
     assertThat(trigger).isInstanceOf(SilentTrigger.class);
   }

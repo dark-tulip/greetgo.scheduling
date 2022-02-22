@@ -4,6 +4,8 @@ import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
 
 public class SilentTrigger implements Trigger {
 
+  public static final SilentTrigger SILENT = new SilentTrigger();
+
   public SilentTrigger() {}
 
   @Override
@@ -13,7 +15,7 @@ public class SilentTrigger implements Trigger {
 
   @Override
   public boolean isDotty() {
-    return true;
+    return false;
   }
 
   @Override

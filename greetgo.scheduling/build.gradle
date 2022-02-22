@@ -5,7 +5,8 @@ plugins {
 
 dependencies {
 
-  testCompile "kz.greetgo.util:greetgo.util:$greetgoUtilVersion"
+  testCompile "kz.greetgo.util:greetgo-util:$greetgoUtilVersion"
+  testCompile "kz.greetgo.util:greetgo-fui:$greetgoUtilVersion"
 
 }
 

@@ -2,23 +2,21 @@ package kz.greetgo.scheduling.trigger.atoms;
 
 import kz.greetgo.scheduling.trigger.inner_logic.Range;
 import kz.greetgo.scheduling.trigger.inner_logic.Trigger;
-import kz.greetgo.scheduling.util.CalendarEq;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Objects;
 
-public class TriggerMonth implements Trigger {
+public class TriggerYear implements Trigger {
 
   private final Range range;
 
-  public TriggerMonth(Range range) {
-    this.range = Objects.requireNonNull(range);
+  public TriggerYear(Range range) {
+    this.range = range;
   }
 
   @Override
   public String toString() {
-    return "Month{" + range.from + ".." + range.to + "}";
+    return "Year{" + range.from + ".." + range.to + "}";
   }
 
   @Override
@@ -39,20 +37,17 @@ public class TriggerMonth implements Trigger {
     calendarFrom.setTimeInMillis(timeMillisFrom);
     calendarTo.setTimeInMillis(timeMillisTo);
 
-    int calendarMonthFrom = range.from - 1;
-    int calendarMonthTo   = range.to - 1;
-
     while (true) {
-      int calendarMonth = calendarFrom.get(Calendar.MONTH);
-      if (calendarMonthFrom <= calendarMonth && calendarMonth <= calendarMonthTo) {
+      int year = calendarFrom.get(Calendar.YEAR);
+      if (range.from <= year && year <= range.to) {
         return true;
       }
 
-      if (CalendarEq.of(calendarFrom).ymdEquals(calendarTo)) {
+      if (calendarFrom.get(Calendar.YEAR) == calendarTo.get(Calendar.YEAR)) {
         return false;
       }
 
-      calendarFrom.add(Calendar.DAY_OF_YEAR, 1);
+      calendarFrom.add(Calendar.YEAR, 1);
     }
   }
 

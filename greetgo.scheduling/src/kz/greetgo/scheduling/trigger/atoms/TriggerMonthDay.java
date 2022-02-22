@@ -8,17 +8,16 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
-public class TriggerMonth implements Trigger {
-
+public class TriggerMonthDay implements Trigger {
   private final Range range;
 
-  public TriggerMonth(Range range) {
+  public TriggerMonthDay(Range range) {
     this.range = Objects.requireNonNull(range);
   }
 
   @Override
   public String toString() {
-    return "Month{" + range.from + ".." + range.to + "}";
+    return "MonthDay{" + range.from + ".." + range.to + "}";
   }
 
   @Override
@@ -39,20 +38,17 @@ public class TriggerMonth implements Trigger {
     calendarFrom.setTimeInMillis(timeMillisFrom);
     calendarTo.setTimeInMillis(timeMillisTo);
 
-    int calendarMonthFrom = range.from - 1;
-    int calendarMonthTo   = range.to - 1;
-
     while (true) {
-      int calendarMonth = calendarFrom.get(Calendar.MONTH);
-      if (calendarMonthFrom <= calendarMonth && calendarMonth <= calendarMonthTo) {
+      int dayOfMonth = calendarFrom.get(Calendar.DAY_OF_MONTH);
+      if (range.from <= dayOfMonth && dayOfMonth <= range.to) {
         return true;
       }
 
-      if (CalendarEq.of(calendarFrom).ymdEquals(calendarTo)) {
+      if (CalendarEq.of(calendarFrom).ymEquals(calendarTo)) {
         return false;
       }
 
-      calendarFrom.add(Calendar.DAY_OF_YEAR, 1);
+      calendarFrom.add(Calendar.MONTH, 1);
     }
   }
 
