@@ -35,6 +35,30 @@ public class TriggerStructStrParserTest {
     assertThat(trigger.toString()).isEqualTo("Repeat{0 13000}");
   }
 
+
+  @DataProvider
+  Object[][] repeat_every_13_days_DP() {
+    return new Object[][]{
+      {"повторять каждые 13 дней"},
+      {"repeat every 13 day"},
+    };
+  }
+
+  @Test(dataProvider = "repeat_every_13_days_DP")
+  public void repeat_every_13_days(String source) {
+
+    TriggerStructStrParser parser = TriggerStructStrParser.of(Range.of(0, 0), source);
+
+    Trigger trigger = parser.parse();
+
+    assertThat(parser.errorList).isEmpty();
+    assertThat(trigger).isNotNull();
+    assertThat(trigger).isInstanceOf(TriggerRepeat.class);
+    // 13 * 24 * 60 * 60 * 1000
+    assertThat(trigger.toString()).isEqualTo("Repeat{0 1123200000}");
+  }
+
+
   @DataProvider
   Object[][] repeat_every_10_seconds_after_pause_17_minutes_DP() {
     return new Object[][]{

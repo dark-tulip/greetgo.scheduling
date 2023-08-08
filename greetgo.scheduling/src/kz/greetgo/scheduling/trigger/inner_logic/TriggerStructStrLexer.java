@@ -239,6 +239,7 @@ public class TriggerStructStrLexer {
   private final static Optional<Long> oSeconds = Optional.of(MILLIS_SECOND);
   private final static Optional<Long> oMinutes = Optional.of(MILLIS_MINUTE);
   private final static Optional<Long> oHours   = Optional.of(MILLIS_HOUR);
+  private final static Optional<Long> oDays    = Optional.of(MILLIS_HOUR * 24);
 
   static Optional<Long> readTimeUnitInMillis(String lowercaseToken) {
     //@formatter:off
@@ -258,6 +259,12 @@ public class TriggerStructStrLexer {
     if (lowercaseToken.startsWith("час" )) return oHours;
     if (lowercaseToken.    equals("h"   )) return oHours;
     if (lowercaseToken.startsWith("hour")) return oHours;
+
+    if (lowercaseToken.    equals("д"   ))  return oDays;
+    if (lowercaseToken.startsWith("день" )) return oDays;
+    if (lowercaseToken.startsWith("дней" )) return oDays;
+    if (lowercaseToken.    equals("d"   ))  return oDays;
+    if (lowercaseToken.startsWith("day"))   return oDays;
     //@formatter:on
 
     return Optional.empty();
@@ -414,6 +421,22 @@ public class TriggerStructStrLexer {
     return readMonth(lowercaseToken) > 0;
   }
 
+  private static boolean isDay(String lowercaseToken) {
+    if (lowercaseToken.startsWith("день")) {
+      return true;
+    }
+    if (lowercaseToken.startsWith("дня")) {
+      return true;
+    }
+    if (lowercaseToken.startsWith("дней")) {
+      return true;
+    }
+    if (lowercaseToken.startsWith("day")) {
+      return true;
+    }
+    return false;
+  }
+
   private static boolean isYear(String lowercaseToken) {
     if (lowercaseToken.startsWith("год")) {
       return true;
@@ -510,6 +533,10 @@ public class TriggerStructStrLexer {
 
     if (isMonth(current)) {
       return new LexReadResult(1, lex(i, 1, LexType.MONTH));
+    }
+
+    if (isDay(current)) {
+      return new LexReadResult(1, lex(i, 1, LexType.DAY));
     }
 
     if ("..".equals(current)) {
